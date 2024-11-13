@@ -89,6 +89,7 @@ $route['update_submodule']                  = 'Admin/update_submodule';
 $route['request']                           = 'Admin/request';
 $route['typeofsystem_data']                 = 'Admin/typeofsystem_data';
 $route['approved']                          = 'Admin/approved';
+$route['backtopending']                     = 'Admin/backtopending';
 $route['file_preview/(:any)']               = 'Admin/file_preview/$1';
 
 // Menu

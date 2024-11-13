@@ -542,11 +542,14 @@ class Admin extends CI_Controller {
                     'uploaded_to' => $row['uploaded_to'],
                     'status' => $status_badge,
                     'action' => '
-                        <div class="hstack gap-1 d-flex justify-content-center">
-                            <button type="button" class="btn btn-soft-primary btn-label waves-effect waves-light btn-sm" onclick="approved(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\')">
-                            <iconify-icon icon="ri:thumb-up-fill" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Update</button>
-                        </div>
-                    '
+                        <div class="hstack gap-1 d-flex justify-content-center">' .
+                        ($status === 'Pending' ? 
+                            '<button type="button" class="btn btn-soft-primary btn-label waves-effect waves-light btn-sm" onclick="approved(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\')">' .
+                            '<iconify-icon icon="ri:thumb-up-fill" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Update</button>'
+                            : 
+                            '<button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="backtopending(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\')">' .
+                            '<iconify-icon icon="tabler:refresh-alert" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Recall</button>') .
+                        '</div>'
                 ];
             }
     
@@ -715,7 +718,95 @@ class Admin extends CI_Controller {
     
         $this->admin->approved($file_id, $update_data, $typeofsystem);  // Pass typeofsystem to the model
     }
+
+    public function backtopending(){
+        $file_id = $this->input->post('file_id');
+        $type = $this->input->post('type');
+        $typeofsystem = $this->input->post('typeofsystem');
     
+        $status_field = '';
+    
+        if ($typeofsystem === 'current') {
+            switch ($type) {
+                case 'ISR':
+                    $status_field = 'isr_status';
+                    break;
+                case 'ATTENDANCE':
+                    $status_field = 'att_status';
+                    break;
+                case 'MINUTES':
+                    $status_field = 'minute_status';
+                    break;
+                case 'WALKTHROUGH':
+                    $status_field = 'wt_status';
+                    break;
+                case 'FLOWCHART':
+                    $status_field = 'flowchart_status';
+                    break;
+                case 'DFD':
+                    $status_field = 'dfd_status';
+                    break;
+                case 'SYSTEM_PROPOSED':
+                    $status_field = 'proposed_status';
+                    break;
+                case 'GANTT_CHART':
+                    $status_field = 'gantt_status';
+                    break;
+                case 'LOCAL_TESTING':
+                    $status_field = 'local_status';
+                    break;
+                case 'UAT':
+                    $status_field = 'uat_status';
+                    break;
+                case 'LIVE_TESTING':
+                    $status_field = 'live_status';
+                    break;
+                case 'USER_GUIDE':
+                    $status_field = 'guide_status';
+                    break;
+                case 'MEMO':
+                    $status_field = 'memo_status';
+                    break;
+                case 'BUSINESS_ACCEPTANCE':
+                    $status_field = 'acceptance_status';
+                    break;
+            }
+        }
+        if ($typeofsystem === 'new') {
+            switch ($type) {
+                case 'ISR':
+                    $status_field = 'isr_status';
+                    break;
+                case 'WALKTHROUGH':
+                    $status_field = 'wt_status';
+                    break;
+                case 'FLOWCHART':
+                    $status_field = 'flowchart_status';
+                    break;
+                case 'DFD':
+                    $status_field = 'dfd_status';
+                    break;
+                case 'SYSTEM_PROPOSED':
+                    $status_field = 'proposed_status';
+                    break;
+                case 'LOCAL_TESTING':
+                    $status_field = 'local_status';
+                    break;
+                case 'UAT':
+                    $status_field = 'uat_status';
+                    break;
+                case 'LIVE_TESTING':
+                    $status_field = 'live_status';
+                    break;
+            }
+        }
+    
+        $update_data = [
+            $status_field => 'Pending'
+        ];
+    
+        $this->admin->backtopending($file_id, $update_data, $typeofsystem);
+    }
     
 
 }

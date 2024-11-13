@@ -318,6 +318,16 @@ class Admin_mod extends CI_Model
             $this->db->update('system_files', $data);
         }
     }
+    public function backtopending($file_id, $data, $typeofsystem)
+    {
+        if ($typeofsystem === 'current') {
+            $this->db->where('file_id', $file_id);
+            $this->db->update('system_files', $data);   
+        } elseif ($typeofsystem === 'new') {
+            $this->db->where('file_id', $file_id);
+            $this->db->update('system_files', $data);
+        }
+    }
 
 
 

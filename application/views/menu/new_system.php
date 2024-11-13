@@ -581,13 +581,16 @@
                                     title: 'Notice!',
                                     text: response.message,
                                     icon: 'info',
-                                    confirmButtonText: 'OK'
+                                    confirmButtonText: 'Proceed with Manager\'s Key',
+                                    cancelButtonText: 'Cancel',
+                                    showCancelButton: true,
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         $('#file_upload').modal('hide');
                                         Swal.fire({
                                             title: 'Enter Manager\'s Key',
                                             input: 'password',
+                                            icon: 'info',
                                             inputAttributes: {
                                                 autocapitalize: 'off',
                                                 autocomplete: 'off',

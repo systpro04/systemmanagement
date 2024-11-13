@@ -46,7 +46,7 @@
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="file_upload">FILE UPLOAD</h5>
+                <h5 class="modal-title" id="uploaded_to"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <hr>
@@ -192,16 +192,33 @@
         }
     });
 
-    let teamValue = '', moduleValue = '', subModuleValue = '';
+    let teamValue = '', moduleValue = '', subModuleValue = '', moduleName = '', subModuleName = '';
 
-    $('#team').change(function () { teamValue = $(this).val(); });
-    $('#module').change(function () { moduleValue = $(this).val(); });
-    $('#sub_module').change(function () { subModuleValue = $(this).val(); });
+    $('#team').change(function () {
+        teamValue = $(this).val();
+        teamName = $('#team option:selected').text();
+    });
+
+    $('#module').change(function () {
+        moduleValue = $(this).val();
+        moduleName = $('#module option:selected').text();
+    });
+
+    // Store sub-module and sub-module name
+    $('#sub_module').change(function () {
+         teamValue = $(this).val(); 
+         subModuleName = $('#sub_module option:selected').text();
+    });
 
     $('#file_upload').on('show.bs.modal', function () {
         $('#file_team').val(teamValue);
         $('#file_module').val(moduleValue);
         $('#file_sub_module').val(subModuleValue);
+
+        let displaySubModuleName = subModuleName || "";
+
+
+        $('#uploaded_to').text(`${teamName} | ${moduleName} | ${displaySubModuleName}`);
     });
 
     function toggleUploadButton() {
@@ -574,7 +591,9 @@
                                     title: 'Notice!',
                                     text: response.message,
                                     icon: 'info',
-                                    confirmButtonText: 'OK'
+                                    confirmButtonText: 'Proceed with Manager\'s Key',
+                                    cancelButtonText: 'Cancel',
+                                    showCancelButton: true,
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         $('#file_upload').modal('hide');

@@ -39,164 +39,56 @@
                             </li>
                         </ul>
                         <hr>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="current" role="tabpanel">
-                                <div class="d-flex">
-                                    <div class="col-xl-12">
-                                        <div class="card-body">
-                                            <ul class="nav nav-pills arrow-navtabs nav-secondary bg-light mb-4"
-                                                role="tablist">
-                                                <li class="nav-item">
-                                                    <a id="ISR" aria-expanded="false" class="nav-link active type"
-                                                        data-bs-toggle="tab">
-                                                        <span class="d-block d-sm-none"><iconify-icon
-                                                                icon="solar:code-file-bold-duotone"
-                                                                class="fs-25"></iconify-icon></span>
-                                                        <span class="d-none d-sm-block">ISR</span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a id="ATTENDANCE" aria-expanded="true" class="nav-link type"
-                                                        data-bs-toggle="tab">
-                                                        <span class="d-block d-sm-none"><iconify-icon
-                                                                icon="solar:code-file-bold-duotone"
-                                                                class="fs-25"></iconify-icon></span>
-                                                        <span class="d-none d-sm-block">ATTENDANCE</span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a id="MINUTES" aria-expanded="true" class="nav-link type"
-                                                        data-bs-toggle="tab">
-                                                        <span class="d-block d-sm-none"><iconify-icon
-                                                                icon="solar:code-file-bold-duotone"
-                                                                class="fs-25"></iconify-icon></span>
-                                                        <span class="d-none d-sm-block">MINUTES</span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a id="WALKTHROUGH" aria-expanded="true" class="nav-link type"
-                                                        data-bs-toggle="tab">
-                                                        <span class="d-block d-sm-none"><iconify-icon
-                                                                icon="solar:code-file-bold-duotone"
-                                                                class="fs-25"></iconify-icon></span>
-                                                        <span class="d-none d-sm-block">WALKTHROUGH</span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a id="FLOWCHART" aria-expanded="true" class="nav-link type"
-                                                        data-bs-toggle="tab">
-                                                        <span class="d-block d-sm-none"><iconify-icon
-                                                                icon="solar:code-file-bold-duotone"
-                                                                class="fs-25"></iconify-icon></span>
-                                                        <span class="d-none d-sm-block">FLOWCHART</span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a id="DFD" aria-expanded="true" class="nav-link type"
-                                                        data-bs-toggle="tab">
-                                                        <span class="d-block d-sm-none"><iconify-icon
-                                                                icon="solar:code-file-bold-duotone"
-                                                                class="fs-25"></iconify-icon></span>
-                                                        <span class="d-none d-sm-block">DFD</span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a id="GANTT_CHART" aria-expanded="true" class="nav-link type"
-                                                        data-bs-toggle="tab">
-                                                        <span class="d-block d-sm-none"><iconify-icon
-                                                                icon="solar:code-file-bold-duotone"
-                                                                class="fs-25"></iconify-icon></span>
-                                                        <span class="d-none d-sm-block">GANTT CHART</span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a id="SYSTEM_PROPOSED" aria-expanded="true" class="nav-link type"
-                                                        data-bs-toggle="tab">
-                                                        <span class="d-block d-sm-none"><iconify-icon
-                                                                icon="solar:code-file-bold-duotone"
-                                                                class="fs-25"></iconify-icon></span>
-                                                        <span class="d-none d-sm-block">SYSTEM PROPOSED</span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a id="LOCAL_TESTING" aria-expanded="true" class="nav-link type"
-                                                        data-bs-toggle="tab">
-                                                        <span class="d-block d-sm-none"><iconify-icon
-                                                                icon="solar:siderbar-bold-duotone"
-                                                                class="fs-25"></iconify-icon></span>
-                                                        <span class="d-none d-sm-block">LOCAL TESTING</span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a id="UAT" aria-expanded="true" class="nav-link type"
-                                                        data-bs-toggle="tab">
-                                                        <span class="d-block d-sm-none"><iconify-icon
-                                                                icon="solar:code-file-bold-duotone"
-                                                                class="fs-25"></iconify-icon></span>
-                                                        <span class="d-none d-sm-block">UAT</span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a id="LIVE_TESTING" aria-expanded="true" class="nav-link type"
-                                                        data-bs-toggle="tab">
-                                                        <span class="d-block d-sm-none"><iconify-icon
-                                                                icon="solar:code-file-bold-duotone"
-                                                                class="fs-25"></iconify-icon></span>
-                                                        <span class="d-none d-sm-block">LIVE TESTING</span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a id="USER_GUIDE" aria-expanded="true" class="nav-link type"
-                                                        data-bs-toggle="tab">
-                                                        <span class="d-block d-sm-none"><iconify-icon
-                                                                icon="solar:code-file-bold-duotone"
-                                                                class="fs-25"></iconify-icon></span>
-                                                        <span class="d-none d-sm-block">USER GUIDE</span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a id="MEMO" aria-expanded="true" class="nav-link type"
-                                                        data-bs-toggle="tab">
-                                                        <span class="d-block d-sm-none"><iconify-icon
-                                                                icon="solar:code-file-bold-duotone"
-                                                                class="fs-25"></iconify-icon></span>
-                                                        <span class="d-none d-sm-block">MEMO</span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a id="BUSINESS_ACCEPTANCE" aria-expanded="true" class="nav-link type"
-                                                        data-bs-toggle="tab">
-                                                        <span class="d-block d-sm-none"><iconify-icon
-                                                                icon="solar:code-file-bold-duotone"
-                                                                class="fs-25"></iconify-icon></span>
-                                                        <span class="d-none d-sm-block">BUSINESS ACCEPTANCE</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                            <hr>
-                                            <div class="tab-content">
-                                                <div class="mt-2 tab-pane active" id="current" role="tabpanel">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-striped table-hover" id="typeofsystem_table">
-                                                            <thead class="table-primary text-center">
-                                                                <tr>
-                                                                    <th>FILENAME</th>
-                                                                    <th>UPLOADED TO</th>
-                                                                    <th>STATUS</th>
-                                                                    <th>ACTION</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="col-xxl-12">
+                             <div class="card">
+                                 <div class="card-body">
+                                     <div class="row">
+                                         <div class="col-lg-3">
+                                             <div class="nav nav-pills flex-column nav-pills-tab custom-verti-nav-pills text-center" role="tablist" aria-orientation="vertical" data-simplebar="" style="max-height: 450px;">
+                                                 <a href="#!" id="ISR" class="fw-bold nav-link active type" data-bs-toggle="pill" role="tab">ISR</a>
+                                                 <a href="#!" id="ATTENDANCE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">ATTENDANCE</a>
+                                                 <a href="#!" id="MINUTES" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">MINUTES</a>
+                                                 <a href="#!" id="WALKTHROUGH" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">WALKTHROUGH</a>
+                                                 <a href="#!" id="FLOWCHART" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">FLOWCHART</a>
+                                                 <a href="#!" id="DFD" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">DFD</a>
+                                                 <a href="#!" id="SYSTEM_PROPOSED" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">SYSTEM PROPOSED</a>
+                                                 <a href="#!" id="GANTT_CHART" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">GANTT CHART</a>
+                                                 <a href="#!" id="LOCAL_TESTING" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">LOCAL TESTING</a>
+                                                 <a href="#!" id="UAT" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">UAT</a>
+                                                 <a href="#!" id="LIVE_TESTING" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">LIVE TESTING</a>
+                                                 <a href="#!" id="USER_GUIDE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">USER GUIDE</a>
+                                                 <a href="#!" id="MEMO" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">MEMO</a>
+                                                 <a href="#!" id="BUSINESS_ACCEPTANCE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">BUSINESS ACCEPTANCE</a>
+                                             </div>
+                                         </div>  <!-- end col-->
+                                         <div class="col-lg-9">
+                                             <div class="tab-content text-muted mt-3 mt-lg-0">
+                                                 <div class="tab-pane fade active show" id="current" role="tabpanel">
+                                                     <div class="d-flex mb-4">
+                                                         <div class="flex-grow-1 ms-3" data-simplebar="" style="max-height: 450px;">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-striped table-hover" id="typeofsystem_table">
+                                                                    <thead class="table-primary text-center">
+                                                                        <tr>
+                                                                            <th>FILENAME</th>
+                                                                            <th>UPLOADED TO</th>
+                                                                            <th>STATUS</th>
+                                                                            <th>ACTION</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
                     </div>
                 </div>
             </div>
@@ -207,8 +99,8 @@
     var typeofsystem = "current";
     var type = "ISR";
     var table;
-    $('#SYSTEM_PROPOSED').closest('li').hide();
-    $('#GANTT_CHART').closest('li').show();
+    $('#SYSTEM_PROPOSED').closest('a').show();
+    $('#GANTT_CHART').closest('a').show();
     
     load_system_content(typeofsystem, type);
 
@@ -218,19 +110,19 @@
         typeofsystem = this.id;
 
         if (typeofsystem == 'new') {
-            $('#SYSTEM_PROPOSED').closest('li').show();
-            $('#GANTT_CHART').closest('li').hide();
-            $('#USER_GUIDE').closest('li').hide();
-            $('#MEMO').closest('li').hide();
-            $('#BUSINESS_ACCEPTANCE').closest('li').hide();
+            $('#SYSTEM_PROPOSED').closest('a').show();
+            $('#GANTT_CHART').closest('a').hide();
+            $('#USER_GUIDE').closest('a').hide();
+            $('#MEMO').closest('a').hide();
+            $('#BUSINESS_ACCEPTANCE').closest('a').hide();
         }
          
         if (typeofsystem == 'current') {
-            $('#SYSTEM_PROPOSED').closest('li').hide();
-            $('#GANTT_CHART').closest('li').show();
-            $('#USER_GUIDE').closest('li').show();
-            $('#MEMO').closest('li').show();
-            $('#BUSINESS_ACCEPTANCE').closest('li').show();
+            $('#SYSTEM_PROPOSED').closest('a').hide();
+            $('#GANTT_CHART').closest('a').show();
+            $('#USER_GUIDE').closest('a').show();
+            $('#MEMO').closest('a').show();
+            $('#BUSINESS_ACCEPTANCE').closest('a').show();
         }
 
         load_system_content(typeofsystem, type);
@@ -297,7 +189,41 @@
                             timer: 1500,
                             timerProgressBar: true,
                             icon: 'success',
-                            title: 'Successfully Approved!',
+                            title: type + ' file approved successfully',
+                        });
+                        $('#typeofsystem_table').DataTable().ajax.reload();
+                    },
+                });
+            }
+        });
+    }
+    function backtopending(fileId, type, typeofsystem) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'You want to recall this file?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Recall it!',
+        cancelButtonText: 'No, cancel!',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '<?php echo base_url('backtopending'); ?>',
+                    type: 'POST',
+                    data: {
+                        file_id: fileId,
+                        type: type,
+                        typeofsystem: typeofsystem
+                    },
+                    success: function () {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: true,
+                            icon: 'success',
+                            title: type + ' file recall to pending',
                         });
                         $('#typeofsystem_table').DataTable().ajax.reload();
                     },
