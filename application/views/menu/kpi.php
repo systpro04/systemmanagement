@@ -1,7 +1,7 @@
 
 
 <div class="container kpi-section">
-    <h2 class="fw-bold text-center">List Key Performance Indicators (KPI)</h2>
+    <h2 class="fw-bold text-center">List of Key Performance Indicator (KPI)</h2>
 
     <div class="row justify-content-center mt-5">
         <?php foreach ($kpiData as $type => $kpis): ?>

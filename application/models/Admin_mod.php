@@ -81,7 +81,13 @@ class Admin_mod extends CI_Model
     }
     
 
-
+    public function get_teams() {
+        $this->db->select('*');
+        $this->db->from('team');
+        $query = $this->db->get();
+    
+        return $query->result();
+    }
 
     public function getKPI($type, $start, $length, $order_column, $order_dir, $search_value)
     {
@@ -144,7 +150,7 @@ class Admin_mod extends CI_Model
     }
 
 
-    public function getModule($start, $length, $order_column, $order_dir, $search_value)
+    public function getModule($typeofsystem, $start, $length, $order_column, $order_dir, $search_value)
     {
         $this->db->select('*');
         $this->db->from('module');
@@ -156,11 +162,12 @@ class Admin_mod extends CI_Model
         }
         $this->db->order_by($order_column, $order_dir);
         $this->db->limit($length, $start);
+        $this->db->where('typeofsystem', $typeofsystem);
 
         return $this->db->get()->result_array();
     }
 
-    public function getTotalModule($search_value)
+    public function getTotalModule($typeofsystem, $search_value)
     {
         $this->db->select('*');
         $this->db->from('module');
@@ -170,12 +177,18 @@ class Admin_mod extends CI_Model
             $this->db->or_like('mod_abbr', $search_value);
 
         }
+        $this->db->where('typeofsystem', $typeofsystem);
         return $this->db->count_all_results();
     }
 
     public function insertModule($data)
     {
         $this->db->insert('module', $data);
+        if ($this->db->affected_rows() > 0) {
+            return true; 
+        } else {
+            return false;
+        }
     }
     public function updateModule($data, $id)
     {
@@ -238,74 +251,126 @@ class Admin_mod extends CI_Model
         $this->db->update('sub_module', $data);
     }
 
-
-
-
-    public function get_current_system_data($type, $typeofsystem, $start, $length, $order_column, $order_dir, $search_value)
+    public function get_current_system_data($team, $module_id, $sub_mod_id, $type, $typeofsystem, $start, $length, $order_column, $order_dir, $search_value)
     {
-        $this->db->select('*');
+        $this->db->select('system_files.*, team.*');
         $this->db->from('system_files');
+        $this->db->join('team', 'team.team_id = system_files.team_id');
         $this->db->where('uploaded_to', $type);
         $this->db->where('typeofsystem', $typeofsystem);
 
         if ($search_value) {
-            $this->db->like('file_name', $search_value);
+            $this->db->like('team.team_name', $search_value);
+            $this->db->or_like('system_files.file_name', $search_value);
         }
 
-        $columns = ['file_name', 'uploaded_to'];
+        $columns = ['team_name', 'file_name', 'uploaded_to'];
         $order_column_name = isset($columns[$order_column]) ? $columns[$order_column] : $columns[0];
         $this->db->order_by($order_column_name, $order_dir);
-
         $this->db->limit($length, $start);
+
+        if ($team) {
+            $this->db->where('system_files.team_id', $team);
+        }
+        if ($module_id) {
+            $this->db->where('system_files.mod_id', $module_id);
+        }
+        if ($sub_mod_id) {
+            $this->db->where('system_files.sub_mod_id', $sub_mod_id);
+        }
 
         return $this->db->get()->result_array();
     }
 
-    public function get_new_system_data($type, $typeofsystem, $start, $length, $order_column, $order_dir, $search_value)
+    public function get_new_system_data($team, $module_id, $sub_mod_id, $type, $typeofsystem, $start, $length, $order_column, $order_dir, $search_value)
     {
-        $this->db->select('*');
+        $this->db->select('system_files.*, team.*');
         $this->db->from('system_files');
+        $this->db->join('team', 'team.team_id = system_files.team_id');
         $this->db->where('uploaded_to', $type);
         $this->db->where('typeofsystem', $typeofsystem);
 
         if ($search_value) {
-            $this->db->like('file_name', $search_value);
+            $this->db->like('team.team_name', $search_value);
+            $this->db->or_like('system_files.file_name', $search_value);
         }
 
-        $columns = ['file_name', 'uploaded_to'];
+        $columns = ['team_name', 'file_name', 'uploaded_to'];
         $order_column_name = isset($columns[$order_column]) ? $columns[$order_column] : $columns[0];
         $this->db->order_by($order_column_name, $order_dir);
 
         $this->db->limit($length, $start);
-
+        if ($team) {
+            $this->db->where('system_files.team_id', $team);
+        }
+        if ($module_id) {
+            $this->db->where('system_files.mod_id', $module_id);
+        }
+        if ($sub_mod_id) {
+            $this->db->where('system_files.sub_mod_id', $sub_mod_id);
+        }
         return $this->db->get()->result_array();
     }
 
 
 
-    public function getTotalModuleCurrent($search_value = null, $type)
+    public function getTotalModuleCurrent($team, $module_id, $sub_mod_id, $search_value = null, $type)
     {
-        $this->db->select('COUNT(*) as total');
+        $this->db->select('COUNT(*) as total, team.*');
         $this->db->from('system_files');
+        $this->db->join('team', 'team.team_id = system_files.team_id');
+        $this->db->where('uploaded_to', $type);
+        $this->db->where('typeofsystem', 'current');
+
+        if ($team) {
+            $this->db->where('system_files.team_id', $team);
+        }
+        if ($module_id) {
+            $this->db->where('system_files.mod_id', $module_id);
+        }
+        if ($sub_mod_id) {
+            $this->db->where('system_files.sub_mod_id', $sub_mod_id);
+        }
 
         if ($search_value) {
-            $this->db->like('file_name', $search_value);
+            $this->db->like('team.team_name', $search_value);
+            $this->db->or_like('system_files.file_name', $search_value);
         }
-        $this->db->where('uploaded_to', $type);
+
         $query = $this->db->get();
         return $query->row()->total;
     }
-    public function getTotalModuleNew($search_value = null, $type)
+    public function getTotalModuleNew($team, $module_id, $sub_mod_id, $search_value = null, $type)
     {
-        $this->db->select('COUNT(*) as total');
+        $this->db->select('COUNT(*) as total, team.*');
         $this->db->from('system_files');
+        $this->db->join('team', 'team.team_id = system_files.team_id');
+        $this->db->where('uploaded_to', $type);
+        $this->db->where('typeofsystem', 'new');
+        if ($team) {
+            $this->db->where('system_files.team_id', $team);
+        }
+        if ($module_id) {
+            $this->db->where('system_files.mod_id', $module_id);
+        }
+        if ($sub_mod_id) {
+            $this->db->where('system_files.sub_mod_id', $sub_mod_id);
+        }
 
         if ($search_value) {
-            $this->db->like('file_name', $search_value);
+            $this->db->like('team.team_name', $search_value);
+            $this->db->or_like('system_files.file_name', $search_value);
         }
-        $this->db->where('uploaded_to', $type);
+
         $query = $this->db->get();
         return $query->row()->total;
+    }
+
+    public function updateModuleStatus($data, $mod_id)
+    {
+        $this->db->where('mod_id', $mod_id);
+        $this->db->update('module', $data);
+
     }
 
     public function approved($file_id, $data, $typeofsystem)

@@ -3,6 +3,7 @@ class File_mod_new extends CI_Model
 {
 	function __construct() {
 		parent::__construct();
+        $this->db2 = $this->load->database('pis', TRUE);
 	}
     public function get_file_details($file_name, $team = null, $module = null, $sub_module = null) {
 
@@ -22,6 +23,43 @@ class File_mod_new extends CI_Model
         $query = $this->db->get('system_files');
         return $query->row();
     }
+
+    public function get_business_units(){
+
+        $this->db2->select('c.*, b.*');
+        $this->db2->from('locate_company c');
+        $this->db2->join('locate_business_unit b', 'c.company_code = b.company_code');
+        $this->db2->where('c.status', 'active');
+        $business_unit = $this->db2->get()->result();
+    
+        foreach ($business_unit as &$bu) {
+            $this->db2->select('*');
+            $this->db2->from('locate_department d');
+            $this->db2->where('d.bunit_code', $bu->bunit_code);
+            $bu->buData = $this->db2->get()->result();
+        }
+        return $business_unit;
+
+    }
+    public function get_module_new()
+    {
+        $this->db->select('m.mod_id, m.mod_name, sb.sub_mod_id, sb.sub_mod_name');
+        $this->db->from('module m');
+        $this->db->join('sub_module sb', 'm.mod_id = sb.mod_id', 'left');
+        $this->db->group_by('m.mod_id');
+        $this->db->where('typeofsystem', 'new');
+        $this->db->where('status', 'Approve');
+        $modules = $this->db->get()->result();
+    
+        foreach ($modules as &$module) {
+            $this->db->select('sb.sub_mod_id, sb.sub_mod_name');
+            $this->db->from('sub_module sb');
+            $this->db->where('sb.mod_id', $module->mod_id);
+            $module->submodules = $this->db->get()->result();
+        }
+        return $modules;
+    }
+
     public function get_files_by_name($folder_name) {
         $this->db->select('file_name');
         $this->db->from('system_files');

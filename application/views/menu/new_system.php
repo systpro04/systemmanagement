@@ -39,14 +39,13 @@
     </div>
 </div>
 
-
 <!-- File Upload Modal -->
 <div class="modal fade" id="file_upload" tabindex="-1" aria-labelledby="file_upload"
     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="file_upload">FILE UPLOAD | NEW SYSTEM</h5>
+            <h5 class="modal-title" id="uploaded_to"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <hr>
@@ -63,7 +62,7 @@
                                 <option value="WALKTHROUGH">WALKTHROUGH</option>
                                 <option value="FLOWCHART">FLOWCHART</option>
                                 <option value="DFD">DFD</option>
-                                <option value="SYSTEM_PROPOSED">SYSTEM PROPOSED</option>
+                                <option value="SYSTEM_PROPOSED">SYSTEM_PROPOSED</option>
                                 <option value="LOCAL_TESTING">LOCAL TESTING</option>
                                 <option value="UAT">UAT</option>
                                 <option value="LIVE_TESTING">LIVE TESTING</option>
@@ -89,6 +88,47 @@
     </div>
 </div>
 
+<!-- Create Module -->
+<div class="modal fade" id="add_new_system" tabindex="-1" aria-labelledby="create_module" aria-hidden="true"
+    data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="varyingcontentModalLabel">ADD NEW MDOULE | SYSTEM</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label for="title" class="col-form-label">Module | System Name:</label>
+                    <input type="text" class="form-control" id="mod_name" placeholder="Module Name">
+                </div>
+
+                <div class="mb-2">
+                    <label for="title" class="col-form-label">Module Abbreviation:</label>
+                    <input type="text" class="form-control" id="mod_abbr" placeholder="Abbreviation">
+                </div>
+
+                <div class="mb-2">
+                    <label for="title" class="col-form-label">Date Request</label>
+                    <input type="date" class="form-control" id="date_request" data-provider="flatpickr" placeholder="MM/DD/YYYY">
+                </div>
+
+                <div class="mb-2">
+                    <label for="title" class="col-form-label">Requested To</label>
+                    <select id="business_unit" class="form-select" aria-label="Team">
+                        <option value=""></option>
+                </select>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="add_new_module()">Submit</button>
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="container-fluid">
     <div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
@@ -127,9 +167,11 @@
                         </div>
                         <div class="col-auto mt-1">
                             <div class="d-flex gap-2">
-                                <button class="btn btn-primary w-sm create-folder-modal flex-shrink-0"
-                                    data-bs-toggle="modal" data-bs-target="#file_upload">
+                                <button class="btn btn-primary w-sm create-folder-modal flex-shrink-0" data-bs-toggle="modal" data-bs-target="#file_upload">
                                     <i class="ri-add-line align-bottom me-1"></i> Upload Document
+                                </button>
+                                <button class="btn btn-primary w-sm flex-shrink-0" data-bs-toggle="modal" data-bs-target="#add_new_system">
+                                    <i class="ri-add-line align-bottom me-1"></i> New System
                                 </button>
                             </div>
                         </div>
@@ -144,12 +186,15 @@
     </div>
 </div>
 
+
+
+
 <script>
 
 
     $(document).ready(function () {
         $('#team').select2({ placeholder: 'Select Team', allowClear: true });
-        $('#module').select2({ placeholder: 'Module Name', allowClear: true });
+        $('#module').select2({ placeholder: 'Module Name | System', allowClear: true });
         $('#sub_module').select2({ placeholder: 'Sub Module Name', allowClear: true });
         $('#directory').select2({ placeholder: 'Select Directory', allowClear: true, minimumResultsForSearch: Infinity });
 
@@ -163,20 +208,35 @@
 
     $(document).ready(function () {
         $.ajax({
-            url: '<?php echo base_url('setup_module') ?>',
+            url: '<?php echo base_url('get_team') ?>',
             type: 'POST',
             success: function (response) {
-                moduleData = JSON.parse(response);
-                $('#module').empty().append('<option value="">Select Module Name</option>');
-                $('#sub_module').empty().append('<option value="">Select Sub Module</option>');
-                $('#sub_module').prop('disabled', true);
-
-                moduleData.forEach(function (module) {
-                    $('#module').append('<option value="' + module.mod_id + '">' + module.mod_name + '</option>');
+                teamData = JSON.parse(response);
+                $('#team').empty().append('<option value="">Select Team Name</option>');
+                teamData.forEach(function (team) {
+                    $('#team').append('<option value="' + team.team_id + '">' + team.team_name + '</option>');
                 });
             }
         });
     });
+    loadModule();
+    function loadModule(){
+        $.ajax({
+                url: '<?php echo base_url('setup_module_new') ?>',
+                type: 'POST',
+                success: function (response) {
+                    moduleData = JSON.parse(response);
+                    $('#module').empty().append('<option value="">Select Module Name</option>');
+                    $('#sub_module').empty().append('<option value="">Select Sub Module</option>');
+                    $('#sub_module').prop('disabled', true);
+
+                    moduleData.forEach(function (module) {
+                        $('#module').append('<option value="' + module.mod_id + '">' + module.mod_name + '</option>');
+                    });
+                }
+            });
+        }
+        
 
     $('#module').change(function () {
         var selectedModuleId = $(this).val();
@@ -193,17 +253,33 @@
         }
     });
 
-    let teamValue = '', moduleValue = '', subModuleValue = '';
+    let teamValue = '', moduleValue = '', subModuleValue = '', moduleName = '', subModuleName = '';
 
-    $('#team').change(function () { teamValue = $(this).val(); });
-    $('#module').change(function () { moduleValue = $(this).val(); });
-    $('#sub_module').change(function () { subModuleValue = $(this).val(); });
+    $('#team').change(function () {
+        teamValue = $(this).val();
+        teamName = $('#team option:selected').text();
+    });
 
+    $('#module').change(function () {
+        moduleValue = $(this).val();
+        moduleName = $('#module option:selected').text();
+    });
+
+    // Store sub-module and sub-module name
+    $('#sub_module').change(function () {
+        teamValue = $(this).val(); 
+        subModuleName = $('#sub_module option:selected').text();
+    });
 
     $('#file_upload').on('show.bs.modal', function () {
         $('#file_team').val(teamValue);
         $('#file_module').val(moduleValue);
         $('#file_sub_module').val(subModuleValue);
+
+        let displaySubModuleName = subModuleName || "";
+
+
+        $('#uploaded_to').text(`${teamName} | ${moduleName} | ${displaySubModuleName}`);
     });
 
     function toggleUploadButton() {
@@ -412,6 +488,31 @@
                                     </a>
                                 ` : ''}
 
+                                ${fileExtension === 'docx' ? `
+                                    <a href="${base_url}open_new_docx/${folderName}/${file.name}" target="_blank">
+                                        <iconify-icon icon="tabler:file-type-docx" class="align-bottom text-info" style="font-size: 150px;"></iconify-icon>
+                                        <div class="gallery-overlay">
+                                            <h5 class="overlay-caption fs-12">${file.name}</h5>
+                                        </div>
+                                        <span class="text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            ${file.name}
+                                        </span>
+                                    </a>
+                                ` : ''}
+
+                                ${fileExtension === 'xlsx' ? `
+                                    <a href="${base_url}open_xlsx/${folderName}/${file.name}">
+                                        <iconify-icon icon="ri:file-excel-2-line" class="align-bottom text-success" style="font-size: 150px;"></iconify-icon>
+                                        <div class="gallery-overlay">
+                                            <h5 class="overlay-caption fs-12">${file.name}</h5>
+                                        </div>
+                                        <span class="text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            ${file.name}
+                                        </span>
+                                    </a>
+                                ` : ''}
+
+
                                 ${fileExtension === 'csv' ? `
                                     <a href="${base_url}open_new_csv/${folderName}/${file.name}" target="_blank">
                                         <iconify-icon icon="ri:file-excel-2-line" class="align-bottom text-success" style="font-size: 150px;"></iconify-icon>
@@ -481,7 +582,6 @@
         else if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
         else return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
     }
-
 </script>
 
 <script src="<?php echo base_url(); ?>assets/js/filepond.js"></script>
@@ -516,6 +616,8 @@
                 text: `You are about to upload this file to the "${directory}" directory.`,
                 icon: 'warning',
                 showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, upload it!',
                 cancelButtonText: 'Cancel'
             }).then((result) => {
@@ -621,7 +723,6 @@
                                                         overrideResponse = JSON.parse(overrideResponse);
                                                         if (overrideResponse.success) {
                                                             Swal.fire({
-                                                                title: 'Success!',
                                                                 text: overrideResponse.message,
                                                                 icon: 'success',
                                                                 toast: true,
@@ -673,6 +774,8 @@
             text: 'You want to approve this file?',
             icon: 'warning',
             showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!',
             cancelButtonText: 'No, cancel!',
         }).then((result) => {
@@ -709,6 +812,146 @@
                                 title: response.error,
                             });
                         }
+                    }
+                });
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+        flatpickr("#date_request", {
+            dateFormat: "F j, Y"
+        });
+        $('#business_unit').select2({
+            placeholder: "Select Business Unit",
+            allowClear: true,
+            minimumResultsForSearch: Infinity
+        });
+
+        $.ajax({
+            url: '<?php echo base_url('business_unit') ?>',
+            type: 'POST',
+            success: function (response) {
+                buData = JSON.parse(response);
+                $('#business_unit').empty().append('<option value="">Select Business Unit</option>');
+                buData.forEach(function (bu) {
+                    $('#business_unit').append('<option value="' + bu.bcode + '">' + bu.business_unit + '</option>');
+                });
+            }
+        });
+    });
+
+
+    function add_new_module() {
+        var mod_name        = $('#mod_name').val();
+        var mod_abbr        = $('#mod_abbr').val();
+        var typeofsystem    = "new";
+        var date_request    = $('#date_request').val();
+        var bcode           = $('#business_unit').val();
+        var business_unit   = $('#business_unit option:selected').text();
+        if (mod_name === "" || mod_abbr === "" || date_request === "" || business_unit === "") {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+                icon: 'error',
+                title: 'Please fill up the fields',
+            });
+
+            if (mod_name === "") {
+                $('#mod_name').addClass('is-invalid');
+            }
+            if (mod_abbr === "") {
+                $('#mod_abbr').addClass('is-invalid');
+            }
+            if (date_request === "") {
+                $('#date_request').addClass('is-invalid');
+            }
+
+            return;
+        }
+
+        var data = {
+            mod_name: mod_name,
+            mod_abbr: mod_abbr,
+            typeofsystem: typeofsystem,
+            date_request: date_request,
+            bcode: bcode,
+            business_unit: business_unit 
+        };
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You want to add new module?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, add it!',
+            cancelButtonText: 'No, cancel!',
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                $('#add_new_system').modal('hide');
+                Swal.fire({
+                    title: 'Enter Manager\'s Key',
+                    input: 'password',
+                    icon: 'info',
+                    inputAttributes: {
+                        autocapitalize: 'off',
+                        autocomplete: 'off',
+                        placeholder: 'Enter manager\'s key'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Submit',
+                    cancelButtonText: 'Cancel',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    preConfirm: (key) => {
+                        if (!key) {
+                            Swal.showValidationMessage('Manager\'s key is required');
+                        } else {
+                            return key;
+                        }
+                    }
+                }).then((keyResult) => {
+                    if (keyResult.isConfirmed && keyResult.value) {
+                        data.manager_key = keyResult.value;
+
+                        $.ajax({
+                            url: '<?php echo base_url('add_new_module'); ?>',
+                            type: 'POST',
+                            data: data,
+                            success: function (response) {
+                                response = JSON.parse(response);
+                                if (response.success) {
+                                    Swal.fire({
+                                        text: response.message,
+                                        icon: 'success',
+                                        toast: true,
+                                        position: 'top-end',
+                                        showConfirmButton: false,
+                                        timer: 1500,
+                                        timerProgressBar: true,
+                                    });
+                                    $('#add_new_system').modal('hide');
+                                    filter();
+                                    loadModule();
+                                } else {
+                                    Swal.fire({
+                                        text: response.message,
+                                        icon: 'error',
+                                        toast: true,
+                                        position: 'top-end',
+                                        showConfirmButton: false,
+                                        timer: 1500,
+                                        timerProgressBar: true,
+                                    });
+                                }
+                            },
+                        });
                     }
                 });
             }

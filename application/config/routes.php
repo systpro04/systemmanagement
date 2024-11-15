@@ -67,6 +67,7 @@ $route['emp_data']                          = 'Admin/emp_data';
 $route['add_user']                          = 'Admin/add_user';
 $route['update_user']                       = 'Admin/update_user';
 
+$route['get_team']                          = 'Admin/get_team';
 $route['kpi_view']                          = 'Admin/kpi_view';
 $route['kpi_list']                          = 'Admin/kpi_list';
 $route['create_kpi']                        = 'Admin/create_kpi';
@@ -85,6 +86,8 @@ $route['add_submodule_content']             = 'Admin/add_submodule_content';
 $route['insert_submodule']                  = 'Admin/insert_submodule';
 $route['edit_submodule_content']            = 'Admin/edit_submodule_content';
 $route['update_submodule']                  = 'Admin/update_submodule';
+$route['approve_new_module']                = 'Admin/approve_new_module';
+$route['recall_new_module']                 = 'Admin/recall_new_module';
 
 $route['request']                           = 'Admin/request';
 $route['typeofsystem_data']                 = 'Admin/typeofsystem_data';
@@ -105,6 +108,24 @@ $route['submit_updated_workload']           = 'Menu/It_Respo/submit_updated_work
 $route['edit_workload_content']             = 'Menu/It_Respo/edit_workload_content';
 $route['delete_workload']                   = 'Menu/It_Respo/delete_workload';
 
+$route['gantt_view']                        = 'Menu/Gantt/index';
+$route['gantt_list']                        = 'Menu/Gantt/gantt_list';
+$route['submit_gantt']                      = 'Menu/Gantt/submit_gantt';
+$route['edit_gantt_content']                = 'Menu/Gantt/edit_gantt_content';
+$route['update_gantt']                      = 'Menu/Gantt/update_gantt';
+$route['delete_gantt']                      = 'Menu/Gantt/delete_gantt';
+
+// Meeting Schedule
+$route['meeting_schedule']                  = 'Menu/Meeting/index';
+$route['get_meeting']                       = 'Menu/Meeting/get_meeting';
+$route['add_meeting']                       = 'Menu/Meeting/add_meeting';
+$route['update_meeting']                    = 'Menu/Meeting/update_meeting';
+$route['delete_meeting']                    = 'Menu/Meeting/delete_meeting';
+$route['get_upcoming_meetings']             = 'Menu/Meeting/get_upcoming_meetings';
+// 
+
+
+
 //Current System
 $route['current_system']                    = 'Menu/Current_Sys/index';
 $route['get_folders']                       = 'Menu/Current_Sys/get_folders';
@@ -117,6 +138,8 @@ $route['open_image/(:any)/(:any)']          = 'Menu/Current_Sys/open_image/$1/$2
 $route['open_pdf/(:any)/(:any)']            = 'Menu/Current_Sys/open_pdf/$1/$2';
 $route['open_csv/(:any)/(:any)']            = 'Menu/Current_Sys/open_csv/$1/$2';
 $route['open_txt/(:any)/(:any)']            = 'Menu/Current_Sys/open_txt/$1/$2';
+$route['open_docx/(:any)/(:any)']           = 'Menu/Current_Sys/open_docx/$1/$2';
+$route['open_xlsx/(:any)/(:any)']           = 'Menu/Current_Sys/open_xlsx/$1/$2';
 $route['open_audio/(:any)/(:any)']          = 'Menu/Current_Sys/open_audio/$1/$2';
 
 
@@ -124,15 +147,21 @@ $route['open_audio/(:any)/(:any)']          = 'Menu/Current_Sys/open_audio/$1/$2
 $route['new_system']                        = 'Menu/New_Sys/index';
 $route['get_new_folders']                   = 'Menu/New_Sys/get_new_folders';
 $route['view_new_folder_modal']             = 'Menu/New_Sys/view_new_folder_modal';
+$route['setup_module_new']                  = 'Menu/New_Sys/setup_module_new';
+$route['add_new_module']                    = 'Menu/New_Sys/add_new_module';
 $route['upload_new_files']                  = 'Menu/New_Sys/upload_new_files';
 $route['delete_file_new']                   = 'Menu/New_Sys/delete_file_new';
 $route['check_directory_status']            = 'Menu/New_Sys/check_directory_status';
 $route['get_files_for_upload']              = 'Menu/New_Sys/get_files_for_upload';
+$route['business_unit']                     = 'Menu/New_Sys/business_unit';
+
 
 $route['open_new_image/(:any)/(:any)']      = 'Menu/New_Sys/open_new_image/$1/$2';
 $route['open_new_pdf/(:any)/(:any)']        = 'Menu/New_Sys/open_new_pdf/$1/$2';
 $route['open_new_csv/(:any)/(:any)']        = 'Menu/New_Sys/open_new_csv/$1/$2';
 $route['open_new_txt/(:any)/(:any)']        = 'Menu/New_Sys/open_new_txt/$1/$2';
+$route['open_new_docx/(:any)/(:any)']       = 'Menu/New_Sys/open_new_docx/$1/$2';
+$route['open_new_xlsx/(:any)/(:any)']       = 'Menu/New_Sys/open_new_xlsx/$1/$2';
 $route['open_new_audio/(:any)/(:any)']      = 'Menu/New_Sys/open_new_audio/$1/$2';
 
 

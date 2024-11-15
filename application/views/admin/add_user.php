@@ -70,15 +70,6 @@
                             <div class="d-flex gap-3 align-items-start flex-grow-1">
                                 <select class="form-select" id="filter_team" style="width: auto; height: auto;">
                                     <option value=""></option>
-                                    <option value="1">LOGIC LEGENDS</option>
-                                    <option value="2">CODE CONQUERORS</option>
-                                    <option value="3">QUANTUM QUANTS</option>
-                                    <option value="4">SERVER SAMURAI</option>
-                                    <option value="5">CTRL+ ALT ELITE</option>
-                                    <option value="6">CYBER CENTINELS</option>
-                                    <option value="7">TECH TACTICIANS</option>
-                                    <option value="8">ALGORITHM ASSASSIN</option>
-                                    <option value="9">SYNTAX SOLDIERS</option>
                                 </select>
                                 <input type="search" class="form-control" id="search" name="search" style="width: 500px;" placeholder="Search Employee to add...">
                             </div>
@@ -108,9 +99,9 @@
     </div>
 </div>
 <link href="<?php echo base_url(); ?>assets/jquery-ui.min.css" rel="stylesheet" type="text/css">
-    <script src="<?php echo base_url(); ?>assets/jquery.min.js" type="text/javascript"></script>
-    <script src="<?php echo base_url(); ?>assets/jquery-ui.min.js" type="text/javascript"></script>
-    <script src="<?php echo base_url(); ?>assets/js/datatable2.1.8.js"></script>
+<script src="<?php echo base_url(); ?>assets/jquery.min.js" type="text/javascript"></script>
+<script src="<?php echo base_url(); ?>assets/jquery-ui.min.js" type="text/javascript"></script>
+<script src="<?php echo base_url(); ?>assets/js/datatable2.1.8.js"></script>
 <script>
     $(document).ready(function () {
         $('#team_id, #filter_team').select2({
@@ -123,6 +114,18 @@
             allowClear: true,
             minimumResultsForSearch: Infinity
         });
+    });
+
+    $.ajax({
+        url: '<?php echo base_url('get_team') ?>',
+        type: 'POST',
+        success: function (response) {
+            teamData = JSON.parse(response);
+            $('#filter_team').empty().append('<option value="">Select Team Name</option>');
+            teamData.forEach(function (team) {
+                $('#filter_team').append('<option value="' + team.team_id + '">' + team.team_name + '</option>');
+            });
+        }
     });
 
     $(document).ready(function () {
@@ -213,6 +216,8 @@
             text: 'Are you sure you want to add this user?',
             icon: 'warning',
             showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, add it!',
             cancelButtonText: 'No, cancel!',
         }).then((result) => {

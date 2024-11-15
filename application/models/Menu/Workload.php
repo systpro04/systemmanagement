@@ -91,6 +91,7 @@ class Workload extends CI_Model
         $this->db->from('module m');
         $this->db->join('sub_module sb', 'm.mod_id = sb.mod_id', 'left');
         $this->db->group_by('m.mod_id');
+        $this->db->where('typeofsystem', 'current');
         $modules = $this->db->get()->result();
     
         foreach ($modules as &$module) {

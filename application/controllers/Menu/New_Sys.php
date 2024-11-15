@@ -6,6 +6,7 @@ class New_Sys extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model('Menu/File_mod_new', 'file_mod');
+        $this->load->model('Admin_mod', 'admin');
     }
     public function index() {
         $this->load->view('_layouts/header');
@@ -84,6 +85,7 @@ class New_Sys extends CI_Controller {
         ];
     }
     
+
     private function get_folder_size($folder_path, $team, $module, $sub_module) {
         $total_size = 0;
         $files = scandir($folder_path);
@@ -126,8 +128,7 @@ class New_Sys extends CI_Controller {
         }
         return $matched_files;
     }
-    
-    
+
     public function view_new_folder_modal() {
 
         $folder_name = $this->input->get('folder_name');
@@ -146,6 +147,60 @@ class New_Sys extends CI_Controller {
         echo json_encode($data);
     }
     
+    public function setup_module_new()
+    {
+        $module = $this->file_mod->get_module_new();
+        echo json_encode($module);
+    }
+
+    public function business_unit() {
+        $bu = $this->file_mod->get_business_units();
+        echo json_encode($bu);
+    }
+
+    public function add_new_module() {
+        $mod_name       = $this->input->post('mod_name');
+        $mod_abbr       = $this->input->post('mod_abbr');
+        $typeofsystem   = $this->input->post('typeofsystem');
+        $date_request   = $this->input->post('date_request');
+        $bcode          = $this->input->post('bcode');
+        $business_unit  = $this->input->post('business_unit');
+        $manager_key    = $this->input->post('manager_key');
+        
+        if ($manager_key && !$this->validate_manager_key($manager_key)) {
+            $response['success'] = false;
+            $response['message'] = "Invalid manager's key.";
+            echo json_encode($response);
+            return;
+        }else{
+            $data = [
+                'mod_name'      => $mod_name,
+                'mod_abbr'      => $mod_abbr,
+                'typeofsystem'  => $typeofsystem,
+                'status'        => 'Approve',
+                'date_added'    => date('Y-m-d H:i:s'),
+                'date_request'  => date('Y-m-d', strtotime($date_request)),
+                'requested_to'  => $bcode,
+                'bu_name' => $business_unit
+            ];
+        
+            $insert = $this->admin->insertModule($data);
+            if ($insert) {
+                $response['success'] = true;
+                $response['message'] = 'Module added successfully.';
+            } else {
+                $response['error'] = true;
+                $response['message'] = 'Failed to add module.';
+            }
+        
+            echo json_encode($response);
+        }
+
+    }
+    
+    
+
+
     public function delete_file_new() {
         $folder_name = $this->input->post('folder_name');
         $file_name = $this->input->post('file_name');
@@ -252,6 +307,8 @@ class New_Sys extends CI_Controller {
                     'file_name'         => $uploaded_data['file_name'],
                     'date_uploaded'     => date('Y-m-d H:i:s'),
                     'isr_status'        => 'pending',
+                    'att_status'        => 'pending',
+                    'minute_status'     => 'pending',
                     'wt_status'         => 'pending',
                     'flowchart_status'  => 'pending',
                     'dfd_status'        => 'pending',
@@ -381,6 +438,16 @@ class New_Sys extends CI_Controller {
     public function open_new_pdf($folder_name, $pdf){
         $folder_path = '\\\\172.16.42.144\\system\\' . $folder_name . '\\'. $pdf;
         header('Content-Type: application/pdf');
+        readfile($folder_path);
+    }
+    public function open_new_docx($folder_name, $docx){
+        $folder_path = '\\\\172.16.42.144\\system\\' . $folder_name . '\\'. $docx;
+        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        readfile($folder_path);
+    }
+    public function open_new_xlsx($folder_name, $xlsx){
+        $folder_path = '\\\\172.16.42.144\\system\\' . $folder_name . '\\'. $xlsx;
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         readfile($folder_path);
     }
     public function open_new_csv($folder_name, $csv){

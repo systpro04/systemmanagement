@@ -51,12 +51,6 @@ class Admin extends CI_Controller {
     
         echo json_encode($result);
     }
-        
-    
-    
-    
-    
-
     public function search() 
     {
         $search = $this->input->get('query', TRUE);
@@ -97,6 +91,13 @@ class Admin extends CI_Controller {
             'password'      => md5($emp_id)
         ];
         $this->admin->add_user($data);
+    }
+
+
+    public function get_team()
+    {
+        $module = $this->admin->get_teams();
+        echo json_encode($module);
     }
 
 	public function kpi_view()
@@ -220,31 +221,67 @@ class Admin extends CI_Controller {
 
     public function module_list() 
     {
-
+        $typeofsystem = $this->input->post('typeofsystem');
         $start = $this->input->post('start');
         $length = $this->input->post('length');
         $order = $this->input->post('order');
         $search_value = $this->input->post('search')['value'];
         $order_column = $order[0]['column'];
         $order_dir = $order[0]['dir'];
-
-        $module = $this->admin->getModule($start, $length, $order_column, $order_dir, $search_value);
+        
+        $module = $this->admin->getModule($typeofsystem, $start, $length, $order_column, $order_dir, $search_value);
         $data = [];
-    
+        
         foreach ($module as $row) {
+            $action = '
+                <div class="hstack gap-1 d-flex justify-content-center">
+                    <button type="button" class="btn btn-soft-primary waves-effect waves-light btn-sm" onclick="view_submodule('.$row['mod_id'].')" data-bs-toggle="modal" data-bs-target="#submodule">
+                        <iconify-icon icon="solar:checklist-minimalistic-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon>
+                    </button>
+                    <button type="button" class="btn btn-soft-info waves-effect waves-light btn-sm" onclick="edit_module('.$row['mod_id'].')" data-bs-toggle="modal" data-bs-target="#edit_module">
+                        <iconify-icon icon="solar:pen-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon>
+                    </button>';
+            if ($typeofsystem === 'new' && $row['status'] === 'Pending') {
+                $action .= '
+                    <button type="button" class="btn btn-soft-success waves-effect waves-light btn-sm" onclick="approve_new_module('.$row['mod_id'].')">
+                        <iconify-icon icon="ri:thumb-up-fill" class="label-icon align-bottom fs-16 me-2"></iconify-icon>
+                    </button>';
+            }elseif($typeofsystem === 'new' && $row['status'] === 'Approve') {
+                $action .= '
+                    <button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onclick="recall_new_module('.$row['mod_id'].')">
+                        <iconify-icon icon="tabler:refresh-alert" class="label-icon align-bottom fs-16 me-2"></iconify-icon> 
+                    </button>';
+            }
+        
+            $action .= '</div>';
+            $status = '';
+            $bu_name = '';
+            if ($row['status'] === 'Approve') {
+                $status = '<span class="badge bg-success">' . $row['status'] . '</span>';
+            } elseif ($row['status'] === 'Pending') {
+                $status = '<span class="badge bg-warning">' . $row['status'] . '</span>';
+            }
+
+            if($typeofsystem === 'new'){
+                $bu_name = '<span class="badge bg-info">' . $row['bu_name'] . '</span>';
+                if ($row['bu_name'] === null) {
+                    $bu_name = '<span class="badge bg-warning">'.$row['bu_name'].'</span>';
+                }else{
+
+                }
+            }else{
+                $bu_name = '<span class="badge bg-info">Implemented</span>';
+            }
             $data[] = [
-                'mod_id' => $row['mod_id'],
                 'mod_name' => $row['mod_name'],
-                'mod_abbr' => $row['mod_abbr'],
-                'action' => '
-                    <div class="hstack gap-1 d-flex justify-content-center">
-                            <button type="button" class="btn btn-soft-primary btn-label waves-effect waves-light btn-sm" onclick="view_submodule('.$row['mod_id'].') " data-bs-toggle="modal" data-bs-target="#submodule"><iconify-icon icon="solar:checklist-minimalistic-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon> View Submodules</button>
-                            <button type="button" class="btn btn-soft-info btn-label waves-effect waves-light btn-sm" onclick="edit_module('.$row['mod_id'].') " data-bs-toggle="modal" data-bs-target="#edit_module"><iconify-icon icon="solar:pen-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Edit</button>
-                        </div>
-                '   
+                'status' => $status,
+                'bu_name' => $bu_name,
+                'date_request' => $row['date_request'],
+                'action' => $action
             ];
         }
-        $total_records = $this->admin->getTotalModule($search_value);
+        
+        $total_records = $this->admin->getTotalModule($typeofsystem, $search_value);
 
         $output = [
             "draw" => intval($this->input->post('draw')),
@@ -256,13 +293,16 @@ class Admin extends CI_Controller {
     }
 
     public function add_module(){
-        $mod_name = $this->input->post('mod_name');
-        $mod_abbr = $this->input->post('mod_abbr');
+        $mod_name       = $this->input->post('mod_name');
+        $mod_abbr       = $this->input->post('mod_abbr');
+        $typeofsystem   = $this->input->post('typeofsystem');
     
         $data = [
-            'mod_name' => $mod_name,
-            'mod_abbr' => $mod_abbr,
-            'date_added' => date('Y-m-d H:i:s'),
+            'mod_name'      => $mod_name,
+            'mod_abbr'      => $mod_abbr,
+            'typeofsystem'  => $typeofsystem,
+            'status'        => 'Approve',
+            'date_added'    => date('Y-m-d H:i:s'),
         ];
     
         $this->admin->insertModule($data);
@@ -301,8 +341,22 @@ class Admin extends CI_Controller {
     
         $this->admin->updateModule($data, $mod_id);
     }
-
-
+    public function approve_new_module(){
+        $mod_id = $this->input->post('id');
+        $data = [
+            'mod_id' => $mod_id,
+            'status' => 'Approve'
+        ];
+        $this->admin->updateModuleStatus($data, $mod_id);
+    }
+    public function recall_new_module(){
+        $mod_id = $this->input->post('id');
+        $data = [
+            'mod_id' => $mod_id,
+            'status' => 'Pending'
+        ];
+        $this->admin->updateModuleStatus($data, $mod_id);
+    }
 
     public function view_submodule()
     {
@@ -459,7 +513,12 @@ class Admin extends CI_Controller {
     public function typeofsystem_data() {
         $type = $this->input->post('type');
         $typeofsystem = $this->input->post('system');
-    
+
+        $team = $this->input->post('team');
+        $module_id = $this->input->post('module');
+        $sub_mod_id = $this->input->post('sub_module');
+
+
         $start = $this->input->post('start');
         $length = $this->input->post('length');
         $order = $this->input->post('order');
@@ -472,13 +531,19 @@ class Admin extends CI_Controller {
 
         $data = [];
         if ($typeofsystem === 'current') {
-            $current = $this->admin->get_current_system_data($type, $typeofsystem, $start, $length, $order_column, $order_dir, $search_value);
+            $current = $this->admin->get_current_system_data($team, $module_id, $sub_mod_id, $type, $typeofsystem, $start, $length, $order_column, $order_dir, $search_value);
 
             foreach ($current as $row) {
                 $status = '';
                 switch ($type) {
                     case 'ISR':
                         $status = $row['isr_status'];
+                        break;
+                    case 'ATTENDANCE':
+                        $status = $row['att_status'];
+                        break;
+                    case 'MINUTES':
+                        $status = $row['minute_status'];
                         break;
                     case 'WALKTHROUGH':
                         $status = $row['wt_status'];
@@ -488,6 +553,9 @@ class Admin extends CI_Controller {
                         break;
                     case 'DFD':
                         $status = $row['dfd_status'];
+                        break;
+                    case 'SYSTEM_PROPOSED':
+                        $status = $row['proposed_status'];
                         break;
                     case 'GANTT_CHART':
                         $status = $row['gantt_status'];
@@ -500,6 +568,15 @@ class Admin extends CI_Controller {
                         break;
                     case 'LIVE_TESTING':
                         $status = $row['live_status'];
+                        break;
+                    case 'USER_GUIDE':
+                        $status = $row['guide_status'];
+                        break;
+                    case 'MEMO':
+                        $status = $row['memo_status'];
+                        break;
+                    case 'BUSINESS_ACCEPTANCE':
+                        $status = $row['acceptance_status'];
                         break;
                 }
                 $status_badge = '';
@@ -526,18 +603,22 @@ class Admin extends CI_Controller {
                         $file_link = base_url('open_pdf/' . $row['uploaded_to'] . '/' . $row['file_name']);
                         break;
                     case 'csv':
+                    case 'xlsx':
                         $file_link = base_url('open_csv/' . $row['uploaded_to'] . '/' . $row['file_name']);
                         break;
                     case 'txt':
+                    case 'docx':
                         $file_link = base_url('open_txt/' . $row['uploaded_to'] . '/' . $row['file_name']);
                         break;
                     case 'mp3':
                     case 'wav':
+                    case 'ogg':
                         $file_link = base_url('open_audio/' . $row['uploaded_to'] . '/' . $row['file_name']);
                         break;
                 }
 
                 $data[] = [
+                    'team_name' => $row['team_name'],
                     'file_name' => '<a href="' . $file_link . '" target="_blank">' . $row['file_name'] . '</a>',
                     'uploaded_to' => $row['uploaded_to'],
                     'status' => $status_badge,
@@ -553,17 +634,23 @@ class Admin extends CI_Controller {
                 ];
             }
     
-            $total_records = $this->admin->getTotalModuleCurrent($search_value, $type);
+            $total_records = $this->admin->getTotalModuleCurrent($team, $module_id, $sub_mod_id, $search_value, $type);
         }
 
 
         if ($typeofsystem === 'new') {
-            $new = $this->admin->get_new_system_data($type, $typeofsystem, $start, $length, $order_column, $order_dir, $search_value);
+            $new = $this->admin->get_new_system_data($team, $module_id, $sub_mod_id, $type, $typeofsystem, $start, $length, $order_column, $order_dir, $search_value);
             foreach ($new as $row) {
                 $status = '';
                 switch ($type) {
                     case 'ISR':
                         $status = $row['isr_status'];
+                        break;
+                    case 'ATTENDANCE':
+                        $status = $row['att_status'];
+                        break;
+                    case 'MINUTES':
+                        $status = $row['minute_status'];
                         break;
                     case 'WALKTHROUGH':
                         $status = $row['wt_status'];
@@ -611,32 +698,39 @@ class Admin extends CI_Controller {
                         $file_link = base_url('open_new_pdf/' . $row['uploaded_to'] . '/' . $row['file_name']);
                         break;
                     case 'csv':
+                    case 'xlsx':
                         $file_link = base_url('open_new_csv/' . $row['uploaded_to'] . '/' . $row['file_name']);
                         break;
                     case 'txt':
+                    case 'docx':
                         $file_link = base_url('open_new_txt/' . $row['uploaded_to'] . '/' . $row['file_name']);
                         break;
                     case 'mp3':
                     case 'wav':
+                    case 'ogg':
                         $file_link = base_url('open_new_audio/' . $row['uploaded_to'] . '/' . $row['file_name']);
                         break;
                 }
 
 
                 $data[] = [
+                    'team_name' => $row['team_name'],
                    'file_name' => '<a href="' . $file_link . '" target="_blank">' . $row['file_name'] . '</a>',
                     'uploaded_to' => $row['uploaded_to'],
                     'status' => $status_badge,
                     'action' => '
-                        <div class="hstack gap-1 d-flex justify-content-center">
-                            <button type="button" class="btn btn-soft-primary btn-label waves-effect waves-light btn-sm" onclick="approved(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\')">
-                            <iconify-icon icon="ri:thumb-up-fill" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Update</button>
-                        </div>
-                    '
+                        <div class="hstack gap-1 d-flex justify-content-center">' .
+                        ($status === 'Pending' ? 
+                            '<button type="button" class="btn btn-soft-primary btn-label waves-effect waves-light btn-sm" onclick="approved(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\')">' .
+                            '<iconify-icon icon="ri:thumb-up-fill" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Update</button>'
+                            : 
+                            '<button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="backtopending(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\')">' .
+                            '<iconify-icon icon="tabler:refresh-alert" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Recall</button>') .
+                        '</div>'
                 ];
             }
     
-            $total_records = $this->admin->getTotalModuleNew($search_value, $type);
+            $total_records = $this->admin->getTotalModuleNew($team, $module_id, $sub_mod_id,$search_value, $type);
         }
     
         $output = [
@@ -660,6 +754,12 @@ class Admin extends CI_Controller {
                 case 'ISR':
                     $status_field = 'isr_status';
                     break;
+                case 'ATTENDANCE':
+                    $status_field = 'att_status';
+                    break;
+                case 'MINUTES':
+                    $status_field = 'minute_status';
+                    break;
                 case 'WALKTHROUGH':
                     $status_field = 'wt_status';
                     break;
@@ -668,6 +768,9 @@ class Admin extends CI_Controller {
                     break;
                 case 'DFD':
                     $status_field = 'dfd_status';
+                    break;
+                case 'SYSTEM_PROPOSED':
+                    $status_field = 'proposed_status';
                     break;
                 case 'GANTT_CHART':
                     $status_field = 'gantt_status';
@@ -681,12 +784,27 @@ class Admin extends CI_Controller {
                 case 'LIVE_TESTING':
                     $status_field = 'live_status';
                     break;
+                case 'USER_GUIDE':
+                    $status_field = 'guide_status';
+                    break;
+                case 'MEMO':
+                    $status_field = 'memo_status';
+                    break;
+                case 'BUSINESS_ACCEPTANCE':
+                    $status_field = 'acceptance_status';
+                    break;
             }
         }
         if ($typeofsystem === 'new') {
             switch ($type) {
                 case 'ISR':
                     $status_field = 'isr_status';
+                    break;
+                case 'ATTENDANCE':
+                    $status_field = 'att_status';
+                    break;
+                case 'MINUTES':
+                    $status_field = 'minute_status';
                     break;
                 case 'WALKTHROUGH':
                     $status_field = 'wt_status';
@@ -776,6 +894,12 @@ class Admin extends CI_Controller {
             switch ($type) {
                 case 'ISR':
                     $status_field = 'isr_status';
+                    break;
+                case 'ATTENDANCE':
+                    $status_field = 'att_status';
+                    break;
+                case 'MINUTES':
+                    $status_field = 'minute_status';
                     break;
                 case 'WALKTHROUGH':
                     $status_field = 'wt_status';

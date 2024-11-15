@@ -14,15 +14,6 @@
                     <div class="col-sm-9">
                         <select class="form-select mb-3" id="team_id" style="width: 100%; height: 508px">
                             <option value=""></option>
-                            <option value="1">LOGIC LEGENDS</option>
-                            <option value="2">CODE CONQUERORS</option>
-                            <option value="3">QUANTUM QUANTS</option>
-                            <option value="4">SERVER SAMURAI</option>
-                            <option value="5">CTRL+ ALT ELITE</option>
-                            <option value="6">CYBER CENTINELS</option>
-                            <option value="7">TECH TACTICIANS</option>
-                            <option value="8">ALGORITHM ASSASSIN</option>
-                            <option value="9">SYNTAX SOLDIERS</option>
                         </select>
                     </div>
                 </div>
@@ -341,6 +332,17 @@
         });
     }
 
+    $.ajax({
+        url: '<?php echo base_url('get_team') ?>',
+        type: 'POST',
+        success: function (response) {
+            teamData = JSON.parse(response);
+            $('#team_id').empty().append('<option value="">Select Team Name</option>');
+            teamData.forEach(function (team) {
+                $('#team_id').append('<option value="' + team.team_id + '">' + team.team_name + '</option>');
+            });
+        }
+    });
 
     let membersData = [];
     $('#name, #edit_name').prop('disabled', true);
@@ -451,6 +453,15 @@
                 icon: 'error',
                 title: 'Please fill up fields!',
             });
+            if (position === "") {
+                $('#position').addClass('is-invalid');
+            }
+            if (sub_module_menu === "") {
+                $('#sub_module_menu').addClass('is-invalid');
+            }
+            if (description === "") {
+                $('#description').addClass('is-invalid');
+            }
             return;
         }
 
@@ -459,6 +470,8 @@
             text: 'You want to add this workload?',
             icon: 'warning',
             showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, add it!',
             cancelButtonText: 'No, cancel!',
         }).then((result) => {
@@ -561,6 +574,8 @@
             text: 'You want to update this module?',
             icon: 'warning',
             showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, update it!',
             cancelButtonText: 'No, cancel!',
         }).then((result) => {
@@ -604,6 +619,8 @@
             text: 'You want to delete this workload?',
             icon: 'warning',
             showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!',
             cancelButtonText: 'No, cancel!',
         }).then((result) => {

@@ -188,6 +188,16 @@
                 icon: 'error',
                 title: 'Please fill up fields!',
             });
+            if (title === "") {
+                $('#title').addClass('is-invalid');
+            }
+            if (type === "") {
+                $('#type').addClass('is-invalid');
+            }
+            if (description === "") {
+                $('#desc').addClass('is-invalid');
+            }
+
             return;
         }
 
@@ -245,6 +255,8 @@
             text: 'You want to update this KPI!',
             icon: 'warning',
             showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, update it!',
             cancelButtonText: 'No, cancel!',
         }).then((result) => {
@@ -282,6 +294,8 @@
             text: 'You will not be able to recover this KPI.',
             icon: 'warning',
             showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!',
             cancelButtonText: 'No, cancel!',
         }).then((result) => {

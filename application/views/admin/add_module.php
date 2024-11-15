@@ -9,14 +9,23 @@
             </div>
             <hr>
             <div class="modal-body">
-                <div class="mb-3">
-                    <label for="title" class="col-form-label">Module Name:</label>
+                <div class="mb-2">
+                    <label for="title" class="col-form-label">Module | SystemName:</label>
                     <input type="text" class="form-control" id="mod_name">
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-2">
                     <label for="title" class="col-form-label">Module Abbreviation:</label>
                     <input type="text" class="form-control" id="mod_abbr">
+                </div>
+
+                <div class="mb-2">
+                    <label for="title" class="col-form-label">Type of System</label>
+                   <select name="type" class="form-select " id="typeofsystem">
+                    <option value=""></option>
+                    <option value="current">Current System</option>
+                    <option value="new">New System</option>
+                   </select>
                 </div>
 
             </div>
@@ -140,13 +149,29 @@
                     </div>
                 </div>
                 <div class="card-body">
+                <ul class="nav nav-pills arrow-navtabs nav-primary bg-light mb-4" role="tablist">
+                        <li class="nav-item">
+                            <a id="current" aria-expanded="false" class="nav-link active typeofsystem" data-bs-toggle="tab" >
+                                <span class="d-block d-sm-none"><iconify-icon icon="ri:list-settings-line" class="fs-25"></iconify-icon></span>
+                                <span class="d-none d-sm-block">Current Module | System</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="new" aria-expanded="true" class="nav-link typeofsystem" data-bs-toggle="tab" >
+                                <span class="d-block d-sm-none"><iconify-icon icon="ri:chat-new-fill" class="fs-25"></iconify-icon></span>
+                                <span class="d-none d-sm-block">New Module | System</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <hr>
                     <div class="table-responsive">
                         <table class="table table-striped dt-responsive nowrap table-hover" id="module_list">
                             <thead class="table-primary text-center">
                                 <tr>
-                                    <th>ID</th>
                                     <th>Module Name</th>
-                                    <th>Module Abbreviation</th>
+                                    <th>Status</th>
+                                    <th>Business Unit</th>
+                                    <th>Date Requested</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -161,6 +186,21 @@
 </div>
 <script>
     $(document).ready(function () {
+        $('#typeofsystem').select2({ placeholder: 'Select Type of System', allowClear: true, minimumResultsForSearch: Infinity });
+    });
+
+
+    var typeofsystem = "current";
+    loadsystem(typeofsystem);
+
+    $("a.typeofsystem").click(function () {
+        $("a.btn-primary").removeClass('btn-primary').addClass('btn-secondary');
+        $(this).addClass('btn-primary');
+        let typeofsystem = this.id;
+        loadsystem(typeofsystem);
+    });
+
+    function loadsystem(typeofsystem){
         $('#module_list').DataTable({
             "processing": true,
             "serverSide": true,
@@ -169,15 +209,30 @@
             'scrollY': '50vh',
             'lengthMenu': [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
             'pageLength': 10,
+            'stateSave': true,
             "ajax": {
                 "url": "<?= base_url('module_list') ?>",
                 "dataType": "json",
                 "type": "POST",
+                "data": {
+                    "typeofsystem": typeofsystem
+                }
             },
             "columns": [
-                { "data": 'mod_id' },
                 { "data": 'mod_name' },
-                { "data": 'mod_abbr' },
+                { "data": 'status' },
+                { "data": 'bu_name' },
+                { "data": 'date_request',
+                    "render": function(data, type, row) {
+                        if (data) {
+                            var date = new Date(data);
+                            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
+                            });
+                        }else {
+                            return '<span class="badge bg-info"> Implemented </span>';
+                        }
+                    }
+                },
                 { "data": 'action' }
             ],
             "paging": true,
@@ -188,13 +243,14 @@
             ],
             
         });
-    });
+    }
 
     function add_module() {
-        var mod_name = $('#mod_name').val();
-        var mod_abbr = $('#mod_abbr').val();
+        var mod_name        = $('#mod_name').val();
+        var mod_abbr        = $('#mod_abbr').val();
+        var typeofsystem    = $('#typeofsystem').val();
 
-        if (mod_name === "" || mod_abbr === "") {
+        if (mod_name === "" || mod_abbr === "" || typeofsystem === "") {
             Swal.fire({
                 toast: true,
                 position: 'top-end',
@@ -204,12 +260,19 @@
                 icon: 'error',
                 title: 'Please fill up fields!',
             });
+            if (mod_name === "") {
+                $('#mod_name').addClass('is-invalid');
+            }
+            if (mod_abbr === "") {
+                $('#mod_abbr').addClass('is-invalid');
+            }
             return;
         }
 
         var data = {
             mod_name: mod_name,
-            mod_abbr: mod_abbr
+            mod_abbr: mod_abbr,
+            typeofsystem: typeofsystem
         };
 
         $.ajax({
@@ -288,6 +351,8 @@
             text: 'To add this sub module?',
             icon: 'warning',
             showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, add it!',
             cancelButtonText: 'No, cancel!',
         }).then((result) => {
@@ -350,6 +415,8 @@
             text: 'You want to edit this module name!',
             icon: 'warning',
             showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, update it!',
             cancelButtonText: 'No, cancel!',
         }).then((result) => {
@@ -410,6 +477,8 @@
             text: 'You want to edit this sub module name!',
             icon: 'warning',
             showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, update it!',
             cancelButtonText: 'No, cancel!',
             }).then((result) => {
@@ -443,4 +512,85 @@
                 }
             });
     }
+    
+
+    function approve_new_module(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You want to approve this new System?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, approve it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '<?php echo base_url('approve_new_module'); ?>',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                    },
+                    success: function () {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: true,
+                            icon: 'success',
+                            title: ' New System approved successfully',
+                        });
+                        var table = $('#module_list').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
+                    },
+                });
+            }
+        });
+    }
+    function recall_new_module(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You want to recall to pending this new System?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, recall it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '<?php echo base_url('recall_new_module'); ?>',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                    },
+                    success: function () {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: true,
+                            icon: 'success',
+                            title: ' New System approved successfully',
+                        });
+                        var table = $('#module_list').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
+                    },
+                });
+            }
+        });
+    }
+
 </script>

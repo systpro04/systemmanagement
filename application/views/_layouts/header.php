@@ -18,9 +18,9 @@
      <link href="<?php echo base_url(); ?>assets/css/icons.min.css" rel="stylesheet" type="text/css" />
      <link href="<?php echo base_url(); ?>assets/css/select2.css" rel="stylesheet" type="text/css" />
      <!-- App Css-->
+     <link href="<?php echo base_url(); ?>assets/css/datatable.css" rel="stylesheet" type="text/css" />
       
      <link href="<?php echo base_url(); ?>assets/css/app.min.css" rel="stylesheet" type="text/css" />
-     <link href="<?php echo base_url(); ?>assets/css/datatable.css" rel="stylesheet" type="text/css" />
      <link href="<?php echo base_url(); ?>assets/css/responsive.css" rel="stylesheet" type="text/css" />
      <link href="<?php echo base_url(); ?>assets/css/buttons.css" rel="stylesheet" type="text/css" />
      <!-- custom Css-->
@@ -39,8 +39,9 @@
     <!-- Filepond css -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/filepond.css" type="text/css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/filepond-image-preview.css" />
-
-    
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/flatpickr.css">
+    <script src="<?php echo base_url(); ?>assets/js/flatpickr.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/fullcalendar.js"></script>
      
  </head>
  <body>
@@ -163,14 +164,14 @@
                          <li class="nav-item">
 
                             <a class="nav-link menu-link <?php echo in_array($page, ['kpi_view', 'module_view', 'add_user_view']) ? 'active' : ''; ?>"  href="#sidebarLayouts"  data-bs-toggle="collapse"  role="button"  aria-expanded="<?php echo in_array($page, ['profile']) ? 'true' : 'false'; ?>"  aria-controls="sidebarLayouts">
-                            <iconify-icon icon="solar:shield-bold-duotone" class="fs-25"></iconify-icon >&nbsp;&nbsp;&nbsp;&nbsp;  <span class="fs-12">Admin Setup </span>
+                            <iconify-icon icon="solar:shield-bold-duotone" class="fs-25"></iconify-icon >&nbsp;&nbsp;&nbsp;&nbsp;  <span class="fs-12">Admin Setup </span><span class="badge badge-pill bg-danger" data-key="t-hot">New</span>
                             </a>
 
                             <div class="collapse menu-dropdown <?php echo in_array($page, ['kpi_view', 'module_view', 'add_user_view']) ? 'show' : ''; ?>" id="sidebarLayouts">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
                                         <a href="<?php echo base_url('kpi_view'); ?>" class="nav-link fs-11 <?php echo ($page == 'kpi_view') ? 'active' : ''; ?>  "> &nbsp;&nbsp;&nbsp;&nbsp;Create KPI</a>
-                                        <a href="<?php echo base_url('module_view'); ?>" class="nav-link fs-11 <?php echo ($page == 'module_view') ? 'active' : ''; ?>  "> &nbsp;&nbsp;&nbsp;&nbsp;Add Module</a>
+                                        <a href="<?php echo base_url('module_view'); ?>" class="nav-link fs-11 <?php echo ($page == 'module_view') ? 'active' : ''; ?>  "> &nbsp;&nbsp;&nbsp;&nbsp;Add Module | System <span class="badge badge-pill bg-danger" data-key="t-hot">New</span></a>
                                         <a href="<?php echo base_url('add_user_view'); ?>" class="nav-link fs-11 <?php echo ($page == 'add_user_view') ? 'active' : ''; ?>  "> &nbsp;&nbsp;&nbsp;&nbsp;Add User</a>
                                         <a href="#!" class="nav-link fs-11"> &nbsp;&nbsp;&nbsp;&nbsp;Create Rules | Regulations</a>
                                     </li>
@@ -233,7 +234,7 @@
                         </li>
 
                          <li class="nav-item">
-                             <a class="nav-link menu-link" href="#!">
+                             <a class="nav-link menu-link <?php echo ($page == 'gantt_view') ? 'active' : ''; ?>" href="<?php echo base_url('gantt_view'); ?>">
                                 <iconify-icon icon="solar:align-bottom-bold-duotone" class="fs-25"></iconify-icon >&nbsp;&nbsp;&nbsp;&nbsp;  <span class="fs-12">Gantt Chart </span>
                              </a>
                          </li>
@@ -243,9 +244,9 @@
                                 <iconify-icon icon="solar:folder-check-bold-duotone" class="fs-25"></iconify-icon >&nbsp;&nbsp;&nbsp;&nbsp;  <span class="fs-12">Deployment System </span>
                              </a>
                          </li>
-
+                         
                          <li class="nav-item">
-                             <a class="nav-link menu-link" href="#!">
+                             <a class="nav-link menu-link <?php echo ($page == 'meeting_schedule') ? 'active' : ''; ?>" href="<?php echo base_url('meeting_schedule'); ?>">
                                 <iconify-icon icon="solar:checklist-minimalistic-bold-duotone" class="fs-25"></iconify-icon >&nbsp;&nbsp;&nbsp;&nbsp;  <span class="fs-12">Meeting Scheduled </span>
                              </a>
                          </li>

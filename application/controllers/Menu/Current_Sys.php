@@ -320,11 +320,19 @@ class Current_Sys extends CI_Controller {
         }
         readfile($folder_path);
     }
-    
-
     public function open_pdf($folder_name, $pdf){
         $folder_path = '\\\\172.16.42.144\\system\\' . $folder_name . '\\'. $pdf;
         header('Content-Type: application/pdf');
+        readfile($folder_path);
+    }
+    public function open_docx($folder_name, $docx){
+        $folder_path = '\\\\172.16.42.144\\system\\' . $folder_name . '\\'. $docx;
+        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        readfile($folder_path);
+    }
+    public function open_xlsx($folder_name, $xlsx){
+        $folder_path = '\\\\172.16.42.144\\system\\' . $folder_name . '\\'. $xlsx;
+        header('Content-Type: application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet');
         readfile($folder_path);
     }
     public function open_csv($folder_name, $csv){

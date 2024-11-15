@@ -9,15 +9,6 @@
                     <div class="d-flex gap-2">
                         <select id="teamFilter" class="form-select" aria-label="Team">
                             <option value=""></option>
-                            <option value="1">LOGIC LEGENDS</option>
-                            <option value="2">CODE CONQUERORS</option>
-                            <option value="3">QUANTUM QUANTS</option>
-                            <option value="4">SERVER SAMURAI</option>
-                            <option value="5">CTRL+ ALT ELITE</option>
-                            <option value="6">CYBER CENTINELS</option>
-                            <option value="7">TECH TACTICIANS</option>
-                            <option value="8">ALGORITHM ASSASSIN</option>
-                            <option value="9">SYNTAX SOLDIERS</option>
                         </select>
                         <select id="moduleFilter" class="form-select" aria-label="Module">
                             <option value="">Select Module</option>
@@ -63,8 +54,8 @@
                                 <option value="WALKTHROUGH">WALKTHROUGH</option>
                                 <option value="FLOWCHART">FLOWCHART</option>
                                 <option value="DFD">DFD</option>
-                                <option value="GANTT_CHART">GANTT CHART</option>
                                 <option value="SYSTEM_PROPOSED">SYSTEM_PROPOSED</option>
+                                <option value="GANTT_CHART">GANTT CHART</option>
                                 <option value="LOCAL_TESTING">LOCAL TESTING</option>
                                 <option value="UAT">UAT</option>
                                 <option value="LIVE_TESTING">LIVE TESTING</option>
@@ -111,15 +102,6 @@
                             <div class="d-flex gap-2 mb-2">
                                 <select class="form-select" id="team" name="team">
                                     <option value=""></option>
-                                    <option value="1">LOGIC LEGENDS</option>
-                                    <option value="2">CODE CONQUERORS</option>
-                                    <option value="3">QUANTUM QUANTS</option>
-                                    <option value="4">SERVER SAMURAI</option>
-                                    <option value="5">CTRL+ ALT ELITE</option>
-                                    <option value="6">CYBER CENTINELS</option>
-                                    <option value="7">TECH TACTICIANS</option>
-                                    <option value="8">ALGORITHM ASSASSIN</option>
-                                    <option value="9">SYNTAX SOLDIERS</option>
                                 </select>
                                 <select class="form-select" id="module" name="module">
                                     <option value="">Module</option>
@@ -151,13 +133,27 @@
 <script>
     $(document).ready(function () {
         $('#team').select2({ placeholder: 'Select Team', allowClear: true });
-        $('#module').select2({ placeholder: 'Module Name', allowClear: true });
+        $('#module').select2({ placeholder: 'Module Name | System', allowClear: true });
         $('#sub_module').select2({ placeholder: 'Sub Module Name', allowClear: true });
         $('#directory').select2({ placeholder: 'Select Directory', allowClear: true, minimumResultsForSearch: Infinity });
 
         $('#teamFilter').select2({ placeholder: 'Team Name', allowClear: true, minimumResultsForSearch: Infinity });
         $('#moduleFilter').select2({ placeholder: 'Module Name', allowClear: true, minimumResultsForSearch: Infinity });
         $('#subModuleFilter').select2({ placeholder: 'Sub Module Name', allowClear: true, minimumResultsForSearch: Infinity });
+    });
+
+    $(document).ready(function () {
+        $.ajax({
+            url: '<?php echo base_url('get_team') ?>',
+            type: 'POST',
+            success: function (response) {
+                teamData = JSON.parse(response);
+                $('#team').empty().append('<option value="">Select Team Name</option>');
+                teamData.forEach(function (team) {
+                    $('#team').append('<option value="' + team.team_id + '">' + team.team_name + '</option>');
+                });
+            }
+        });
     });
 
     $(document).ready(function () {
@@ -424,6 +420,30 @@
                                     </a>
                                 ` : ''}
 
+                                ${fileExtension === 'docx' ? `
+                                    <a href="${base_url}open_docx/${folderName}/${file.name}" target="_blank">
+                                        <iconify-icon icon="tabler:file-type-docx" class="align-bottom text-info" style="font-size: 150px;"></iconify-icon>
+                                        <div class="gallery-overlay">
+                                            <h5 class="overlay-caption fs-12">${file.name}</h5>
+                                        </div>
+                                        <span class="text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            ${file.name}
+                                        </span>
+                                    </a>
+                                ` : ''}
+
+                                ${fileExtension === 'xlsx' ? `
+                                    <a href="${base_url}open_xlsx/${folderName}/${file.name}" target="_blank">
+                                        <iconify-icon icon="ri:file-excel-2-line" class="align-bottom text-success" style="font-size: 150px;"></iconify-icon>
+                                        <div class="gallery-overlay">
+                                            <h5 class="overlay-caption fs-12">${file.name}</h5>
+                                        </div>
+                                        <span class="text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            ${file.name}
+                                        </span>
+                                    </a>
+                                ` : ''}
+
                                 ${fileExtension === 'csv' ? `
                                     <a href="${base_url}open_csv/${folderName}/${file.name}" target="_blank">
                                         <iconify-icon icon="ri:file-excel-2-line" class="align-bottom text-success" style="font-size: 150px;"></iconify-icon>
@@ -526,6 +546,8 @@
                 text: `You are about to upload this file to the "${directory}" directory.`,
                 icon: 'warning',
                 showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, upload it!',
                 cancelButtonText: 'Cancel'
             }).then((result) => {
@@ -575,7 +597,6 @@
 
                             if (response.success) {
                                 Swal.fire({
-                                    title: 'Success!',
                                     text: response.message,
                                     icon: 'success',
                                     toast: true,
@@ -630,7 +651,6 @@
                                                         overrideResponse = JSON.parse(overrideResponse);
                                                         if (overrideResponse.success) {
                                                             Swal.fire({
-                                                                title: 'Success!',
                                                                 text: overrideResponse.message,
                                                                 icon: 'success',
                                                                 toast: true,
@@ -679,12 +699,14 @@
 
     function deleteFile(folderName, fileName) {
     Swal.fire({
-    title: 'Are you sure?',
-    text: 'You want to approve this file?',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Yes, delete it!',
-    cancelButtonText: 'No, cancel!',
+        title: 'Are you sure?',
+        text: 'You want to approve this file?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({

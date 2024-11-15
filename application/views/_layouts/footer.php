@@ -43,6 +43,7 @@
      <script src="<?php echo base_url(); ?>assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
      <!-- apexcharts -->
      <!-- <script src="<?php echo base_url(); ?>assets/libs/apexcharts/apexcharts.min.js"></script> -->
+     <script type="text/javascript" src="<?php echo base_url(); ?>assets/libs/flatpickr/flatpickr.min.js"></script>
 
      <!-- App js -->
      <script src="<?php echo base_url(); ?>assets/js/app.js"></script>
@@ -106,7 +107,6 @@
     });
         
     </script>
-
  </body>
 
  </html>
