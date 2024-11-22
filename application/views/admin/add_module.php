@@ -10,7 +10,7 @@
             <hr>
             <div class="modal-body">
                 <div class="mb-2">
-                    <label for="title" class="col-form-label">Module | SystemName:</label>
+                    <label for="title" class="col-form-label">Module | System Name:</label>
                     <input type="text" class="form-control" id="mod_name">
                 </div>
 
@@ -244,6 +244,13 @@
             
         });
     }
+
+    $('#create_module').on('hidden.bs.modal', function () {
+        $('#mod_name').val('');
+        $('#mod_abbr').val('');
+        $('#typeofsystem').val('').trigger('change');
+    });
+
 
     function add_module() {
         var mod_name        = $('#mod_name').val();

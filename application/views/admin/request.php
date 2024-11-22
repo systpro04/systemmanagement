@@ -18,81 +18,75 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xxl-12">
-                <div class="card">
-                    <div class="card-body">
-                        <ul class="nav nav-pills animation-nav nav-justified gap-2 mb-3" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link waves-effect waves-light active typeofsystem fw-bold"
-                                    data-bs-toggle="tab" id="current" role="tab">
-                                    CURRENT SYSTEM | MODULE
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link waves-effect waves-light typeofsystem fw-bold" data-bs-toggle="tab"
-                                    id="new" role="tab">
-                                    NEW SYSTEM | MODULE
-                                </a>
-                            </li>
-                        </ul>
-                        <hr>
-                        <div class="col-xxl-12">
-                            <div class="row">
-                                <div class="col-xxl-3">
-                                    <div class="nav nav-pills flex-column nav-pills-tab custom-verti-nav-pills text-center"
-                                        role="tablist" aria-orientation="vertical" data-simplebar=""
-                                        style="max-height: 450px;">
-                                        <a href="#!" id="ISR" class="fw-bold nav-link active type" data-bs-toggle="pill" role="tab">ISR</a>
-                                        <a href="#!" id="ATTENDANCE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">ATTENDANCE</a>
-                                        <a href="#!" id="MINUTES" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">MINUTES</a>
-                                        <a href="#!" id="WALKTHROUGH" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">WALKTHROUGH</a>
-                                        <a href="#!" id="FLOWCHART" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">FLOWCHART</a>
-                                        <a href="#!" id="DFD" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">DFD</a>
-                                        <a href="#!" id="SYSTEM_PROPOSED" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">SYSTEM PROPOSED</a>
-                                        <a href="#!" id="GANTT_CHART" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">GANTT CHART</a>
-                                        <a href="#!" id="LOCAL_TESTING" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">LOCAL TESTING</a>
-                                        <a href="#!" id="UAT" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">UAT</a>
-                                        <a href="#!" id="LIVE_TESTING" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">LIVE TESTING</a>
-                                        <a href="#!" id="USER_GUIDE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">USER GUIDE</a>
-                                        <a href="#!" id="MEMO" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">MEMO</a>
-                                        <a href="#!" id="BUSINESS_ACCEPTANCE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">BUSINESS ACCEPTANCE</a>
-                                    </div>
+    <div class="row">
+        <div class="col-xxl-12">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="nav nav-pills animation-nav nav-justified gap-2 mb-3" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect waves-light active typeofsystem fw-bold" data-bs-toggle="tab" id="current" role="tab">
+                                CURRENT SYSTEM | MODULE
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect waves-light typeofsystem fw-bold" data-bs-toggle="tab" id="new" role="tab">
+                                NEW SYSTEM | MODULE
+                            </a>
+                        </li>
+                    </ul>
+                    <hr>
+                    <div class="col-xxl-12">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="nav nav-pills flex-column nav-pills-tab custom-verti-nav-pills text-center" role="tablist" aria-orientation="vertical">
+                                    <a href="#!" id="ISR" class="fw-bold nav-link active type" data-bs-toggle="pill" role="tab">ISR <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_ISR"></span></a>
+                                    <a href="#!" id="ATTENDANCE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">ATTENDANCE <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_ATTENDANCE"></span></a>
+                                    <a href="#!" id="MINUTES" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">MINUTES <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_MINUTES"></span></a>
+                                    <a href="#!" id="WALKTHROUGH" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">WALKTHROUGH <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_WALKTHROUGH"></span></a>
+                                    <a href="#!" id="FLOWCHART" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">FLOWCHART <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_FLOWCHART"></span></a>
+                                    <a href="#!" id="DFD" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">DFD <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_DFD"></span></a>
+                                    <a href="#!" id="SYSTEM_PROPOSED" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">SYSTEM PROPOSED <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_SYSTEM_PROPOSED"></span></a>
+                                    <a href="#!" id="GANTT_CHART" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">GANTT CHART <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_GANTT_CHART"></span></a>
+                                    <a href="#!" id="LOCAL_TESTING" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">LOCAL TESTING <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_LOCAL_TESTING"></span></a>
+                                    <a href="#!" id="UAT" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">UAT <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_UAT"></span></a>
+                                    <a href="#!" id="LIVE_TESTING" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">LIVE TESTING <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_LIVE_TESTING"></span></a>
+                                    <a href="#!" id="USER_GUIDE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">USER GUIDE <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_USER_GUIDE"></span></a>
+                                    <a href="#!" id="MEMO" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">MEMO <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_MEMO"></span></a>
+                                    <a href="#!" id="BUSINESS_ACCEPTANCE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">BUSINESS ACCEPTANCE <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_BUSINESS_ACCEPTANCE"></span></a>
                                 </div>
-                                <div class="col-xxl-9">
-                                    <div class="d-flex gap-2 mb-2">
-                                        <select class="form-select" id="team" name="team">
-                                            <option value=""></option>
-                                        </select>
-                                        <select class="form-select" id="module" name="module">
-                                            <option value="">Module</option>
-                                        </select>
-                                        <select class="form-select" id="sub_module" name="sub_module">
-                                            <option value="">Sub Module</option>
-                                        </select>
-                                    </div>
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="tab-content mt-3">
-                                                <div class="tab-pane fade active show" id="current" role="tabpanel">
-                                                    <div class="d-flex mb-4">
-                                                        <div class="flex-grow-1 ms-3" data-simplebar="" style="max-height: 450px;">
-                                                            <div class="table-responsive">
-                                                                <table class="table table-striped table-hover" id="typeofsystem_table" style="max-width: 100%;">
-                                                                    <thead class="table-primary text-center">
-                                                                        <tr>
-                                                                            <th>TEAM</th>
-                                                                            <th>FILENAME</th>
-                                                                            <th>UPLOADED TO</th>
-                                                                            <th>STATUS</th>
-                                                                            <th>ACTION</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="d-flex gap-2 mb-2">
+                                    <select class="form-select" id="team" name="team">
+                                        <option value=""></option>
+                                    </select>
+                                    <select class="form-select" id="module" name="module">
+                                        <option value="">Module</option>
+                                    </select>
+                                    <select class="form-select" id="sub_module" name="sub_module">
+                                        <option value="">Sub Module</option>
+                                    </select>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="tab-content mt-3">
+                                            <div class="tab-pane fade active show" id="current" role="tabpanel">
+                                                <div class="d-flex mb-4">
+                                                    <div class="flex-grow-1 ms-3 ratio ratio-16x9">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-striped table-hover" id="typeofsystem_table" style="max-width: 100%;">
+                                                                <thead class="table-primary text-center">
+                                                                    <tr>
+                                                                        <th>TEAM</th>
+                                                                        <th>FILENAME</th>
+                                                                        <th>UPLOADED TO</th>
+                                                                        <th>STATUS</th>
+                                                                        <th>ACTION</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                </tbody>
+                                                            </table>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -126,10 +120,14 @@
             });
         }
     });
-
-    $.ajax({
-        url: '<?php echo base_url('setup_module') ?>',
+    load_module(typeofsystem);
+    function load_module(typeofsystem) {
+        $.ajax({
+        url: '<?php echo base_url('setup_module_by_type') ?>',
         type: 'POST',
+        data: {
+            typeofsystem: typeofsystem
+        },
         success: function (response) {
             moduleData = JSON.parse(response);
             $('#module').empty().append('<option value="">Select Module Name</option>');
@@ -141,6 +139,7 @@
             });
         }
     });
+    }
 
     $('#module').change(function () {
         var selectedModuleId = $(this).val();
@@ -156,9 +155,9 @@
             });
         }
     });
-
     $('#team, #module, #sub_module').change(function () {
         $('#typeofsystem_table').DataTable().ajax.reload();
+
     });
 
     var typeofsystem = "current";
@@ -168,7 +167,7 @@
     $('#GANTT_CHART').closest('a').show();
 
     load_system_content(typeofsystem, type);
-
+    load_module(typeofsystem);
     $("a.typeofsystem").click(function () {
         $("a.typeofsystem").removeClass('btn-primary');
         $(this).addClass('btn-primary');
@@ -189,7 +188,7 @@
             $('#MEMO').closest('a').show();
             $('#BUSINESS_ACCEPTANCE').closest('a').show();
         }
-
+        load_module(typeofsystem);
         load_system_content(typeofsystem, type);
     });
 
@@ -201,7 +200,6 @@
         load_system_content(typeofsystem, type);
     });
     function load_system_content(typeofsystem, type) {
-
         table = $('#typeofsystem_table').DataTable({
             processing: true,
             serverSide: true,
@@ -231,6 +229,7 @@
             ],
         });
     }
+
     function approved(fileId, type, typeofsystem) {
         Swal.fire({
             title: 'Are you sure?',

@@ -1,4 +1,4 @@
-<div class="modal fade" id="meeting_modal" tabindex="-1">
+<div class="modal fade" id="meeting_modal" tabindex="-1" aria-labelledby="meeting_modal" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content border-0">
             <div class="modal-header p-3 bg-info-subtle">
@@ -28,8 +28,8 @@
                             <div class="mb-3">
                                 <label>Meeting Date </label>
                                 <div class="input-group">
-                                    <input type="date" id="meeting_date" class="form-control" readonly=""
-                                        data-provider="flatpickr" />
+                                    <input type="date" id="meeting_date" class="form-control" readonly="" placeholder="Select date"
+                                    data-provider="flatpickr" />
                                     <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
                                 </div>
                             </div>
@@ -38,7 +38,7 @@
                             <div class="mb-3">
                                 <label>Start Time</label>
                                 <div class="input-group">
-                                    <input type="time" id="time" class="form-control" readonly="" />
+                                    <input type="time" id="time" class="form-control" readonly="" placeholder="Select Time" value=" "/>
                                     <span class="input-group-text"><i class="ri-time-line"></i></span>
                                 </div>
                             </div>
@@ -66,7 +66,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="edit_meeting_modal" tabindex="-1">
+<div class="modal fade" id="edit_meeting_modal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content border-0">
             <div class="modal-header p-3 bg-info-subtle">
@@ -137,7 +137,7 @@
                             <div class="mb-3">
                                 <label>Meeting Date </label>
                                 <div class="input-group">
-                                    <input type="date" id="edit_meeting_date" class="form-control" data-provider="flatpickr" placeholder="Select date" readonly="" />
+                                    <input type="date" id="edit_meeting_date" class="form-control" data-provider="flatpickr"  placeholder="Select date" readonly="" />
                                     <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
                                 </div>
                             </div>
@@ -170,7 +170,6 @@
                     <div class="hstack gap-2 justify-content-end">
                         <button type="button" class="btn btn-soft-danger" id="delete-event-btn"><i class="ri-close-line align-bottom"></i> Delete</button>
                         <button type="button" class="btn btn-soft-info" id="update-meeting-btn"> Update</button>
-                        <button type="submit" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
             </div>
@@ -212,7 +211,7 @@
                                     <i data-feather="calendar" class="text-info icon-dual-info"></i>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <h6 class="fs-15">Upcoming Meetings | Schedules </h6>
+                                    <h6 class="fs-15 fw-bold">Upcoming Meetings | Schedules </h6>
                                     <p class="text-muted mb-0">Please be notified for any scheduled events.</p>
                                 </div>
                             </div>
@@ -236,7 +235,6 @@
         </div>
     </div>
 </div>
-
 <script>
     $(document).ready(function () {
         $('#team, #edit_team').select2({ placeholder: 'Select Team', allowClear: true, minimumResultsForSearch: Infinity });
@@ -276,7 +274,6 @@
             dateFormat: "h:i K",
             time_24hr: false,
         });
-        // Function to generate a random color
         function getRandomColor() {
             var letters = '0123456789ABCDEF';
             var color = '#';
@@ -289,15 +286,15 @@
         var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
             initialView: 'multiMonthYear',
             selectable: true,
-            editable: true,
+            editable: false,
             timeZone: "local",
             droppable: false,
             navLinks: true,
-            themeSystem: "bootstrap",
+            themeSystem: "bootstrap5",
             headerToolbar: {
                 left: "prev,next today",
                 center: "title",
-                right: "multiMonthYear,dayGridMonth,timeGridWeek,timeGridDay,listMonth",
+                right: "multiMonthYear,dayGridMonth,listMonth",
             },
             events: function (fetchInfo, successCallback, failureCallback) {
                 $.ajax({
@@ -306,7 +303,7 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data && Array.isArray(data)) {
-                            data.forEach(function (event) {
+                            data.forEach(function(event) {
                                 event.backgroundColor = getRandomColor();
                                 event.borderColor = event.backgroundColor;
                             });
@@ -353,6 +350,12 @@
                 info.el.style.backgroundColor = color;
                 info.el.style.borderColor = color;
                 info.el.style.color = 'white';
+                var time = info.event.extendedProps.time;
+                var timeElement = info.el.querySelector('.fc-list-event-time');
+                if (timeElement) {
+                    timeElement.textContent = time;
+                }
+
             },
             dateClick: function (info) {
                 var dayOfWeek = info.date.getDay();
@@ -377,10 +380,11 @@
                 $('#event-details').hide();
                 $('#event-form').show();
                 $('#update-meeting-btn').show();
-                $('#delete-event-btn').hide();
+                $('#delete-event-btn').show();
                 $(this).text("Cancel");
             }
         });
+
         $('#meeting_modal').on('submit', 'form', function (e) {
             e.preventDefault();
             var team_id     = $(this).find('#team').val();
@@ -557,8 +561,8 @@
                         <div class='card mb-3'>
                             <div class='card-body'>
                                 <div class='d-flex mb-3'>
-                                    <div class='flex-grow-1'><i class='mdi mdi-checkbox-blank-circle me-2 text-info'></i>
-                                        <span class='fw-bold'>${new Date(event.date_meeting).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                                    <div class='flex-grow-1'><i class='mdi mdi-checkbox-blank-circle me-2 text-warning'></i>
+                                        <span class='fw-bold fs-11'>${new Date(event.date_meeting).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                                     </div>
                                     <div class='flex-shrink-0'>
                                         <small class='badge bg-primary-subtle text-primary ms-auto'>${event.time}</small>                         

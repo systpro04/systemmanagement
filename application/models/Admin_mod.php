@@ -79,8 +79,48 @@ class Admin_mod extends CI_Model
         }
         return $this->db->count_all_results();
     }
+    // public function get_file_count_by_directory($directory, $mod_id, $sub_mod_id, $team, $typeofsystem)
+    // {
+    //     $this->db->select('*');
+    //     $this->db->from('system_files');
+        
+    //     if (!empty($typeofsystem)) {
+    //         $this->db->where('typeofsystem', $typeofsystem);
+    //     }
+    //     if (!empty($mod_id)) {
+    //         $this->db->where('mod_id', $mod_id);
+    //     }
+    //     if (!empty($sub_mod_id)) {
+    //         $this->db->where('sub_mod_id', $sub_mod_id);
+    //     }
+    //     if (!empty($team)) {
+    //         $this->db->where('team_id', $team);
+    //     }
+    //     $this->db->where('uploaded_to', $directory);
+        
+    //     $query = $this->db->get();
+        
+    //     return $query->num_rows();
+    // }
     
-
+    public function get_module($type)
+    {
+        $this->db->select('m.mod_id, m.mod_name, sb.sub_mod_id, sb.sub_mod_name');
+        $this->db->from('module m');
+        $this->db->join('sub_module sb', 'm.mod_id = sb.mod_id', 'left');
+        $this->db->group_by('m.mod_id');
+        $this->db->where('typeofsystem', $type);
+        $modules = $this->db->get()->result();
+    
+        foreach ($modules as &$module) {
+            $this->db->select('sb.sub_mod_id, sb.sub_mod_name');
+            $this->db->from('sub_module sb');
+            $this->db->where('sb.mod_id', $module->mod_id);
+            $module->submodules = $this->db->get()->result();
+        }
+        return $modules;
+    }
+    
     public function get_teams() {
         $this->db->select('*');
         $this->db->from('team');

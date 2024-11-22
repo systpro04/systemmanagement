@@ -31,6 +31,7 @@ class Meeting_mod extends CI_Model
         $this->db->select('ms.*, t.*');
         $this->db->from('meeting_sched ms');
         $this->db->join('team t', 'ms.team_id = t.team_id');
+        $this->db->where('ms.date_meeting >= CURDATE()');
         $this->db->order_by('ms.date_meeting', 'ASC');
         $this->db->limit(20);
         return $this->db->get()->result_array();

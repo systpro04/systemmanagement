@@ -201,8 +201,7 @@
                                 <button class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal"
                                     data-bs-target="#create_workload"><i class="ri-add-fill align-bottom me-1"></i> Add
                                     Workload </button>
-                                <button class="btn btn-danger waves-effect waves-light"><i
-                                        class="ri-printer-fill align-bottom me-1"></i> Generate Report </button>
+                                <button class="btn btn-danger waves-effect waves-light"><i class="ri-printer-fill align-bottom me-1"></i> Generate Report </button>
                             </div>
                         </div>
                     </div>
@@ -453,14 +452,8 @@
                 icon: 'error',
                 title: 'Please fill up fields!',
             });
-            if (position === "") {
-                $('#position').addClass('is-invalid');
-            }
-            if (sub_module_menu === "") {
-                $('#sub_module_menu').addClass('is-invalid');
-            }
-            if (description === "") {
-                $('#description').addClass('is-invalid');
+            if (sub_module_menu === "" || description === "" || remarks === "") {
+                $('#sub_module_menu, #description, #remarks, #workload_status').addClass('is-invalid');
             }
             return;
         }

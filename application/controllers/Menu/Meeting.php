@@ -5,6 +5,9 @@ class Meeting extends CI_Controller {
 
     function __construct() {
         parent::__construct();
+        if ($this->session->username == "") {
+            redirect('login');
+        }
         $this->load->model('menu/Meeting_mod', 'meeting');
     }
     public function index() {

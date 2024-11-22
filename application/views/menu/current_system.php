@@ -158,7 +158,7 @@
 
     $(document).ready(function () {
         $.ajax({
-            url: '<?php echo base_url('setup_module') ?>',
+            url: '<?php echo base_url('setup_module_current') ?>',
             type: 'POST',
             success: function (response) {
                 moduleData = JSON.parse(response);

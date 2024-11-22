@@ -49,39 +49,48 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="module" class="col-sm-3 col-form-label">Date Request:</label>
+                    <label class="col-sm-3 col-form-label">Date Request:</label>
                     <div class="col-sm-9">
-                        <input type="date" class="form-control" id="date_request" data-provider="flatpickr"
-                            placeholder="MM/DD/YYYY">
+                        <div class="input-group">
+                            <input type="date" id="date_request" class="form-control" readonly="" placeholder="Select Date Request" data-provider="flatpickr" data-altFormat="F j, Y" />
+                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="sub_module" class="col-sm-3 col-form-label">Date Parallel:</label>
+                    <label class="col-sm-3 col-form-label">Date Parallel:</label>
                     <div class="col-sm-9">
-                        <input type="date" class="form-control" id="date_parallel" data-provider="flatpickr"
-                            placeholder="MM/DD/YYYY">
-
+                        <div class="input-group">
+                            <input type="date" id="date_parallel" class="form-control" readonly="" placeholder="Select Date Parallel" data-provider="flatpickr" data-altFormat="F j, Y" />
+                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="title" class="col-sm-3 col-form-label">Date Implementation</label>
+                    <label class="col-sm-3 col-form-label">Date Implementation:</label>
                     <div class="col-sm-9">
-                        <input type="date" class="form-control" id="date_implementation" data-provider="flatpickr"
-                            placeholder="MM/DD/YYYY">
+                        <div class="input-group">
+                            <input type="date" id="date_implementation" class="form-control" readonly="" placeholder="Select Date Implementation" data-provider="flatpickr" data-altFormat="F j, Y" />
+                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="title" class="col-sm-3 col-form-label">Date Start | Coding</label>
+                    <label class="col-sm-3 col-form-label">Date Start | Coding:</label>
                     <div class="col-sm-9">
-                        <input type="date" class="form-control" id="date_start" data-provider="flatpickr"
-                            placeholder="MM/DD/YYYY">
+                        <div class="input-group">
+                            <input type="date" id="date_start" class="form-control" readonly="" placeholder="Select Date Start" data-provider="flatpickr" data-altFormat="F j, Y" />
+                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="title" class="col-sm-3 col-form-label">Date End | Coding</label>
+                    <label class="col-sm-3 col-form-label">Date End | Coding:</label>
                     <div class="col-sm-9">
-                        <input type="date" class="form-control" id="date_end" data-provider="flatpickr"
-                            placeholder="MM/DD/YYYY">
+                        <div class="input-group">
+                            <input type="date" id="date_end" class="form-control" readonly="" placeholder="Select Date End" data-provider="flatpickr" data-altFormat="F j, Y" />
+                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -143,34 +152,48 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="module" class="col-sm-3 col-form-label">Date Request:</label>
+                    <label class="col-sm-3 col-form-label">Date Request:</label>
                     <div class="col-sm-9">
-                        <input type="date" class="form-control" id="edit_date_request" data-provider="flatpickr" placeholder="MM/DD/YYYY">
+                        <div class="input-group">
+                            <input type="date" id="edit_date_request" class="form-control" readonly="" placeholder="Select Date Request" data-provider="flatpickr"  />
+                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="sub_module" class="col-sm-3 col-form-label">Date Parallel:</label>
+                    <label class="col-sm-3 col-form-label">Date Parallel:</label>
                     <div class="col-sm-9">
-                        <input type="date" class="form-control" id="edit_date_parallel" data-provider="flatpickr" placeholder="MM/DD/YYYY">
-
+                        <div class="input-group">
+                            <input type="date" id="edit_date_parallel" class="form-control" readonly="" placeholder="Select Date Parallel" data-provider="flatpickr" />
+                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="title" class="col-sm-3 col-form-label">Date Implementation</label>
+                    <label class="col-sm-3 col-form-label">Date Implementation:</label>
                     <div class="col-sm-9">
-                        <input type="date" class="form-control" id="edit_date_implementation" data-provider="flatpickr" placeholder="MM/DD/YYYY">
+                        <div class="input-group">
+                            <input type="date" id="edit_date_implementation" class="form-control" readonly="" placeholder="Select Date Implementation" data-provider="flatpickr" />
+                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="title" class="col-sm-3 col-form-label">Date Start | Coding</label>
+                    <label class="col-sm-3 col-form-label">Date Start | Coding:</label>
                     <div class="col-sm-9">
-                        <input type="date" class="form-control" id="edit_date_start" data-provider="flatpickr" placeholder="MM/DD/YYYY">
+                        <div class="input-group">
+                            <input type="date" id="edit_date_start" class="form-control" readonly="" placeholder="Select Date Start" data-provider="flatpickr" />
+                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="title" class="col-sm-3 col-form-label">Date End | Coding</label>
+                    <label class="col-sm-3 col-form-label">Date End | Coding:</label>
                     <div class="col-sm-9">
-                        <input type="date" class="form-control" id="edit_date_end" data-provider="flatpickr" placeholder="MM/DD/YYYY">
+                        <div class="input-group">
+                            <input type="date" id="edit_date_end" class="form-control" readonly="" placeholder="Select Date End" data-provider="flatpickr" />
+                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -205,7 +228,7 @@
             <div class="card">
                 <div class="card-header border-1">
                     <div class="d-flex align-items-center justify-content-between">
-                        <h5 class="card-title mb-0 flex-grow-1">LIST OF SCHEDULED</h5>
+                        <h5 class="card-title mb-0 flex-grow-1 fw-bold">LIST OF SCHEDULED</h5>
                         <div class="col-md-3">
                             <div class="d-flex align-items-center flex-shrink-0">
                                 <select class="form-select" id="team_filter" style="width: 150px; height: auto;">
@@ -216,7 +239,7 @@
                         <div class="d-flex align-items-center flex-shrink-0 ms-2">
                             <button class="btn btn-primary waves-effect waves-light add-btn" data-bs-toggle="modal"
                                 data-bs-target="#add_system_gantt">
-                                <i class="ri-add-line align-bottom me-1"></i> Add System
+                                <i class="ri-add-line align-bottom me-1"></i> Add Gantt | System
                             </button>
                         </div>
                     </div>

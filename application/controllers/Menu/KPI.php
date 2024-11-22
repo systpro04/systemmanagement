@@ -6,6 +6,9 @@ class KPI extends CI_Controller {
     function __construct()
     {
         parent::__construct();
+        if ($this->session->username == "") {
+            redirect('login');
+        }
         $this->load->model('Menu/KPI_mod', 'kpi');
     }
 

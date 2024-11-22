@@ -5,6 +5,9 @@ class Current_Sys extends CI_Controller {
 
     function __construct() {
         parent::__construct();
+        if ($this->session->username == "") {
+            redirect('login');
+        }
         $this->load->model('Menu/File_mod_current', 'file_mod');
     }
     public function index() {
@@ -146,6 +149,12 @@ class Current_Sys extends CI_Controller {
         echo json_encode($data);
     }
 
+    public function setup_module_current()
+    {
+        $module = $this->file_mod->get_module_current();
+        echo json_encode($module);
+    }
+
     public function delete_file() {
         $folder_name = $this->input->post('folder_name');
         $file_name = $this->input->post('file_name');
@@ -246,29 +255,50 @@ class Current_Sys extends CI_Controller {
                 $success_count++;
     
                 $uploaded_data = $this->upload->data();
-                $data = [
-                    'team_id'           => $team,
-                    'mod_id'            => $module,
-                    'sub_mod_id'        => $sub_mod_id,
-                    'uploaded_to'       => $path,
-                    'file_name'         => $uploaded_data['file_name'],
-                    'date_uploaded'     => date('Y-m-d H:i:s'),
-                    'isr_status'        => 'Approve',
-                    'att_status'        => 'Approve',
-                    'minute_status'     => 'Approve',
-                    'wt_status'         => 'Approve',
-                    'flowchart_status'  => 'Approve',
-                    'dfd_status'        => 'Approve',
-                    'proposed_status'   => 'Approve',
-                    'gantt_status'      => 'Approve',
-                    'local_status'      => 'Approve',
-                    'uat_status'        => 'Approve',
-                    'live_status'       => 'Approve',
-                    'guide_status'      => 'Approve',
-                    'memo_status'       => 'Approve',
-                    'acceptance_status' => 'Approve',
-                    'typeofsystem'      => 'current'
+
+                $status_fields = [
+                    'ISR'             => 'isr_status',
+                    'ATTENDANCE'      => 'att_status',
+                    'MINUTES'         => 'minute_status',
+                    'WALKTHROUGH'     => 'wt_status',
+                    'FLOWCHART'       => 'flowchart_status',
+                    'DFD'             => 'dfd_status',
+                    'SYSTEM_PROPOSED' => 'proposed_status',
+                    'GANTT_CHART'     => 'gantt_status',
+                    'LOCAL_TESTING'   => 'local_status',
+                    'UAT'             => 'uat_status',
+                    'LIVE_TESTING'    => 'live_status',
+                    'USER_GUIDE'      => 'guide_status',
+                    'MEMO'            => 'memo_status',
+                    'BUSINESS_ACCEPTANCE' => 'acceptance_status'
                 ];
+            
+                $statuses = array_fill_keys(array_values($status_fields), null);
+            
+                if (empty($manager_key)) {
+                    if ($current_index > 0) {
+                        for ($i = 0; $i < $current_index; $i++) {
+                            $previous_directory = $directory_order[$i];
+                            if (isset($status_fields[$previous_directory])) {
+                                $statuses[$status_fields[$previous_directory]] = 'Approve';
+                            }
+                        }
+                    }
+                }
+
+                if (isset($status_fields[$path])) {
+                    $statuses[$status_fields[$path]] = 'Approve';
+                }
+                
+                $data = array_merge([
+                    'team_id'       => $team,
+                    'mod_id'        => $module,
+                    'sub_mod_id'    => $sub_mod_id,
+                    'uploaded_to'   => $path,
+                    'file_name'     => $uploaded_data['file_name'],
+                    'date_uploaded' => date('Y-m-d H:i:s'),
+                    'typeofsystem'  => 'current',
+                ], $statuses);
     
                 $this->file_mod->upload_file($data);
             }

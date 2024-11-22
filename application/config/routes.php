@@ -54,10 +54,13 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['login']                             = 'Auth/Login_ctrl/index';
-$route['logout']                            = 'Auth/Login_ctrl/logout'; 
+$route['login_data']                        = 'Auth/Login_ctrl/login_data';
+$route['logout']                            = 'Auth/Login_ctrl/logout_data'; 
 
 $route['dashboard']                         = 'Dashboard/index';
+$route['get_birthdays']                     = 'Dashboard/get_birthdays';
 $route['profile']                           = 'Dashboard/profile';
+$route['update_password']                   = 'Dashboard/update_password';
 
 // admin setup
 $route['add_user_view']                     = 'Admin/add_user_view';
@@ -88,32 +91,72 @@ $route['edit_submodule_content']            = 'Admin/edit_submodule_content';
 $route['update_submodule']                  = 'Admin/update_submodule';
 $route['approve_new_module']                = 'Admin/approve_new_module';
 $route['recall_new_module']                 = 'Admin/recall_new_module';
-
+$route['setup_module_by_type']                      = 'Admin/setup_module';
 $route['request']                           = 'Admin/request';
 $route['typeofsystem_data']                 = 'Admin/typeofsystem_data';
 $route['approved']                          = 'Admin/approved';
 $route['backtopending']                     = 'Admin/backtopending';
-$route['file_preview/(:any)']               = 'Admin/file_preview/$1';
 
 // Menu
 $route['structure']                         = 'Menu/Structure/index';
 $route['kpi']                               = 'Menu/KPI/index';
 $route['it_responsibilities']               = 'Menu/It_Respo/index';
+
+
+//Rules and Regulations
+$route['rules_view']                        = 'Menu/RulesRegulation/index';
+
+
+
+
+
+//It Responsibilities
 $route['setup_workload']                    = 'Menu/It_Respo/setup_workload';
 $route['setup_module']                      = 'Menu/It_Respo/setup_module';
-
 $route['workload_list']                     = 'Menu/It_Respo/workload_list';
 $route['submit_workload']                   = 'Menu/It_Respo/submit_workload';
 $route['submit_updated_workload']           = 'Menu/It_Respo/submit_updated_workload';
 $route['edit_workload_content']             = 'Menu/It_Respo/edit_workload_content';
 $route['delete_workload']                   = 'Menu/It_Respo/delete_workload';
 
+//IT TASK
+$route['it_task_view']                      = 'Menu/It_Task/index';
+$route['it_task_list']                      = 'Menu/It_Task/it_task_list';
+$route['submit_task']                       = 'Menu/It_Task/submit_task';
+$route['edit_task_content']                 = 'Menu/It_Task/edit_task_content';
+$route['update_task_content']               = 'Menu/It_Task/update_task_content';
+$route['delete_task']                       = 'Menu/It_Task/delete_task';
+
+//Weekly report
+$route['weekly_view']                       = 'Menu/Weekly/index';
+$route['weekly_list']                       = 'Menu/Weekly/weekly_list';
+$route['submit_weeklyreport']               = 'Menu/Weekly/submit_weeklyreport';
+$route['edit_weekly_report_content']        = 'Menu/Weekly/edit_weekly_report_content';
+$route['update_weeklyreport']               = 'Menu/Weekly/update_weeklyreport';
+$route['delete_weekly']                     = 'Menu/Weekly/delete_weekly';
+
+// Setup Location
+$route['setup_location_view']               = 'Menu/Location/index';
+$route['setup_location_list']               = 'Menu/Location/setup_location_list';
+$route['edit_setup_location_content']       = 'Menu/Location/edit_setup_location_content';
+$route['update_location']                   = 'Menu/Location/update_location';
+$route['delete_setup_location']             = 'Menu/Location/delete_setup_location';
+$route['setup_location']                    = 'Menu/Location/setup_location';
+$route['submit_location']                   = 'Menu/Location/submit_location';
+//Gantt
 $route['gantt_view']                        = 'Menu/Gantt/index';
 $route['gantt_list']                        = 'Menu/Gantt/gantt_list';
 $route['submit_gantt']                      = 'Menu/Gantt/submit_gantt';
 $route['edit_gantt_content']                = 'Menu/Gantt/edit_gantt_content';
 $route['update_gantt']                      = 'Menu/Gantt/update_gantt';
 $route['delete_gantt']                      = 'Menu/Gantt/delete_gantt';
+
+//Deployment
+$route['deployment_view']                   = 'Menu/Deployment/index';
+$route['for_implementation_list']           = 'Menu/Deployment/for_implementation_list';
+$route['remaining_files_list']              = 'Menu/Deployment/remaining_files_list';
+$route['submit_to_directory']               = 'Menu/Deployment/submit_to_directory';
+
 
 // Meeting Schedule
 $route['meeting_schedule']                  = 'Menu/Meeting/index';
@@ -130,6 +173,7 @@ $route['get_upcoming_meetings']             = 'Menu/Meeting/get_upcoming_meeting
 $route['current_system']                    = 'Menu/Current_Sys/index';
 $route['get_folders']                       = 'Menu/Current_Sys/get_folders';
 $route['view_folder_modal']                 = 'Menu/Current_Sys/view_folder_modal';
+$route['setup_module_current']              = 'Menu/Current_Sys/setup_module_current';
 $route['upload_file']                       = 'Menu/Current_Sys/upload_file';
 $route['delete_file']                       = 'Menu/Current_Sys/delete_file';
 $route['get_filter_options']                = 'Menu/Current_Sys/get_filter_options';
@@ -154,7 +198,7 @@ $route['delete_file_new']                   = 'Menu/New_Sys/delete_file_new';
 $route['check_directory_status']            = 'Menu/New_Sys/check_directory_status';
 $route['get_files_for_upload']              = 'Menu/New_Sys/get_files_for_upload';
 $route['business_unit']                     = 'Menu/New_Sys/business_unit';
-
+$route['get_filter_options_new']            = 'Menu/New_Sys/get_filter_options_new';
 
 $route['open_new_image/(:any)/(:any)']      = 'Menu/New_Sys/open_new_image/$1/$2';
 $route['open_new_pdf/(:any)/(:any)']        = 'Menu/New_Sys/open_new_pdf/$1/$2';
@@ -164,6 +208,9 @@ $route['open_new_docx/(:any)/(:any)']       = 'Menu/New_Sys/open_new_docx/$1/$2'
 $route['open_new_xlsx/(:any)/(:any)']       = 'Menu/New_Sys/open_new_xlsx/$1/$2';
 $route['open_new_audio/(:any)/(:any)']      = 'Menu/New_Sys/open_new_audio/$1/$2';
 
+
+// FAQ section
+$route['faq_view']                          = 'Menu/FAQ/index';
 
 
 

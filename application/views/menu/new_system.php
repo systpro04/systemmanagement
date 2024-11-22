@@ -110,8 +110,11 @@
                 </div>
 
                 <div class="mb-2">
-                    <label for="title" class="col-form-label">Date Request</label>
-                    <input type="date" class="form-control" id="date_request" data-provider="flatpickr" placeholder="MM/DD/YYYY">
+                    <label class="col-form-label">Date Request:</label>
+                        <div class="input-group">
+                            <input type="date" id="date_request" class="form-control" readonly="" placeholder="Select Date Request" data-provider="flatpickr" />
+                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                        </div>
                 </div>
 
                 <div class="mb-2">
@@ -380,7 +383,7 @@
         var sub_module = $('#sub_module').val();
 
         $.ajax({
-            url: '<?php echo base_url('get_filter_options'); ?>',
+            url: '<?php echo base_url('get_filter_options_new'); ?>',
             type: 'GET',
             dataType: 'json',
             success: function (response) {

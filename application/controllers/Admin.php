@@ -5,6 +5,9 @@ class Admin extends CI_Controller {
     function __construct()
     {
         parent::__construct();
+        if ($this->session->username == "") {
+            redirect('login');
+        }
         $this->load->model('Admin_mod', 'admin');
         $this->load->model('Menu/Workload', 'workload');
     }
@@ -740,6 +743,28 @@ class Admin extends CI_Controller {
             "data" => $data
         ];
         echo json_encode($output);
+    }
+    // public function get_directory_counts()
+    // {
+    //     $directories = ['ISR', 'ATTENDANCE', 'MINUTES', 'WALKTHROUGH', 'FLOWCHART', 'DFD', 'SYSTEM_PROPOSED', 'GANTT_CHART', 'LOCAL_TESTING', 'UAT', 'LIVE_TESTING', 'USER_GUIDE', 'MEMO', 'BUSINESS_ACCEPTANCE'];
+    //     $counts = [];
+    //     $team       = $this->input->post('team');
+    //     $mod_id     = $this->input->post('module');
+    //     $sub_mod_id = $this->input->post('sub_module');
+    //     $typeofsystem = $this->input->post('typeofsystem');
+
+
+    //     foreach ($directories as $directory) {
+    //         $counts[$directory] = $this->admin->get_file_count_by_directory($directory, $team, $mod_id, $sub_mod_id, $typeofsystem);
+    //     }
+    //     echo json_encode($counts);
+    // }
+
+    public function setup_module()
+    {
+        $type = $this->input->post('typeofsystem');
+        $module = $this->admin->get_module($type);
+        echo json_encode($module);
     }
 
     public function approved() {

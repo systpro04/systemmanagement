@@ -60,7 +60,7 @@
     <script src="<?php echo base_url(); ?>assets/js/filepond-plugin-file-validate-size.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/filepond-plugin-image-exif-orientation.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/filepond-plugin-file-encode.min.js"></script>
-
+    <script src="<?php echo base_url(); ?>assets/js/pages/password-addon.init.js"></script>
     <script>
         var previewTemplate,
             dropzone,
@@ -107,6 +107,41 @@
     });
         
     </script>
+
+<script type="text/javascript">
+    function swal_message1(msg_type, msg) {
+        Swal.fire({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            icon: msg_type,
+            title: msg
+        });
+    }
+
+    <?php
+    if ($this->session->flashdata('SUCCESSMSG')) {
+        date_default_timezone_set('Asia/Manila');
+        $hour = date("H");
+        $name = $this->session->userdata('name');
+
+        if ($hour >= 5 && $hour < 12) {
+            $greeting = 'Good morning, ';
+        } elseif ($hour >= 12 && $hour < 17) {
+            $greeting = 'Good afternoon, ';
+        } else {
+            $greeting = 'Good evening, ';
+        }
+
+        $greeting = addslashes($greeting);
+        $name = addslashes($name);
+
+        echo "swal_message1('success', '<h6>{$greeting}<i>{$name}</i></h6>');";
+    }
+    ?>
+</script>
  </body>
 
  </html>

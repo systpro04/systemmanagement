@@ -91,24 +91,30 @@ class File_mod_new extends CI_Model
     }
 
 
-    public function check_pending_files($team, $module, $sub_mod_id, $previous_directory) {
-        $this->db->where('team_id', $team);
-        $this->db->where('mod_id', $module);
-        $this->db->where('sub_mod_id', $sub_mod_id);
-        $this->db->where('uploaded_to', $previous_directory);
-        $this->db->group_start();
-            $this->db->where('isr_status', 'pending');
-            $this->db->or_where('wt_status', 'pending');
-            $this->db->or_where('flowchart_status', 'pending');
-            $this->db->or_where('dfd_status', 'pending');
-            $this->db->or_where('proposed_status', 'pending');
-            $this->db->or_where('local_status', 'pending');
-            $this->db->or_where('uat_status', 'pending');
-            $this->db->or_where('live_status', 'pending');
-        $this->db->group_end();
+    public function get_teams() {
+        $this->db->select('*');
+        $this->db->from('team');
+        $query = $this->db->get();
     
-        return $this->db->count_all_results('system_files');
+        return $query->result_array();
     }
+    public function get_modules() {
+        $this->db->select('*');
+        $this->db->from('module');
+        $this->db->where('typeofsystem', 'new');
+        $query = $this->db->get();
+    
+        return $query->result_array();
+    }
+
+    public function get_sub_modules() {
+        $this->db->select('*');
+        $this->db->from('sub_module');
+        $query = $this->db->get();
+    
+        return $query->result_array();
+    }
+
     public function check_files_exist($team, $module, $sub_mod_id, $previous_directory) {
         $this->db->where('team_id', $team);
         $this->db->where('mod_id', $module);
@@ -120,20 +126,23 @@ class File_mod_new extends CI_Model
         $this->db->where('team_id', $team);
         $this->db->where('mod_id', $module);
         $this->db->where('sub_mod_id', $sub_mod_id);
-        $this->db->where('uploaded_to', $previous_directory);
-        $this->db->group_start();
-            $this->db->where('isr_status', 'pending');
-            $this->db->or_where('wt_status', 'pending');
-            $this->db->or_where('flowchart_status', 'pending');
-            $this->db->or_where('dfd_status', 'pending');
-            $this->db->or_where('proposed_status', 'pending');
-            $this->db->or_where('local_status', 'pending');
-            $this->db->or_where('uat_status', 'pending');
-            $this->db->or_where('live_status', 'pending');
-        $this->db->group_end();
+        $status_fields = [
+            'ISR' => 'isr_status',
+            'ATTENDANCE' => 'att_status',
+            'MINUTES' => 'minute_status',
+            'WALKTHROUGH' => 'wt_status',
+            'FLOWCHART' => 'flowchart_status',
+            'DFD' => 'dfd_status',
+            'SYSTEM_PROPOSED' => 'proposed_status',
+            'LOCAL_TESTING' => 'local_status',
+            'UAT' => 'uat_status',
+            'LIVE_TESTING' => 'live_status',
+        ];
+    
+        if (isset($status_fields[$previous_directory])) {
+            $this->db->where($status_fields[$previous_directory], 'pending');
+        }
+    
         return $this->db->get('system_files')->result_array();
     }
-    
-    
-    
 }

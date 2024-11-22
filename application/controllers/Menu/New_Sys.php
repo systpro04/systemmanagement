@@ -5,6 +5,9 @@ class New_Sys extends CI_Controller {
 
     function __construct() {
         parent::__construct();
+        if ($this->session->username == "") {
+            redirect('login');
+        }
         $this->load->model('Menu/File_mod_new', 'file_mod');
         $this->load->model('Admin_mod', 'admin');
     }
@@ -209,7 +212,7 @@ class New_Sys extends CI_Controller {
         
         if (file_exists($file_path)) {
             if (unlink($file_path)) {
-                $deleteResult = $this->file_mod->delete_file_record($file_name);
+                $this->file_mod->delete_file_record($file_name);
                 echo json_encode(['success' => true]);
             } else {
                 echo json_encode(['success' => false, 'error' => 'Unable to delete file.']);
@@ -227,7 +230,7 @@ class New_Sys extends CI_Controller {
         $directory_order = [
             "ISR", "ATTENDANCE", "MINUTES", "WALKTHROUGH", "FLOWCHART", "DFD", "SYSTEM_PROPOSED", "LOCAL_TESTING", "UAT", "LIVE_TESTING"
         ];
-    
+
         $selected_directory = $this->input->post('directory');
         $team = $this->input->post('file_team');
         $module = $this->input->post('file_module');
@@ -258,7 +261,7 @@ class New_Sys extends CI_Controller {
                     echo json_encode($response);
                     return;
                 }
-    
+
                 $previous_files_exist = $this->file_mod->check_files_exist($team, $module, $sub_module, $previous_directory);
                 if (!$previous_files_exist) {
                     $response['message'] = "Please upload files to the \"$previous_directory\" directory before proceeding to \"$selected_directory\".";
@@ -299,25 +302,48 @@ class New_Sys extends CI_Controller {
                 $success_count++;
     
                 $uploaded_data = $this->upload->data();
-                $data = [
-                    'team_id'           => $team,
-                    'mod_id'            => $module,
-                    'sub_mod_id'        => $sub_module,
-                    'uploaded_to'       => $selected_directory,
-                    'file_name'         => $uploaded_data['file_name'],
-                    'date_uploaded'     => date('Y-m-d H:i:s'),
-                    'isr_status'        => 'pending',
-                    'att_status'        => 'pending',
-                    'minute_status'     => 'pending',
-                    'wt_status'         => 'pending',
-                    'flowchart_status'  => 'pending',
-                    'dfd_status'        => 'pending',
-                    'proposed_status'   => 'pending',
-                    'local_status'      => 'pending',
-                    'uat_status'        => 'pending',
-                    'live_status'       => 'pending',
-                    'typeofsystem'      => 'new'
+
+
+                $status_fields = [
+                    'ISR'             => 'isr_status',
+                    'ATTENDANCE'      => 'att_status',
+                    'MINUTES'         => 'minute_status',
+                    'WALKTHROUGH'     => 'wt_status',
+                    'FLOWCHART'       => 'flowchart_status',
+                    'DFD'             => 'dfd_status',
+                    'SYSTEM_PROPOSED' => 'proposed_status',
+                    'LOCAL_TESTING'   => 'local_status',
+                    'UAT'             => 'uat_status',
+                    'LIVE_TESTING'    => 'live_status',
                 ];
+            
+                $statuses = array_fill_keys(array_values($status_fields), null);
+            
+                if (empty($manager_key)) {
+                    if ($current_index > 0) {
+                        for ($i = 0; $i < $current_index; $i++) {
+                            $previous_directory = $directory_order[$i];
+                            if (isset($status_fields[$previous_directory])) {
+                                $statuses[$status_fields[$previous_directory]] = 'Approve';
+                            }
+                        }
+                    }
+                } 
+
+                if (isset($status_fields[$selected_directory])) {
+                    $statuses[$status_fields[$selected_directory]] = 'Pending';
+                }
+
+                
+                $data = array_merge([
+                    'team_id'       => $team,
+                    'mod_id'        => $module,
+                    'sub_mod_id'    => $sub_module,
+                    'uploaded_to'   => $selected_directory,
+                    'file_name'     => $uploaded_data['file_name'],
+                    'date_uploaded' => date('Y-m-d H:i:s'),
+                    'typeofsystem'  => 'new',
+                ], $statuses);
     
                 $this->file_mod->upload_file($data);
             }
@@ -411,7 +437,18 @@ class New_Sys extends CI_Controller {
     
 
 
-
+    public function get_filter_options_new()
+    {
+        $teams = $this->file_mod->get_teams();
+        $modules = $this->file_mod->get_modules();
+        $sub_modules = $this->file_mod->get_sub_modules();
+    
+        echo json_encode([
+            'teams' => $teams,
+            'modules' => $modules,
+            'sub_modules' => $sub_modules
+        ]);
+    }
 
     public function open_new_image($folder_name, $image){
         
