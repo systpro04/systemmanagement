@@ -241,8 +241,11 @@ class Admin extends CI_Controller {
                     <button type="button" class="btn btn-soft-primary waves-effect waves-light btn-sm" onclick="view_submodule('.$row['mod_id'].')" data-bs-toggle="modal" data-bs-target="#submodule">
                         <iconify-icon icon="solar:checklist-minimalistic-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon>
                     </button>
-                    <button type="button" class="btn btn-soft-info waves-effect waves-light btn-sm" onclick="edit_module('.$row['mod_id'].')" data-bs-toggle="modal" data-bs-target="#edit_module">
+                    <button type="button" class="btn btn-soft-info waves-effect waves-light btn-sm" onclick="edit_module('.$row['mod_id'].',\''.$row['requested_to'].'\',\''.$row['bu_name'].'\',\''.$row['date_request'].'\')" data-bs-toggle="modal" data-bs-target="#edit_module">
                         <iconify-icon icon="solar:pen-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon>
+                    </button>
+                    <button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onclick="delete_module('.$row['mod_id'].')">
+                        <iconify-icon icon="solar:trash-bin-minimalistic-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon>
                     </button>';
             if ($typeofsystem === 'new' && $row['status'] === 'Pending') {
                 $action .= '
@@ -299,11 +302,20 @@ class Admin extends CI_Controller {
         $mod_name       = $this->input->post('mod_name');
         $mod_abbr       = $this->input->post('mod_abbr');
         $typeofsystem   = $this->input->post('typeofsystem');
+        $date_request   = $this->input->post('date_request');
+        $bcode        = $this->input->post('bcode');
+        $business_unit  = $this->input->post('business_unit');
     
+        if($date_request === "") {
+            $date_request = null;
+        }
         $data = [
             'mod_name'      => $mod_name,
             'mod_abbr'      => $mod_abbr,
             'typeofsystem'  => $typeofsystem,
+            'requested_to'  => $bcode,
+            'bu_name'       => $business_unit,
+            'date_request'  => $date_request,
             'status'        => 'Approve',
             'date_added'    => date('Y-m-d H:i:s'),
         ];
@@ -324,25 +336,87 @@ class Admin extends CI_Controller {
             <label for="title" class="col-form-label">Module Abbreviation:</label>
                 <input type="text" class="form-control" id="edit_mod_abbr" name="mod_abbr" value="' . htmlspecialchars($row['mod_abbr']) . '"/>
             </div>
+            <div class="mb-2">
+                <label class="col-form-label">Date Request:</label>
+                    <div class="input-group">
+                        <input type="date" id="edit_date_request" class="form-control" readonly="" placeholder="Select Date Request" data-provider="flatpickr" value="' . $row['date_request'] . '" />
+                        <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                    </div>
+            </div>
+
+            <div class="mb-2">
+                <label for="title" class="col-form-label">Requested To</label>
+                <select id="edit_business_unit" class="form-select" aria-label="Team">
+                    <option value="'.htmlspecialchars($row['requested_to']) . '">' . $row['bu_name'] . '"></option>
+                </select>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="submiteditedmodule(' . $mod_id . ')">Submit</button>
                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
             </div>';
+            ?>
+            <script>
+                flatpickr("#edit_date_request", {
+                    dateFormat: "F j, Y"
+                });
+                $('#edit_business_unit').select2({
+                    placeholder: "Select Business Unit",
+                    allowClear: true,
+                    minimumResultsForSearch: Infinity
+                });
+                load_business_unit();
+                function load_business_unit() {
+                    $.ajax({
+                        url: '<?= base_url('business_unit') ?>',
+                        type: 'POST',
+                        success: function(response) {
+                            const buData = JSON.parse(response);
+                            const currentValue = $('#edit_business_unit').val();
+                            $('#edit_business_unit').empty().append('<option value=""></option>');
 
+                            buData.forEach(function(bu) {
+                                const selected = (bu.bcode === currentValue) ? 'selected' : '';
+                                $('#edit_business_unit').append('<option value="' + bu.bcode + '" ' + selected + '>' + bu.business_unit + '</option>');
+                            });
+                        },
+                    });
+                }
+            </script>
+            <?php
     }
 
     public function update_module(){
-        $mod_id = $this->input->post('mod_id');
-        $mod_name = $this->input->post('mod_name');
-        $mod_abbr = $this->input->post('mod_abbr');
+        $mod_id         = $this->input->post('mod_id');
+        $mod_name       = $this->input->post('mod_name');
+        $mod_abbr       = $this->input->post('mod_abbr');
+        $bcode          = $this->input->post('bcode');
+        $business_unit  = $this->input->post('business_unit');
+        $date_request   = $this->input->post('date_request');
     
+        if($date_request === "") {
+            $date_request = null;
+        }
+        if($bcode === "") {
+            $bcode = null;
+        }
+        if($business_unit === "") {
+            $business_unit = null;
+        }
+
         $data = [
-            'mod_name' => $mod_name,
-            'mod_abbr' => $mod_abbr,
-            'date_updated' => date('Y-m-d H:i:s'),
+            'mod_name'          => $mod_name,
+            'mod_abbr'          => $mod_abbr,
+            'requested_to'      => $bcode,
+            'bu_name'           => $business_unit,
+            'date_request'      => date('Y-m-d', strtotime($date_request)),
+            'date_updated'      => date('Y-m-d H:i:s'),
         ];
     
         $this->admin->updateModule($data, $mod_id);
+    }
+    public function delete_module(){
+        $mod_id = $this->input->post('mod_id');
+        $this->admin->deleteModule($mod_id);
     }
     public function approve_new_module(){
         $mod_id = $this->input->post('id');

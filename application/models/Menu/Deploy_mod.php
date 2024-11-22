@@ -12,7 +12,7 @@ class Deploy_mod extends CI_Model
         $this->db->join('team t', 's.team_id = t.team_id');
         $this->db->where('m.implem_type', '0');
         $this->db->group_by('m.mod_id');
-        
+        $this->db->where('m.active !=', 'Inactive');
         if (!empty($search_value)) {
             $this->db->group_start(); 
             $this->db->like('m.mod_name', $search_value);
@@ -35,6 +35,7 @@ class Deploy_mod extends CI_Model
         $this->db->join('team t', 's.team_id = t.team_id');
         $this->db->where('m.implem_type', '0');
         $this->db->group_by('m.mod_id');
+        $this->db->where('m.active !=', 'Inactive');
         if (!empty($search_value)) {
             $this->db->group_start(); 
             $this->db->like('m.mod_name', $search_value);

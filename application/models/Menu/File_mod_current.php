@@ -63,6 +63,7 @@ class File_mod_current extends CI_Model
     public function get_modules() {
         $this->db->select('*');
         $this->db->from('module');
+        $this->db->where('active !=', 'Inactive');
         $query = $this->db->get();
     
         return $query->result_array();
@@ -71,6 +72,7 @@ class File_mod_current extends CI_Model
     public function get_sub_modules() {
         $this->db->select('*');
         $this->db->from('sub_module');
+        $this->db->where('status !=', 'Inactive');
         $query = $this->db->get();
     
         return $query->result_array();
@@ -81,14 +83,16 @@ class File_mod_current extends CI_Model
         $this->db->from('module m');
         $this->db->join('sub_module sb', 'm.mod_id = sb.mod_id', 'left');
         $this->db->group_by('m.mod_id');
-        $this->db->where('typeofsystem', 'current');
-        $this->db->where('status', 'Approve');
+        $this->db->where('m.typeofsystem', 'current');
+        $this->db->where('m.active', 'Active');
+        $this->db->where('m.status', 'Approve');
         $modules = $this->db->get()->result();
     
         foreach ($modules as &$module) {
             $this->db->select('sb.sub_mod_id, sb.sub_mod_name');
             $this->db->from('sub_module sb');
             $this->db->where('sb.mod_id', $module->mod_id);
+                    $this->db->where('sb.status', 'Active');
             $module->submodules = $this->db->get()->result();
         }
         return $modules;

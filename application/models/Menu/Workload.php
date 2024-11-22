@@ -12,7 +12,8 @@ class Workload extends CI_Model
         $this->db->join('module m', 'm.mod_id = w.module');
         $this->db->join('sub_module sb', 'w.sub_mod = sb.sub_mod_id');
         $this->db->join('team t', 't.team_id = w.team_id');
-
+        $this->db->where('m.active !=', 'Inactive');
+        $this->db->where('sb.status !=', 'Inactive');
         if (!empty($search_value)) {
             $this->db->like('t.team_name', $search_value);
             $this->db->or_like('w.emp_id', $search_value);
@@ -35,7 +36,8 @@ class Workload extends CI_Model
         $this->db->join('module m', 'm.mod_id = w.module');
         $this->db->join('sub_module sb', 'w.sub_mod = sb.sub_mod_id');
         $this->db->join('team t', 't.team_id = w.team_id');
-
+        $this->db->where('m.active !=', 'Inactive');
+        $this->db->where('sb.status !=', 'Inactive');
         if (!empty($search_value)) {
             $this->db->like('t.team_name', $search_value);
             $this->db->or_like('w.emp_id', $search_value);
@@ -92,12 +94,14 @@ class Workload extends CI_Model
         $this->db->join('sub_module sb', 'm.mod_id = sb.mod_id', 'left');
         $this->db->group_by('m.mod_id');
         $this->db->where('typeofsystem', 'current');
+        $this->db->where('m.active !=', 'Inactive');
         $modules = $this->db->get()->result();
     
         foreach ($modules as &$module) {
             $this->db->select('sb.sub_mod_id, sb.sub_mod_name');
             $this->db->from('sub_module sb');
             $this->db->where('sb.mod_id', $module->mod_id);
+            $this->db->where('sb.status !=', 'Inactive');
             $module->submodules = $this->db->get()->result();
         }
         return $modules;
@@ -108,6 +112,8 @@ class Workload extends CI_Model
         $this->db->from('workload w');
         $this->db->join('module m', 'm.mod_id = w.module');
         $this->db->join('sub_module sb', 'w.sub_mod = sb.sub_mod_id');
+        $this->db->where('m.active !=', 'Inactive');
+        $this->db->where('sb.status !=', 'Inactive');
         $this->db->join('team t', 't.team_id = w.team_id');
         $this->db->where('w.id', $id);
         $query = $this->db->get();

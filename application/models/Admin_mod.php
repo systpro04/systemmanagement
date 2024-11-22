@@ -110,6 +110,8 @@ class Admin_mod extends CI_Model
         $this->db->join('sub_module sb', 'm.mod_id = sb.mod_id', 'left');
         $this->db->group_by('m.mod_id');
         $this->db->where('typeofsystem', $type);
+        $this->db->where('m.active !=', 'Inactive');
+        $this->db->where('sb.status !=', 'Inactive');
         $modules = $this->db->get()->result();
     
         foreach ($modules as &$module) {
@@ -194,6 +196,7 @@ class Admin_mod extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('module');
+        $this->db->where('active !=', 'Inactive');
 
         if (!empty($search_value)) {
             $this->db->like('mod_name', $search_value);
@@ -211,7 +214,7 @@ class Admin_mod extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('module');
-
+        $this->db->where('active !=', 'Inactive');
         if (!empty($search_value)) {
             $this->db->like('mod_name', $search_value);
             $this->db->or_like('mod_abbr', $search_value);
@@ -235,12 +238,33 @@ class Admin_mod extends CI_Model
         $this->db->where('mod_id', $id);
         $this->db->update('module', $data);
     }
+    public function deleteModule($id) {
+        $this->db->trans_start();
+        // Delete the module
+        $this->db->where('mod_id', $id);
+        $this->db->set('active', 'Inactive');
+        $this->db->update('module');
+
+        // Delete related data in sub_module
+        $this->db->where('mod_id', $id);
+        $this->db->set('status', 'Inactive');
+        $this->db->update('sub_module');
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 
     public function getSubModule($mod_id, $start, $length, $order_column, $order_dir, $search_value)
     {
         $this->db->select('*');
         $this->db->from('sub_module');
-
+        $this->db->where('status !=', 'Inactive');
         if (!empty($search_value)) {
             $this->db->like('sub_mod_name', $search_value);
         }
@@ -256,7 +280,7 @@ class Admin_mod extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('sub_module');
-
+        $this->db->where('status !=', 'Inactive');
         if (!empty($search_value)) {
             $this->db->like('sub_mod_name', $search_value);
         }
@@ -274,6 +298,7 @@ class Admin_mod extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('module');
+        $this->db->where('active !=', 'Inactive');
         $this->db->where('mod_id', $id);
         return $this->db->get()->row_array();
     }
@@ -282,6 +307,7 @@ class Admin_mod extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('sub_module');
+        $this->db->where('status !=', 'Inactive');
         $this->db->where('sub_mod_id', $sub_mod_id);
         return $this->db->get()->row_array();
     }

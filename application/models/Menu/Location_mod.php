@@ -11,7 +11,8 @@ class Location_mod extends CI_Model
         $this->db->from('location_setup sl');
         $this->db->join('module m', 'm.mod_id = sl.mod_id');
         $this->db->join('sub_module sb', 'sl.sub_mod_id = sb.sub_mod_id');
-
+        $this->db->where('m.active !=', 'Inactive');
+        $this->db->where('sb.status !=', 'Inactive');
         if (!empty($search_value)) {
             $this->db->like('dt.company', $search_value);
             $this->db->or_like('dt.business_unit', $search_value);
@@ -31,7 +32,8 @@ class Location_mod extends CI_Model
         $this->db->from('location_setup sl');
         $this->db->join('module m', 'm.mod_id = sl.mod_id');
         $this->db->join('sub_module sb', 'sl.sub_mod_id = sb.sub_mod_id');
-
+        $this->db->where('m.active !=', 'Inactive');
+        $this->db->where('sb.status !=', 'Inactive');
         if (!empty($search_value)) {
             $this->db->like('dt.company', $search_value);
             $this->db->or_like('dt.business_unit', $search_value);

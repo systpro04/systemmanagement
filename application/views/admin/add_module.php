@@ -20,6 +20,20 @@
                 </div>
 
                 <div class="mb-2">
+                    <label class="col-form-label">Date Request:</label>
+                        <div class="input-group">
+                            <input type="date" id="date_request" class="form-control" readonly="" placeholder="Select Date Request" data-provider="flatpickr" />
+                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                        </div>
+                </div>
+
+                <div class="mb-2">
+                    <label for="title" class="col-form-label">Requested To</label>
+                    <select id="business_unit" class="form-select" aria-label="Team">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div class="mb-2">
                     <label for="title" class="col-form-label">Type of System</label>
                    <select name="type" class="form-select " id="typeofsystem">
                     <option value=""></option>
@@ -250,12 +264,28 @@
         $('#mod_abbr').val('');
         $('#typeofsystem').val('').trigger('change');
     });
-
+    load_business_unit();
+    function load_business_unit() {
+        $.ajax({
+            url: '<?php echo base_url('business_unit') ?>',
+            type: 'POST',
+            success: function (response) {
+                buData = JSON.parse(response);
+                $('#business_unit').empty().append('<option value="">Select Business Unit</option>');
+                buData.forEach(function (bu) {
+                    $('#business_unit').append('<option value="' + bu.bcode + '">' + bu.business_unit + '</option>');
+                });
+            }
+        });
+    }
 
     function add_module() {
         var mod_name        = $('#mod_name').val();
         var mod_abbr        = $('#mod_abbr').val();
         var typeofsystem    = $('#typeofsystem').val();
+        var bcode           = $('#business_unit').val();
+        var business_unit   = $('#business_unit option:selected').text();
+        var date_request    = $('#date_request').val();
 
         if (mod_name === "" || mod_abbr === "" || typeofsystem === "") {
             Swal.fire({
@@ -279,7 +309,10 @@
         var data = {
             mod_name: mod_name,
             mod_abbr: mod_abbr,
-            typeofsystem: typeofsystem
+            typeofsystem: typeofsystem,
+            bcode: bcode,
+            business_unit: business_unit,
+            date_request: date_request,
         };
 
         $.ajax({
@@ -395,11 +428,17 @@
             }
         });
     }
-    function edit_module(mod_id) {
+    function edit_module(mod_id, requested_to, bu_name, date_request) {
+
         $.ajax({
             url: '<?= base_url('edit_module') ?>',
             type: 'POST',
-            data: { mod_id: mod_id },
+            data: { 
+                mod_id: mod_id,
+                bcode: requested_to,
+                business_unit: bu_name,
+                date_request: date_request
+             },
             error: function () {
                 Swal.fire({
                     icon: 'error',
@@ -413,9 +452,12 @@
         });
     }
     function submiteditedmodule() {
-        var mod_id   = $('#edit_mod_id').val();
-        var mod_name = $('#edit_mod_name').val();
-        var mod_abbr = $('#edit_mod_abbr').val();
+        var mod_id          = $('#edit_mod_id').val();
+        var mod_name        = $('#edit_mod_name').val();
+        var mod_abbr        = $('#edit_mod_abbr').val();
+        var bcode           = $('#edit_business_unit').val();
+        var business_unit   = $('#edit_business_unit option:selected').text();
+        var date_request    = $('#edit_date_request').val();
 
         Swal.fire({
             title: 'Are you sure?',
@@ -431,7 +473,14 @@
                 $.ajax({
                     url: '<?php echo base_url("update_module"); ?>',
                     type: 'POST',
-                    data: { mod_id: mod_id, mod_name: mod_name, mod_abbr: mod_abbr },
+                    data: { 
+                        mod_id: mod_id, 
+                        mod_name: mod_name, 
+                        mod_abbr: mod_abbr,
+                        bcode: bcode,
+                        business_unit: business_unit,
+                        date_request: date_request
+                    },
                     error: function () {
                         Swal.fire({
                             icon: 'error',
@@ -587,6 +636,46 @@
                             timerProgressBar: true,
                             icon: 'success',
                             title: ' New System approved successfully',
+                        });
+                        var table = $('#module_list').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
+                    },
+                });
+            }
+        });
+    }
+
+    function delete_module(mod_id) {
+        Swal.fire({
+            title: 'Warning?',
+            text: 'Module will be deleted as well as its sub module!!!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '<?php echo base_url('delete_module'); ?>',
+                    type: 'POST',
+                    data: {
+                        mod_id: mod_id,
+                    },
+                    success: function () {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: true,
+                            icon: 'success',
+                            title: ' Module deleted successfully',
                         });
                         var table = $('#module_list').DataTable();
                         var currentPage = table.page();

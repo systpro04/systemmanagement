@@ -10,7 +10,8 @@ class Weekly_mod extends CI_Model
 		$this->db->join('team t', 't.team_id = wr.team_id');
 		$this->db->join('module m', 'm.mod_id = wr.mod_id');
 		$this->db->join('sub_module sb', 'wr.sub_mod_id = sb.sub_mod_id');
-	
+		$this->db->where('m.active !=', 'Inactive');
+        $this->db->where('sb.status !=', 'Inactive');
 		if (!empty($search_value)) {
 			$this->db->like('m.team_name', $search_value);
 			$this->db->or_like('m.mod_name', $search_value);
@@ -51,7 +52,8 @@ class Weekly_mod extends CI_Model
 		$this->db->join('team t', 't.team_id = wr.team_id');
 		$this->db->join('module m', 'm.mod_id = wr.mod_id');
 		$this->db->join('sub_module sb', 'wr.sub_mod_id = sb.sub_mod_id');
-	
+		$this->db->where('m.active !=', 'Inactive');
+        $this->db->where('sb.status !=', 'Inactive');
 		if (!empty($search_value)) {
 			$this->db->like('wr.emp_id', $search_value);
 			$this->db->or_like('m.mod_name', $search_value);

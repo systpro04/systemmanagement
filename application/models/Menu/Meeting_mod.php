@@ -10,6 +10,7 @@ class Meeting_mod extends CI_Model
         $this->db->from('meeting_sched ms');
         $this->db->join('team t', 'ms.team_id = t.team_id');
         $this->db->join('module m', 'ms.mod_id = m.mod_id');
+        $this->db->where('m.active !=', 'Inactive');
         $query = $this->db->get();
         return $query->result_array();
     }

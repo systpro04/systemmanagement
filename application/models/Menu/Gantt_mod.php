@@ -10,7 +10,8 @@ class Gantt_mod extends CI_Model
 		$this->db->join('team t', 'g.team_id = t.team_id', 'left');
 		$this->db->join('module m', 'g.mod_id = m.mod_id', 'left');
 		$this->db->join('sub_module sm', 'm.mod_id = sm.mod_id and g.sub_mod_id = sm.sub_mod_id', 'left');
-	
+		$this->db->where('m.active !=', 'Inactive');
+        $this->db->where('sm.status !=', 'Inactive');
 		if (!empty($search_value)) {
 			$this->db->group_start()
 					 ->like('t.team_name', $search_value)
@@ -32,7 +33,8 @@ class Gantt_mod extends CI_Model
 		$this->db->join('team t', 'g.team_id = t.team_id', 'left');
 		$this->db->join('module m', 'g.mod_id = m.mod_id', 'left');
 		$this->db->join('sub_module sm', 'm.mod_id = sm.mod_id and g.sub_mod_id = sm.sub_mod_id', 'left');
-	
+		$this->db->where('m.active !=', 'Inactive');
+        $this->db->where('sm.status !=', 'Inactive');
 		if (!empty($search_value)) {
 			$this->db->group_start()
 					 ->like('t.team_name', $search_value)

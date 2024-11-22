@@ -83,6 +83,7 @@ $route['module_list']                       = 'Admin/module_list';
 $route['add_module']                        = 'Admin/add_module';
 $route['edit_module']                       = 'Admin/edit_module';
 $route['update_module']                     = 'Admin/update_module';
+$route['delete_module']                     = 'Admin/delete_module';
 $route['view_submodule']                    = 'Admin/view_submodule';
 $route['submodule_list']                    = 'Admin/submodule_list';
 $route['add_submodule_content']             = 'Admin/add_submodule_content';

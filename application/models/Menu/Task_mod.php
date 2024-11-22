@@ -10,7 +10,8 @@ class Task_mod extends CI_Model
 		$this->db->join('team t', 't.team_id = dt.team_id');
         $this->db->join('module m', 'm.mod_id = dt.mod_id');
         $this->db->join('sub_module sb', 'dt.sub_mod_id = sb.sub_mod_id');
-
+        $this->db->where('m.active !=', 'Inactive');
+        $this->db->where('sb.status !=', 'Inactive');
         if (!empty($search_value)) {
             $this->db->like('dt.emp_id', $search_value);
             $this->db->or_like('m.mod_name', $search_value);
@@ -31,6 +32,8 @@ class Task_mod extends CI_Model
 		$this->db->join('team t', 't.team_id = dt.team_id');
         $this->db->join('module m', 'm.mod_id = dt.mod_id');
         $this->db->join('sub_module sb', 'dt.sub_mod_id = sb.sub_mod_id');
+        $this->db->where('m.active !=', 'Inactive');
+        $this->db->where('sb.status !=', 'Inactive');
         if (!empty($search_value)) {
             $this->db->like('dt.emp_id', $search_value);
             $this->db->or_like('m.mod_name', $search_value);
