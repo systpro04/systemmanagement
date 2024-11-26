@@ -76,7 +76,9 @@ class Location extends CI_Controller {
     public function submit_location()
     {
         $company            = $this->input->post('company');
+        $company_name       = $this->input->post('company_name');
         $business_unit      = $this->input->post('business_unit');
+        $business_unit_name = $this->input->post('business_unit_name');
         $department         = $this->input->post('department');
         $module             = $this->input->post('module');
         $sub_module         = $this->input->post('sub_module');
@@ -97,6 +99,15 @@ class Location extends CI_Controller {
             'date_added'         => date('Y-m-d H:i:s')
         ];
         $this->location->submit_location($data);
+        $action = '<b>' . $this->session->name. '</b> setup a location implemented to <b>'.$company_name.' | '.$business_unit_name.'</b>';
+
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_added' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
     }
     public function edit_setup_location_content() {
         $id = $this->input->post('id');
@@ -107,7 +118,9 @@ class Location extends CI_Controller {
     {
         $id                 = $this->input->post('id');
         $company            = $this->input->post('company');
+        $company_name       = $this->input->post('company_name');
         $business_unit      = $this->input->post('business_unit');
+        $business_unit_name = $this->input->post('business_unit_name');
         $department         = $this->input->post('department');
         $module             = $this->input->post('module');
         $sub_module         = $this->input->post('sub_module');
@@ -128,6 +141,15 @@ class Location extends CI_Controller {
             'date_updated'       => date('Y-m-d H:i:s')
         ];
         $this->location->update_location($data, $id );
+        $action = '<b>' . $this->session->name. '</b>updated setup location implemented to <b>'.$company_name.' | '.$business_unit_name.'</b>';
+
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_updated' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
     }
     public function delete_setup_location() {
         $id = $this->input->post('id');

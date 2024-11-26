@@ -44,6 +44,30 @@ class Weekly extends CI_Controller {
                 $status_badge = '<span class="badge rounded-pill bg-success-subtle text-success">' . $row['weekly_status'] . '</span>';
             }
 
+            if($this->session->position != 'Programmer'){
+                $action = '
+                    <div class="hstack gap-1">
+                        <button type="button" class="btn btn-soft-secondary btn-label waves-effect waves-light btn-sm" onclick="edit_weekly_report_content(' . $row['id'] . ')" data-bs-toggle="modal" data-bs-target="#edit_weekly_report">
+                            <iconify-icon icon="solar:pen-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Edit
+                        </button>
+                        <button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="delete_weekly(' . $row['id'] . ')">
+                            <iconify-icon icon="solar:trash-bin-minimalistic-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Delete
+                        </button>
+                    </div>
+                ';
+            }else{
+                $action = '
+                <div class="hstack gap-1">
+                    <button type="button" class="btn btn-soft-secondary btn-label waves-effect waves-light btn-sm" onclick="edit_weekly_report_content(' . $row['id'] . ')" data-bs-toggle="modal" data-bs-target="#edit_weekly_report" hidden>
+                        <iconify-icon icon="solar:pen-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Edit
+                    </button>
+                    <button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="delete_weekly(' . $row['id'] . ')" hidden>
+                        <iconify-icon icon="solar:trash-bin-minimalistic-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Delete
+                    </button>
+                </div>
+            ';
+            }
+
             $emp_data = $this->workload->get_emp($row['emp_id']);
 
             $data[] = [
@@ -54,16 +78,7 @@ class Weekly extends CI_Controller {
                 'task_workload'     => $row['task_workload'],
                 'remarks'           => $row['remarks'],
                 'weekly_status'     => $status_badge,
-                'action' => '
-                    <div class="hstack gap-1">
-                        <button type="button" class="btn btn-soft-secondary btn-label waves-effect waves-light btn-sm" onclick="edit_weekly_report_content(' . $row['id'] . ')" data-bs-toggle="modal" data-bs-target="#edit_weekly_report">
-                            <iconify-icon icon="solar:pen-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Edit
-                        </button>
-                        <button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="delete_weekly(' . $row['id'] . ')">
-                            <iconify-icon icon="solar:trash-bin-minimalistic-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Delete
-                        </button>
-                    </div>
-                '
+                'action'            => $action 
             ];
         }
         
@@ -81,6 +96,7 @@ class Weekly extends CI_Controller {
         $date_range     = $this->input->post('date_range');
         $team           = $this->input->post('team');
         $emp_id         = $this->input->post('emp_id');
+        $emp_name       = $this->input->post('emp_name');
         $module         = $this->input->post('module');
         $sub_module     = $this->input->post('sub_module');
         $task_workload  = $this->input->post('task_workload');
@@ -99,6 +115,15 @@ class Weekly extends CI_Controller {
             'weekly_status'     => $weekly_status,
         ];
         $this->weekly->add_weekly($data);
+        $action = '<b>' . $this->session->name. '</b> added a weekly report to <b>'.$emp_name.'</b>';
+
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_added' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
     }
     public function edit_weekly_report_content(){
         $id = $this->input->post('id');
@@ -110,6 +135,7 @@ class Weekly extends CI_Controller {
         $date_range     = $this->input->post('date_range');
         $team           = $this->input->post('team');
         $emp_id         = $this->input->post('emp_id');
+        $emp_name       = $this->input->post('emp_name');
         $module         = $this->input->post('module');
         $sub_module     = $this->input->post('sub_module');
         $task_workload  = $this->input->post('task_workload');
@@ -128,6 +154,15 @@ class Weekly extends CI_Controller {
             'date_updated'      => date('Y-m-d H:i:s'),
         ];
         $this->weekly->update_weekly($data, $id);
+        $action = '<b>' . $this->session->name. '</b> updated a weekly report to <b>'.$emp_name.'</b>';
+
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_updated' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
     }
     public function delete_weekly(){
         $id = $this->input->post('id');

@@ -41,14 +41,24 @@ class Admin extends CI_Controller {
         foreach ($userlist as $value) {
             $emp_data = $this->workload->get_emp($value['emp_id']);  
             
-            $button = '<a href="#" class="btn btn-sm btn-danger" onclick="update_user(\'' . $value['id'] . '\')"><iconify-icon icon="solar:pen-new-round-bold-duotone" class="fs-20"></iconify-icon></a>';
-    
+            $button = '<button href="#" class="btn btn-sm btn-soft-info waves-effect waves-light" onclick="update_user_content(\'' . $value['id'] . '\')" data-bs-toggle="modal" data-bs-target="#updateUser">
+                        <iconify-icon icon="solar:pen-new-round-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Update</button>
+                        <button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onclick="reset_password('.$value['id'].')">
+                        <iconify-icon icon="tabler:refresh-alert" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Reset Password
+                    </button>';
+            $type = '';
+            if($value['type'] == 'Parttime') {
+                $type = '<span class="badge rounded-pill bg-danger-subtle text-danger">Parttime</span>';
+            } else {
+                $type = '<span class="badge rounded-pill bg-success-subtle text-success">Fulltime</span>';
+            }
             $result['data'][] = [
-                'team_name' => $value['team_name'], 
-                'emp_id' => $value['emp_id'], 
-                'name' => $emp_data['name'],
-                'position' => $emp_data['position'],
-                'action' => $button
+                'team_name'     => $value['team_name'], 
+                'emp_id'        => $value['emp_id'], 
+                'name'          => $emp_data['name'],
+                'position'      => $emp_data['position'],
+                'type'          => $type,
+                'action'        => $button
             ];
         }
     
@@ -81,9 +91,16 @@ class Admin extends CI_Controller {
         echo json_encode($result);
     }
     public function add_user(){
-        $team = $this->input->post('team_id');
-        $emp_id = $this->input->post('emp_id');
-        $position = $this->input->post('position');
+        $team           = $this->input->post('team_id');
+        $emp_id         = $this->input->post('emp_id');
+        $position       = $this->input->post('position');
+        $is_parttime    = $this->input->post('is_parttime');
+        $type = '';
+        if($is_parttime == 'Parttime') {
+            $type = 'Parttime';
+        }else{
+            $type = 'Fulltime';
+        }
         $data = [];
         $data = [
             'team_id'       => $team,
@@ -91,12 +108,34 @@ class Admin extends CI_Controller {
             'username'      => $emp_id,
             'position'      => $position,
             'date_added'    => date('Y-m-d H:i:s'),
-            'password'      => md5($emp_id)
+            'password'      => md5($emp_id),
+            'type'          => $type
         ];
         $this->admin->add_user($data);
     }
+    public function update_user_content(){
+        $id = $this->input->post('id');
+        $user = $this->admin->update_user_content($id);
+        echo json_encode($user);
+    }
+    public function update_user(){
+        $id             = $this->input->post('id');
+        $team           = $this->input->post('team_id');
+        $position       = $this->input->post('position');
+        $is_parttime    = $this->input->post('type');
+        $data = [];
+        $data = [    
+            'team_id'       => $team,
+            'position'      => $position,
+            'type'          => $is_parttime
+        ];
+        $this->admin->update_user($data, $id);
+    }
 
-
+    public function reset_password(){
+        $id = $this->input->post('id');
+        $this->admin->reset_password($id); 
+    }
     public function get_team()
     {
         $module = $this->admin->get_teams();

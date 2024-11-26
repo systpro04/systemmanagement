@@ -61,9 +61,12 @@ class Gantt extends CI_Controller {
     }
     public function submit_gantt() {
         $team                = $this->input->post('team');
+        $team_name           = $this->input->post('team_name');
+        $module_name         = $this->input->post('module_name');
         $emp_id              = $this->input->post('emp_id');
         $emp_name            = $this->input->post('emp_name');
         $module              = $this->input->post('module');
+        $module_name         = $this->input->post('module_name');
         $sub_module          = $this->input->post('sub_module');
         $description         = $this->input->post('description');
         $date_request        = $this->input->post('date_request');
@@ -88,6 +91,16 @@ class Gantt extends CI_Controller {
             'date_added'          => date('Y-m-d H:i:s'),
         ];
         $this->gantt->submit_gantt($data);
+
+        $action = '<b>' . $this->session->name. '</b> added a gantt for <b>'.$team_name.' | '.$module_name.'</b>';
+
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_added' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
     }
 
     public function edit_gantt_content() {
@@ -99,6 +112,8 @@ class Gantt extends CI_Controller {
     public function update_gantt() {
         $id                  = $this->input->post('id');
         $team                = $this->input->post('team');
+        $team_name           = $this->input->post('team_name');
+        $module_name         = $this->input->post('module_name');
         $emp_id              = $this->input->post('emp_id');
         $emp_name            = $this->input->post('emp_name');
         $module              = $this->input->post('module');
@@ -126,6 +141,15 @@ class Gantt extends CI_Controller {
             'date_added'          => date('Y-m-d H:i:s'),
         ];
         $this->gantt->update_gantt($data, $id);
+        $action = '<b>' . $this->session->name. '</b> updated a gantt for <b>'.$team_name.' | '.$module_name.'</b>';
+
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_updated' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
     }
 
     public function delete_gantt(){

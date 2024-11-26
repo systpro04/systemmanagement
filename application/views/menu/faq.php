@@ -62,8 +62,7 @@
                                 <div id="genques-collapseThree" class="accordion-collapse collapse" aria-labelledby="genques-headingThree" data-bs-parent="#genques-accordion">
                                     <div class="accordion-body"> 
                                         The system supports modular features, allowing teams to
-                                        enable only the functionalities relevant to their needs. User roles and
-                                        permissions can also be configured to suit individual responsibilities. 
+                                        enable only the functionalities relevant to their needs and individual responsibilities. 
                                     </div>
                                 </div>
                             </div>
@@ -98,9 +97,7 @@
                                 </h2>
                                 <div id="manageaccount-collapseOne" class="accordion-collapse collapse" aria-labelledby="manageaccount-headingOne" data-bs-parent="#manageaccount-accordion">
                                     <div class="accordion-body"> 
-                                        Go to the account settings page, click on "Forgot
-                                        Password," and follow the steps to reset your password. Ensure your email is
-                                        verified for smooth recovery. 
+                                        Contact your system administrator to initiate a password reset. 
                                     </div>
                                 </div>
                             </div>
@@ -110,9 +107,9 @@
                                 </h2>
                                 <div id="manageaccount-collapseTwo" class="accordion-collapse collapse" aria-labelledby="manageaccount-headingTwo" data-bs-parent="#manageaccount-accordion">
                                     <div class="accordion-body"> 
-                                        Navigate to "My Account" under the user profile menu.
-                                        Edit your details, such as name, email, and contact information, and save
-                                        changes. Changes may require admin approval. 
+                                        Navigate to "Your Name | Employee ID" at the top right, under the user Profile menu.
+                                        Edit your username or password, and save
+                                        changes. 
                                     </div>
                                 </div>
                             </div>

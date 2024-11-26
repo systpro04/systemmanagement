@@ -68,7 +68,9 @@ $route['user_list']                         = 'Admin/user_list';
 $route['search']                            = 'Admin/search';
 $route['emp_data']                          = 'Admin/emp_data';
 $route['add_user']                          = 'Admin/add_user';
+$route['update_user_content']               = 'Admin/update_user_content';
 $route['update_user']                       = 'Admin/update_user';
+$route['reset_password']                    = 'Admin/reset_password';
 
 $route['get_team']                          = 'Admin/get_team';
 $route['kpi_view']                          = 'Admin/kpi_view';
@@ -92,7 +94,7 @@ $route['edit_submodule_content']            = 'Admin/edit_submodule_content';
 $route['update_submodule']                  = 'Admin/update_submodule';
 $route['approve_new_module']                = 'Admin/approve_new_module';
 $route['recall_new_module']                 = 'Admin/recall_new_module';
-$route['setup_module_by_type']                      = 'Admin/setup_module';
+$route['setup_module_by_type']              = 'Admin/setup_module';
 $route['request']                           = 'Admin/request';
 $route['typeofsystem_data']                 = 'Admin/typeofsystem_data';
 $route['approved']                          = 'Admin/approved';
@@ -107,8 +109,9 @@ $route['it_responsibilities']               = 'Menu/It_Respo/index';
 //Rules and Regulations
 $route['rules_view']                        = 'Menu/RulesRegulation/index';
 
-
-
+//Logs
+$route['logs']                              = 'Logs_ctrl/index';
+$route['logs_list']                         = 'Logs_ctrl/logs_list';
 
 
 //It Responsibilities

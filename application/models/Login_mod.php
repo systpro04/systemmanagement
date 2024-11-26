@@ -34,13 +34,13 @@ class Login_mod extends CI_Model
 
     // Validate login credentials
     public function login_data_result($username, $password) {
-        $this->db->select('emp_id');
+        $this->db->select('*');
         $this->db->from('users');
         $this->db->where('username', $username);
         $this->db->where('password', $password);
         $this->db->limit(1);
         $query = $this->db->get();
 
-        return $query->row_array(); // Fetch a single user
+        return $query->row_array(); 
     }
 }

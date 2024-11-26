@@ -43,7 +43,7 @@ class Admin_mod extends CI_Model
         if (!empty($search_value)) {
             $this->db->group_start()
                      ->like('team.team_name', $search_value)
-                    //  ->or_like('users.name', $search_value)
+                     ->or_like('users.emp_id', $search_value)
                      ->or_like('users.position', $search_value)
                      ->group_end();
         }
@@ -70,7 +70,7 @@ class Admin_mod extends CI_Model
         if (!empty($search_value)) {
             $this->db->group_start()
                      ->like('team.team_name', $search_value)
-                    //  ->or_like('users.name', $search_value)
+                     ->or_like('users.emp_id', $search_value)
                      ->or_like('users.position', $search_value)
                      ->group_end();
         }
@@ -78,6 +78,23 @@ class Admin_mod extends CI_Model
             $this->db->where('team.team_id', $filter_team);
         }
         return $this->db->count_all_results();
+    }
+
+    public function update_user_content($id) {
+        $this->db->select('*');
+        $this->db->from('users');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+    public function update_user($data, $id) {
+        $this->db->where('id', $id);
+        $this->db->update('users', $data);
+    }
+    public function reset_password($id) {
+        $this->db->where('id', $id);
+        $this->db->set('password', md5($this->session->userdata('emp_id')));
+        $this->db->update('users');
     }
     // public function get_file_count_by_directory($directory, $mod_id, $sub_mod_id, $team, $typeofsystem)
     // {
@@ -109,14 +126,15 @@ class Admin_mod extends CI_Model
         $this->db->from('module m');
         $this->db->join('sub_module sb', 'm.mod_id = sb.mod_id', 'left');
         $this->db->group_by('m.mod_id');
-        $this->db->where('typeofsystem', $type);
+        $this->db->where('m.typeofsystem', $type);
         $this->db->where('m.active !=', 'Inactive');
-        $this->db->where('sb.status !=', 'Inactive');
         $modules = $this->db->get()->result();
     
         foreach ($modules as &$module) {
             $this->db->select('sb.sub_mod_id, sb.sub_mod_name');
             $this->db->from('sub_module sb');
+            $this->db->where('sb.status !=', 'Inactive');
+
             $this->db->where('sb.mod_id', $module->mod_id);
             $module->submodules = $this->db->get()->result();
         }

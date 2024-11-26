@@ -86,8 +86,6 @@
                                             <input type="text" class="form-control" id="phonenumberInput" value="<?php echo $this->session->userdata('emp_type')?>" disabled />
                                         </div>
                                     </div>
-                            
-
                                 </div>
                             </form>
                         </div>

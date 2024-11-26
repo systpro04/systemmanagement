@@ -61,4 +61,11 @@ class Deploy_mod extends CI_Model
         $this->db->limit($length, $start);
         return $this->db->get()->result_array();
     }
+    public function get_module_name($mod_id) {
+        $this->db->select('mod_name');
+        $this->db->from('module');
+        $this->db->where('mod_id', $mod_id);
+        return $this->db->get()->row();
+    }
+    
 }

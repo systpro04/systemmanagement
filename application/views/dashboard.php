@@ -136,11 +136,7 @@ $(document).ready(function () {
                         const birthDate = new Date(birthday.birthdate);
                         birthdayDates.push(birthDate.getDate());
 
-                        const formattedDate = birthDate.toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                        });
+                        const formattedDate = birthDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', });
                         let age = year - birthDate.getFullYear();
                         const isBeforeBirthday = (currentDate.getMonth() + 1) < month || ((currentDate.getMonth() + 1) === month && currentDate.getDate() < birthDate.getDate());
                         if (isBeforeBirthday) {
@@ -164,26 +160,46 @@ $(document).ready(function () {
                         birthdayList.append(birthdayHTML);
                     });
 
-                    updateCalendar(birthdayDates, month, year);
+                    updateCalendar(birthdayDates, month, year, response.data);
                 }
             },
         });
     }
 
-    function updateCalendar(birthdayDates, month, year) {
+    function updateCalendar(birthdayDates, month, year, birthdayData) {
         const calendarInstance = calendarElement._flatpickr;
         if (calendarInstance) {
             calendarInstance.set('disable', [
                 function (date) {
-                    return !(date.getMonth() === month - 1 && birthdayDates.includes(date.getDate())); 
+                    return !(date.getMonth() === month - 1 && birthdayDates.includes(date.getDate()));
                 },
             ]);
             calendarInstance.set('onDayCreate', function (dObj, dStr, fp, dayElem) {
-                const day = dayElem.innerText;
-                if (birthdayDates.includes(parseInt(day))) {
-                    dayElem.classList.add('highlighted-day');
-                    dayElem.style.pointerEvents = 'none';
+                const day = parseInt(dayElem.innerText);
+                if (dayElem.classList.contains('prevMonthDay') || dayElem.classList.contains('nextMonthDay')) {
+                    return;
                 }
+                if (birthdayDates.includes(day)) {
+                    dayElem.classList.add('highlighted-day');
+                    const birthdaysOnDay = birthdayData.filter(b => {
+                        const birthDate = new Date(b.birthdate);
+                        return birthDate.getDate() === day && birthDate.getMonth() + 1 === month;
+                    });
+                    const tooltipContent = birthdaysOnDay.map(person => `${person.lastname}, ${person.firstname}`).join('<br>');
+                    dayElem.setAttribute('data-bs-toggle', 'tooltip');
+                    dayElem.setAttribute('data-bs-placement', 'top');
+                    dayElem.setAttribute('data-bs-html', 'true');
+                    dayElem.setAttribute('title', tooltipContent);
+                    dayElem.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        calendarInstance.close();
+                    });
+                }
+            });
+            const tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipElements.forEach(dayElem => {
+                new bootstrap.Tooltip(dayElem);
             });
         }
     }
@@ -246,9 +262,12 @@ $(document).ready(function () {
     .highlighted-day {
         background-color: #ff0000;
         color: #ffffff;
+        border-radius: 50%;
+        font-weight: bold;
     }
+
     .today{
-        background-color: #0000ff !important;
+        background-color: #000000 !important;
         color: white !important;
     }
 </style>

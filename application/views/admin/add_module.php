@@ -201,6 +201,7 @@
 <script>
     $(document).ready(function () {
         $('#typeofsystem').select2({ placeholder: 'Select Type of System', allowClear: true, minimumResultsForSearch: Infinity });
+        $('#business_unit').select2({ placeholder: "Select Business Unit", allowClear: true, minimumResultsForSearch: Infinity});
     });
 
 

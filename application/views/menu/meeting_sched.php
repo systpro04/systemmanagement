@@ -1,3 +1,4 @@
+<?php if($this->session->userdata('position') != 'Programmer') : ?>
 <div class="modal fade" id="meeting_modal" tabindex="-1" aria-labelledby="meeting_modal" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content border-0">
@@ -65,6 +66,7 @@
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <div class="modal fade" id="edit_meeting_modal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
@@ -74,11 +76,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body p-4">
+                <?php if($this->session->userdata('position') != 'Programmer') : ?>
                 <div class="text-end">
-                    <a href="#" class="btn btn-sm btn-soft-primary" id="edit-event-btn" data-id="edit-event"
-                        onclick="editEvent(this)" role="button">Edit </a>
+                    <a href="#" class="btn btn-sm btn-soft-primary" id="edit-event-btn" data-id="edit-event" onclick="editEvent(this)" role="button">Edit </a>
                 </div>
-
+                <?php endif; ?>
                 <div class="event-details" id="event-details">
                     <div class="d-flex mb-2">
                         <div class="flex-grow-1 d-flex align-items-center">
@@ -166,11 +168,12 @@
                             </div>
                         </div>
                     </div>
-
+                    <?php if($this->session->userdata('position') != 'Programmer') : ?>
                     <div class="hstack gap-2 justify-content-end">
                         <button type="button" class="btn btn-soft-danger" id="delete-event-btn"><i class="ri-close-line align-bottom"></i> Delete</button>
                         <button type="button" class="btn btn-soft-info" id="update-meeting-btn"> Update</button>
                     </div>
+                    <?php endif; ?>
                 </form>
             </div>
         </div>
@@ -197,13 +200,13 @@
         <div class="col-12">
             <div class="row">
                 <div class="col-xl-3">
+                    <?php if($this->session->userdata('position') != 'Programmer') : ?>
                     <div class="card card-h-100">
                         <div class="card-body">
-                            <button class="btn btn-primary w-100" data-bs-toggle="modal"
-                                data-bs-target="#meeting_modal"><i class="mdi mdi-plus"></i>  New Schedule | Meeting
-                            </button>
+                            <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#meeting_modal"><i class="mdi mdi-plus"></i>  New Schedule | Meeting</button>
                         </div>
                     </div>
+                    <?php endif; ?>
                     <div class="card shadow-none">
                         <div class="card-body bg-info-subtle rounded">
                             <div class="d-flex">
@@ -388,6 +391,7 @@
         $('#meeting_modal').on('submit', 'form', function (e) {
             e.preventDefault();
             var team_id     = $(this).find('#team').val();
+            var team_name   = $(this).find('#team option:selected').text();
             var mod_id      = $(this).find('#module').val();
             var date        = $(this).find('#meeting_date').val();
             var time        = $(this).find('#time').val();
@@ -396,6 +400,7 @@
             
             var eventData = {
                 team_id:        team_id,
+                team_name:      team_name,
                 mod_id:         mod_id,
                 date_meeting:   date,
                 time:           time,
@@ -492,6 +497,7 @@
         $('#update-meeting-btn').click(function () {
             var id          = $('#edit_id').val();
             var team_id     = $('#edit_team').val();
+            var team_name   = $('#edit_team option:selected').text();
             var mod_id      = $('#edit_module').val();
             var date        = $('#edit_meeting_date').val();
             var time        = $('#edit_time').val();
@@ -501,6 +507,7 @@
             var updateData = {
                 id:             id,
                 team_id:        team_id,
+                team_name:      team_name,
                 mod_id:         mod_id,
                 date_meeting:   date,
                 time:           time,

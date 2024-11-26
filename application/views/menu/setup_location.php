@@ -236,8 +236,28 @@
             { "data": "department" },
             { "data": "module" },
             { "data": "sub_module" },
-            { "data": "date_parallel" },
-            { "data": "date_online" },
+            { "data": 'date_parallel',
+                    "render": function(data, type, row) {
+                        if (data) {
+                            var date = new Date(data);
+                            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
+                            });
+                        }else{
+                            return '';
+                        }
+                    }
+                },
+                { "data": 'date_online',
+                    "render": function(data, type, row) {
+                        if (data) {
+                            var date = new Date(data);
+                            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
+                            });
+                        }else{
+                            return '';
+                        }
+                    }
+                },
             { "data": "remarks" },
             { "data": "action" }
         ],
@@ -330,7 +350,9 @@
     function submit_location() {
         
         var company         = $('#company').val();
+        var company_name    = $('#company option:selected').text();
         var business_unit   = $('#business_unit').val();
+        var business_unit_name = $('#business_unit option:selected').text();
         var department      = $('#department').val();
         var module          = $('#module').val();
         var sub_module      = $('#sub_module').val();
@@ -338,7 +360,7 @@
         var date_online     = $('#date_online').val();
         var remarks         = $('#remarks').val();
 
-        if (company === "" || business_unit === "" || department === "" || module === "" || sub_module === "" || date_parallel === "" || date_online === "" || remarks === "") {
+        if (company === "" || business_unit === "" || department === "" || module === "" || date_parallel === "" || date_online === "" || remarks === "") {
             Swal.fire({
                 toast: true,
                 position: 'top-end',
@@ -370,6 +392,8 @@
                     type: 'POST',
                     data: {
                         company: company,
+                        company_name: company_name,
+                        business_unit_name: business_unit_name,
                         business_unit: business_unit,
                         department: department,
                         module: module,
@@ -421,7 +445,9 @@
     function update_location() {
         var id              = $('#edit_id').val();
         var company         = $('#edit_company').val();
+        var company_name         = $('#edit_company option:selected').text();
         var business_unit   = $('#edit_business_unit').val();
+        var business_unit_name = $('#edit_business_unit option:selected').text();
         var department      = $('#edit_department').val();
         var module          = $('#edit_module').val();
         var sub_module      = $('#edit_sub_module').val();
@@ -446,7 +472,9 @@
                     data: {
                         id: id,
                         company: company,
+                        company_name: company_name,
                         business_unit: business_unit,
+                        business_unit_name: business_unit_name,
                         department: department,
                         module: module,
                         sub_module: sub_module,

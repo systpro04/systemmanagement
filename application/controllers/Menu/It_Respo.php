@@ -9,6 +9,8 @@ class It_Respo extends CI_Controller {
             redirect('login');
         }
         $this->load->model('Menu/Workload', 'workload');
+        $this->load->model('Menu/File_mod_current', 'file_mod');
+        $this->load->model('Menu/Deploy_mod', 'deploy');
 	}
 
 	public function index()
@@ -103,6 +105,7 @@ class It_Respo extends CI_Controller {
     {
         $team_id            = $this->input->post('team_id');
         $emp_id             = $this->input->post('emp_id');
+        $emp_name           = $this->input->post('emp_name');
         $position           = $this->input->post('position');
         $module_id          = $this->input->post('module_id');
         $sub_module         = $this->input->post('sub_module');
@@ -123,6 +126,17 @@ class It_Respo extends CI_Controller {
             'date_added'        => date('Y-m-d H:i:s'),
         );
         $this->db->insert('workload', $data);
+        $modul = $this->deploy->get_module_name($module_id);
+        $module_name = $modul->mod_name;
+        $action = '<b>' . $this->session->name. '</b> updated a workload to <b>'.$emp_name.' | '.$module_name.'</b>';
+
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_added' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
     }
 
     public function edit_workload_content() {
@@ -135,6 +149,7 @@ class It_Respo extends CI_Controller {
 
         $team_id            = $this->input->post('team_id');
         $emp_id             = $this->input->post('emp_id');
+        $emp_name           = $this->input->post('emp_name');
         $position           = $this->input->post('position');
         $module_id          = $this->input->post('module_id');
         $sub_module         = $this->input->post('sub_module');
@@ -156,6 +171,18 @@ class It_Respo extends CI_Controller {
         );
         $this->db->where('id', $id);
         $this->db->update('workload', $data);
+
+        $modul = $this->deploy->get_module_name($module_id);
+        $module_name = $modul->mod_name;
+        $action = '<b>' . $this->session->name. '</b> updated a workload to <b>'.$emp_name.' | '.$module_name.'</b>';
+
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_updated' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
     }
     public function delete_workload() {
         $id = $this->input->post('id');

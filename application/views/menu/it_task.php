@@ -198,7 +198,9 @@
                                     <th>Concern</th>
                                     <th>Remarks</th>
                                     <th>Status</th>
-                                    <th>Action</th>
+                                    <?php if ($this->session->userdata('position') != 'Programmer'){ ?>
+                                        <th>Action</th>
+                                    <?php } ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -343,6 +345,7 @@
 
     function submit_task() {
 
+        var emp_name       = $('#name option:selected').text();
         var team            = $('#team').val();
         var emp_id          = $('#emp_id').val();
         var module          = $('#module').val();
@@ -352,7 +355,7 @@
         var remarks         = $('#remarks').val();
         var status          = $('#task_status').val();
 
-        if (team === "" || module === "" || sub_module === "" || desc === "" || concern === "" || remarks === "" || status === "") {
+        if (team === "" || module === "" || desc === "" || concern === "" || remarks === "" || status === "") {
             Swal.fire({
                 toast: true,
                 position: 'top-end',
@@ -384,6 +387,7 @@
                     type: 'POST',
                     data: {
                         team: team,
+                        emp_name: emp_name,
                         emp_id: emp_id,
                         module: module,
                         sub_module: sub_module,
@@ -438,6 +442,7 @@
     function update_task_content(){
         var team            = $('#edit_team').val();
         var task_id         = $('#edit_id').val();
+        var emp_name        = $('#edit_name option:selected').text();
         var emp_id          = $('#edit_emp_id').val();
         var module          = $('#edit_module').val();
         var sub_module      = $('#edit_sub_module').val();
@@ -462,6 +467,7 @@
                     data: {
                         team: team,
                         task_id: task_id,
+                        emp_name: emp_name,
                         emp_id: emp_id,
                         module: module,
                         sub_module: sub_module,

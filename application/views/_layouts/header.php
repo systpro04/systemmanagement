@@ -138,7 +138,7 @@
              <div class="navbar-brand-box">
                  <a href="#" class="logo logo-light">
                      <span class="logo-sm">
-                     <img src="http://172.16.161.34:8080/hrms/<?=$this->session->userdata('photo'); ?>" height="20" class="rounded-circle avatar-sm" />
+                     <img src="http://172.16.161.34:8080/hrms/<?=$this->session->userdata('photo'); ?>" height="20" class="rounded-circle avatar-sm"  />
                      </span>
                      <span class="logo-lg">
                          <img src="assets/images/logo-light.png" alt="" style=" height: 80px;" />
@@ -162,7 +162,7 @@
                              </a>
                          </li>
 
-                         <?php if ($this->session->userdata('position') == 'System Analyst') { ?>
+                         <?php if ($this->session->userdata('position') == 'System Analyst' || $this->session->userdata('emp_id') == '01022-2014') { ?>
                             <li class="nav-item">
 
                                 <a class="nav-link menu-link <?php echo in_array($page, ['kpi_view', 'module_view', 'add_user_view']) ? 'active' : ''; ?>"  href="#sidebarLayouts"  data-bs-toggle="collapse"  role="button"  aria-expanded="<?php echo in_array($page, ['profile']) ? 'true' : 'false'; ?>"  aria-controls="sidebarLayouts">
@@ -183,7 +183,7 @@
                         <?php } ?>
 
 
-                        <?php if ($this->session->userdata('emp_id') == '21114-2013') { ?>
+                        <?php if ($this->session->userdata('emp_id') == '21114-2013' || $this->session->userdata('emp_id') == '01022-2014') { ?>
                             <li class="nav-item">
                                 <a class="nav-link menu-link <?php echo ($page == 'request') ? 'active' : ''; ?> " href="<?php echo base_url('request'); ?>">
                                     <iconify-icon icon="solar:shield-check-bold-duotone" class="fs-25"></iconify-icon >&nbsp;&nbsp;&nbsp;&nbsp;  <span class="fs-12">Request </span>
@@ -193,7 +193,7 @@
 
 
                          <li class="nav-item">
-                             <a class="nav-link menu-link" href="#!">
+                             <a class="nav-link menu-link <?php echo ($page == 'logs') ? 'active' : ''; ?>" href="<?php echo base_url('logs'); ?>">
                                 <iconify-icon icon="solar:database-bold-duotone" class="fs-25"></iconify-icon >&nbsp;&nbsp;&nbsp;&nbsp;  <span class="fs-12">Logs </span>
                              </a>
                          </li>

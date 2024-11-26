@@ -213,7 +213,11 @@
                                     <th>Task</th>
                                     <th>Remarks</th>
                                     <th>Status</th>
-                                    <th>Action</th>
+
+                                    <?php if ($this->session->userdata('position') != 'Programmer'){ ?>
+                                        <th>Action</th>
+                                    <?php } ?>
+                                    <!-- <th>Action</th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -233,7 +237,6 @@
         $('#sub_module, #edit_sub_module, #sub_module_filter').select2({ placeholder: 'Sub Module Name | System', allowClear: true });
         $('#weekly_status, #edit_weekly_status').select2({ placeholder: 'Weekly Status', allowClear: true });
     });
-
     var table = $('#weekly_report').DataTable({
         "processing": true,
         "serverSide": true,
@@ -260,7 +263,7 @@
             { "data": "action" }
         ],
         "columnDefs": [
-            { "className": "text-center", "targets": ['_all'] }
+            { "className": "text-center", "targets": ['_all'] },
         ],
     });
 
@@ -351,11 +354,12 @@
         var sub_module      = $('#sub_module').val();
         var date_range      = $('#date_range_report').val();
         var emp_id          = $('#name').val();
+        var emp_name        = $('#name option:selected').text();
         var task_workload   = $('#task_workload').val();
         var weekly_status   = $('#weekly_status').val();
         var remarks         = $('#remarks').val();
 
-        if (team === "" || module === "" || sub_module === "" || date_range === "" || weekly_status === "" || remarks === "") {
+        if (team === "" || module === "" || date_range === "" || weekly_status === "" || remarks === "") {
             Swal.fire({
                 toast: true,
                 position: 'top-end',
@@ -365,7 +369,7 @@
                 icon: 'error',
                 title: 'Please fill up fields!',
             });
-            if (team === "" || module === "" || sub_module === "" || date_range === "" || weekly_status === "" || remarks === "") {
+            if (team === "" || module === "" || date_range === "" || weekly_status === "" || remarks === "") {
                 $('#team, #module, #sub_module, #date_range, #name, #weekly_status, #remarks').addClass('is-invalid');
             }
             return;
@@ -391,6 +395,7 @@
                         sub_module: sub_module,
                         date_range: date_range,
                         emp_id: emp_id,
+                        emp_name: emp_name,
                         task_workload: task_workload,
                         weekly_status: weekly_status,
                         remarks: remarks
@@ -446,6 +451,7 @@
         var team            = $('#edit_team').val();
         var id              = $('#edit_id').val();
         var emp_id          = $('#edit_name').val();
+        var emp_name        = $('#edit_name option:selected').text();
         var module          = $('#edit_module').val();
         var sub_module      = $('#edit_sub_module').val();
         var task_workload   = $('#edit_task_workload').val();
@@ -471,6 +477,7 @@
                         team: team,
                         id: id,
                         emp_id: emp_id,
+                        emp_name: emp_name,
                         module: module,
                         sub_module: sub_module,
                         task_workload: task_workload,

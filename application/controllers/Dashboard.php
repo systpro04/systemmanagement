@@ -80,6 +80,7 @@ class Dashboard extends CI_Controller {
 		);
 		$this->dashboard->update_password($id, $data);
 		$this->session->set_userdata('username', $username);
+		$this->session->set_userdata('password', $password);
 	}
 	
 	

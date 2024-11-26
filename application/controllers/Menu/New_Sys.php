@@ -10,6 +10,7 @@ class New_Sys extends CI_Controller {
         }
         $this->load->model('Menu/File_mod_new', 'file_mod');
         $this->load->model('Admin_mod', 'admin');
+        $this->load->model('Menu/Deploy_mod', 'deploy');
     }
     public function index() {
         $this->load->view('_layouts/header');
@@ -346,6 +347,16 @@ class New_Sys extends CI_Controller {
                 ], $statuses);
     
                 $this->file_mod->upload_file($data);
+                $modul = $this->deploy->get_module_name($module);
+                $module_name = $modul->mod_name;
+                $action = '<b>' . $this->session->name. '</b> uploaded a file to <b>'.$selected_directory.' | '.$module_name.' | new</b>';
+                $data1 = array(
+                    'emp_id' => $this->session->emp_id,
+                    'action' => $action,
+                    'date_added' => date('Y-m-d H:i:s'),
+                );
+                $this->load->model('Logs', 'logs');
+                $this->logs->addLogs($data1);
             }
         }
     

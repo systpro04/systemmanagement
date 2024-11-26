@@ -190,7 +190,7 @@
             const team = document.querySelector('#team_id').value;
             const module = document.querySelector('#mod_id').value;
             const sub_module = document.querySelector('#sub_mod_id').value;
-            const typeofsyste = document.querySelector('#typeofsystem').value;
+            const typeofsystem = document.querySelector('#typeofsystem').value;
 
             Swal.fire({
                 title: 'Are you sure?',
@@ -208,7 +208,7 @@
                     formData.append('team_id', team);
                     formData.append('mod_id', module);
                     formData.append('sub_mod_id', sub_module);
-                    formData.append('typofsystem', typeofsystem);
+                    formData.append('typeofsystem', typeofsystem);
 
                     const pond = FilePond.find(document.querySelector(".filepond-input-multiple"));
                     const files = pond.getFiles();

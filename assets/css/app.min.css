@@ -18447,14 +18447,6 @@ span.flatpickr-weekday {
 		color: white !important;
 		background-color: #0073ff !important;
 	}
-    @font-face {
-		font-family: 'Inter-Regular';
-		font-style: normal;
-		font-weight: 400;
-		
-		src: url('assets/css/Inter-Regular.woff2') format('woff2');
-		
-	} 
 
 /*# sourceMappingURL=app.min.css.map */
 

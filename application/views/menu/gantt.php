@@ -453,6 +453,8 @@
     });
     function submit_gantt() {
         var team = $('#team').val();
+        var team_name = $('#team option:selected').text();
+        var module_name = $('#module option:selected').text();
         var emp_id = $('#emp_id').val();
         var emp_name = $('#incharge option:selected').text();
         var module = $('#module').val();
@@ -464,7 +466,7 @@
         var date_start = $('#date_start').val();
         var date_end = $('#date_end').val();
 
-        if (team == '' || incharge == '' || module == '' || sub_module == '' || description == '' || date_request == '' || date_parallel == '' || date_implementation == '' || date_start == '' || date_end == '') {
+        if (team == '' || incharge == '' || module == '' || description == '' || date_request == '' || date_parallel == '' || date_implementation == '' || date_start == '' || date_end == '') {
             Swal.fire({
                 toast: true,
                 position: 'top-end',
@@ -510,6 +512,8 @@
                     type: 'POST',
                     data: {
                         team: team,
+                        team_name: team_name,
+                        module_name: module_name,
                         emp_name: emp_name,
                         emp_id: emp_id,
                         module: module,
@@ -567,6 +571,8 @@
     function update_gantt() {
         var id              = $('#edit_id').val();
         var team            = $('#edit_team').val();
+        var team_name       = $('#edit_team option:selected').text();
+        var module_name     = $('#edit_module option:selected').text();
         var emp_id          = $('#edit_emp_id').val();
         var emp_name        = $('#edit_incharge option:selected').text();
         var module          = $('#edit_module').val();
@@ -595,6 +601,8 @@
                     data: {
                         id: id,
                         team: team,
+                        team_name: team_name,
+                        module_name: module_name,
                         emp_name: emp_name,
                         emp_id: emp_id,
                         module: module,

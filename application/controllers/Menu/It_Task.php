@@ -79,6 +79,7 @@ class It_Task extends CI_Controller {
     }
     public function submit_task(){
         $team               = $this->input->post('team');
+        $emp_name          = $this->input->post('emp_name');
         $emp_id             = $this->input->post('emp_id');
         $module             = $this->input->post('module');
         $sub_module         = $this->input->post('sub_module');
@@ -99,6 +100,15 @@ class It_Task extends CI_Controller {
             'date_added'    => date('Y-m-d H:i:s')
         ];
         $this->task->add_task($data);
+        $action = '<b>' . $this->session->name. '</b> added a task to <b>'.$emp_name.'</b>';
+
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_added' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
         
     }
 
@@ -110,6 +120,7 @@ class It_Task extends CI_Controller {
     public function update_task_content(){
         $id                 = $this->input->post('task_id');
         $team               = $this->input->post('team');
+        $emp_name           = $this->input->post('emp_name');
         $emp_id             = $this->input->post('emp_id');
         $module             = $this->input->post('module');
         $sub_module         = $this->input->post('sub_module');
@@ -130,6 +141,15 @@ class It_Task extends CI_Controller {
             'date_updated'  => date('Y-m-d H:i:s')
         ];
         $this->task->update_task($data, $id);
+        $action = '<b>' . $this->session->name. '</b> updated a task to <b>'.$emp_name.'</b>';
+
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_updated' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
     }
     public function delete_task(){
         $id = $this->input->post('task_id');

@@ -41,6 +41,7 @@ class Meeting extends CI_Controller {
     public function add_meeting() {
 
         $team_id     = $this->input->post('team_id');
+        $team_name     = $this->input->post('team_name');
         $mod_id       = $this->input->post('mod_id');
         $date_meeting  = $this->input->post('date_meeting');
         $time          = $this->input->post('time');
@@ -57,12 +58,27 @@ class Meeting extends CI_Controller {
             'date_added'    => date('Y-m-d H:i:s')
         ];
         $this->meeting->insert_event($data);
+
+
+        
+        $action = '<b>' . $this->session->name. '</b> updated a meeting for <b>'.$team_name.'</b>';
+
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_added' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
+
+
         echo json_encode(['status' => 'success']);
     }
     public function update_meeting() 
     {
         $id            = $this->input->post('id');
         $team_id       = $this->input->post('team_id');
+        $team_name     = $this->input->post('team_name');
         $mod_id        = $this->input->post('mod_id');
         $date_meeting  = $this->input->post('date_meeting');
         $time          = $this->input->post('time');
@@ -80,6 +96,18 @@ class Meeting extends CI_Controller {
             'date_updated'  => date('Y-m-d H:i:s')
         ];
         $this->meeting->update_event($data, $id);
+
+                
+        $action = '<b>' . $this->session->name. '</b> updated a meeting for <b>'.$team_name.'</b>';
+
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_updated' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
+
         echo json_encode(['status' => 'success']);
     }
 

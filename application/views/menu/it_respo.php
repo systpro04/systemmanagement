@@ -434,6 +434,7 @@
 
         var team_id         = $('#team_id').val();
         var emp_id          = $('#emp_id').val();
+        var emp_name        = $('#name option:selected').text();
         var position        = $('#position').val();
         var module_id       = $('#module_id').val();
         var sub_module      = $('#sub_module').val();
@@ -442,7 +443,7 @@
         var remarks         = $('#remarks').val();
         var status          = $('#workload_status').val();
 
-        if (team_id === "" || emp_id === "" || module_id === "" || sub_module === "" || sub_module_menu === "") {
+        if (team_id === "" || emp_id === "" || module_id === "") {
             Swal.fire({
                 toast: true,
                 position: 'top-end',
@@ -475,6 +476,7 @@
                     data: {
                         team_id: team_id,
                         emp_id: emp_id,
+                        emp_name: emp_name,
                         position: position,
                         module_id: module_id,
                         sub_module: sub_module,
@@ -554,6 +556,7 @@
         var id              = $('#edit_id').val();
         var team_id         = $('#edit_team_id').val();
         var emp_id          = $('#edit_emp_id').val();
+        var emp_name        = $('#edit_name option:selected').text();
         var position        = $('#edit_position').val();
         var module_id       = $('#edit_module_id').val();
         var sub_module      = $('#edit_sub_module').val();
@@ -580,6 +583,7 @@
                         id: id, 
                         team_id: team_id,
                         emp_id: emp_id,
+                        emp_name: emp_name,
                         position: position,
                         module_id: module_id,
                         sub_module: sub_module,

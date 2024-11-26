@@ -1,4 +1,3 @@
-<!-- Varying modal content -->
 <div class="modal fade" id="addUser" tabindex="-1" aria-labelledby="create_kpiLabel" aria-hidden="true"
     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog">
@@ -14,15 +13,6 @@
                     <input type="hidden" class="hidden" id="emp_id">
                     <select class="form-select mb-3" id="team_id" style="width: 100%; height: 508px">
                         <option value=""></option>
-                        <option value="1">LOGIC LEGENDS</option>
-                        <option value="2">CODE CONQUERORS</option>
-                        <option value="3">QUANTUM QUANTS</option>
-                        <option value="4">SERVER SAMURAI</option>
-                        <option value="5">CTRL+ ALT ELITE</option>
-                        <option value="6">CYBER CENTINELS</option>
-                        <option value="7">TECH TACTICIANS</option>
-                        <option value="8">ALGORITHM ASSASSIN</option>
-                        <option value="9">SYNTAX SOLDIERS</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -34,9 +24,56 @@
                         <option value="RMS">RMS</option>
                     </select>
                 </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="parttimeCheckbox" value="Parttime">
+                    <label class="form-check-label fw-6" for="parttimeCheckbox">Check if part time in this team</label>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="insertUser()">Submit</button>
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateUser" tabindex="-1" aria-labelledby="create_kpiLabel" aria-hidden="true"
+    data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="varyingcontentModalLabel">SETUP USER</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="title" class="col-form-label">Team:</label>
+                    <input type="hidden" class="hidden" id="edit_id">
+                    <select class="form-select mb-3" id="edit_team_id" style="width: 100%; height: 508px">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="type" class="col-form-label">Position:</label>
+                    <select class="form-select mb-3" id="edit_type">
+                        <option></option>
+                        <option value="System Analyst">SYSTEM ANALYST</option>
+                        <option value="Programmer">PROGRAMMER</option>
+                        <option value="RMS">RMS</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="type" class="col-form-label">Position:</label>
+                    <select class="form-select mb-3" id="edit_parttime">
+                        <option></option>
+                        <option value="Parttime">Part Time</option>
+                        <option value="Fulltime">Full Time</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="updateUser()">Submit</button>
                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -71,7 +108,8 @@
                                 <select class="form-select" id="filter_team" style="width: auto; height: auto;">
                                     <option value=""></option>
                                 </select>
-                                <input type="search" class="form-control" id="search" name="search" style="width: 500px;" placeholder="Search Employee to add...">
+                                <input type="search" class="form-control" id="search" name="search"
+                                    style="width: 500px;" placeholder="Search Employee to add...">
                             </div>
                         </div>
                     </div>
@@ -86,6 +124,7 @@
                                     <th>Emp ID</th>
                                     <th>Employee Name</th>
                                     <th>Position</th>
+                                    <th>Type</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -104,13 +143,18 @@
 <script src="<?php echo base_url(); ?>assets/js/datatable2.1.8.js"></script>
 <script>
     $(document).ready(function () {
-        $('#team_id, #filter_team').select2({
+        $('#team_id, #filter_team, #edit_team_id').select2({
             placeholder: 'Select Team',
             allowClear: true,
             minimumResultsForSearch: Infinity
         });
-        $('#type').select2({
+        $('#type, #edit_type').select2({
             placeholder: 'Position',
+            allowClear: true,
+            minimumResultsForSearch: Infinity
+        });
+        $('#edit_parttime').select2({
+            placeholder: 'Type',
             allowClear: true,
             minimumResultsForSearch: Infinity
         });
@@ -121,15 +165,15 @@
         type: 'POST',
         success: function (response) {
             teamData = JSON.parse(response);
-            $('#filter_team').empty().append('<option value="">Select Team Name</option>');
+            $('#filter_team, #team_id, #edit_team_id').empty().append('<option value="">Select Team Name</option>');
             teamData.forEach(function (team) {
-                $('#filter_team').append('<option value="' + team.team_id + '">' + team.team_name + '</option>');
+                $('#filter_team, #team_id, #edit_team_id').append('<option value="' + team.team_id + '">' + team.team_name + '</option>');
             });
         }
     });
 
     $(document).ready(function () {
-        let table =$('#user_list').DataTable({
+        let table = $('#user_list').DataTable({
             processing: true,
             serverSide: true,
             stateSave: true,
@@ -151,6 +195,7 @@
                 { data: 'emp_id' },
                 { data: 'name' },
                 { data: 'position' },
+                { data: 'type' },
                 { data: 'action' }
             ],
             paging: true,
@@ -161,7 +206,7 @@
             ],
         });
         $('#filter_team').change(function () {
-            table.ajax.reload(); // Reload DataTable with new filter value
+            table.ajax.reload();
         });
     });
 
@@ -182,11 +227,11 @@
             }).html(`${item.emp_id} - ${item.name}`)
         );
 
-        listItem.click(function() {
-            var emp_id = item.emp_id; 
+        listItem.click(function () {
+            var emp_id = item.emp_id;
             add_employee_access(emp_id);
         });
-        
+
         return listItem.appendTo(ul);
     }.bind($("input[name='search']"));
     $("div.ui-helper-hidden-accessible[role='status']").hide();
@@ -210,7 +255,7 @@
         var emp_id = $('#emp_id').val();
         var team_id = $('#team_id').val();
         var position = $('#type').val();
-
+        var isParttimeChecked = $('#parttimeCheckbox').is(':checked') ? $('#parttimeCheckbox').val() : null;
         Swal.fire({
             title: 'Add User',
             text: 'Are you sure you want to add this user?',
@@ -228,7 +273,8 @@
                     data: {
                         emp_id: emp_id,
                         team_id: team_id,
-                        position: position
+                        position: position,
+                        is_parttime: isParttimeChecked
                     },
                     success: function (data) {
                         Swal.fire({
@@ -247,6 +293,92 @@
             }
         });
     }
-
+    function update_user_content(id) {
+        $.ajax({
+            url: '<?php echo base_url('update_user_content') ?>',
+            type: 'POST',
+            data: { id: id },
+            success: function (response) {
+                let data = JSON.parse(response);
+                $('#edit_team_id').val(data.team_id).trigger('change');
+                $('#edit_id').val(data.id);
+                $('#edit_type').val(data.position).trigger('change');
+                $('#edit_parttime').val(data.type).trigger('change');
+            }
+        });
+    }
+    function updateUser() {
+        var id          = $('#edit_id').val();
+        var team_id     = $('#edit_team_id').val();
+        var position    = $('#edit_type').val();
+        var type        = $('#edit_parttime').val();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You want to update this user data?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, update it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '<?php echo base_url('update_user') ?>',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        team_id: team_id,
+                        position: position,
+                        type: type
+                    },
+                    success: function (data) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Successfully Added.',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: true,
+                        });
+                        $('#user_list').DataTable().ajax.reload();
+                        $('#updateUser').modal('hide');
+                    }
+                });
+            }
+        });
+    }
+    function reset_password(id) {
+        Swal.fire({
+            title: 'Are you sure ',
+            text: 'You want to reset this user password?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, reset it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '<?php echo base_url('reset_password') ?>',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (data) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Success! Password reset!!!',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: true,
+                        });
+                        $('#user_list').DataTable().ajax.reload();
+                    }
+                });
+            }
+        });
+    }
 </script>
-
