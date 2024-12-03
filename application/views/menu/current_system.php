@@ -1,11 +1,13 @@
 <!-- Modal for viewing folder files -->
-<div class="modal fade" id="folderModal" tabindex="-1" aria-labelledby="folderModalLabel" aria-hidden="true"
-    data-bs-backdrop="static" data-bs-keyboard="false">
+<div class="modal fade" id="folderModal" tabindex="-1" aria-labelledby="folderModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-xl">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title" id="folder_name"></h5>
-                <div class="col-md-8">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12 mb-3">
                     <div class="d-flex gap-2">
                         <select id="teamFilter" class="form-select" aria-label="Team">
                             <option value=""></option>
@@ -16,11 +18,15 @@
                         <select id="subModuleFilter" class="form-select" aria-label="Submodule">
                             <option value="">Select Submodule</option>
                         </select>
+                        <select id="buFilter" class="form-select" aria-label="Submodule">
+                            <option value="">Select Business Unit</option>
+                        </select>
+                        <select id="deptFilter" class="form-select" aria-label="Submodule">
+                            <option value="">Select Department</option>
+                        </select>
                     </div>
                 </div>
-            </div>
-            <hr>
-            <div class="modal-body">
+                <hr>
                 <div class="row" id="folderModalBody"></div>
             </div>
             <div class="modal-footer">
@@ -36,11 +42,10 @@
     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title" id="uploaded_to"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <form id="uploadForm" method="post" enctype="multipart/form-data">
                     <div class="row">
@@ -64,11 +69,40 @@
                                 <option value="BUSINESS_ACCEPTANCE">BUSINESS_ACCEPTANCE</option>
                             </select>
                         </div>
+                        <div class="col-lg-12" id="isrSearchDiv" style="display: none;">
+                            <label for="isrSearch" class="col-form-label">Enter ISR Number<span class="text-danger"><small>( Leave Blanked for the system that has no ISR NO.) *</small></span></label>
+                            <div class="input-group">
+                                <input type="search" id="isrSearch" class="form-control" placeholder="Enter ISR Number">
+                                <button type="button" id="searchISR" class="btn btn-secondary">Search</button>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-12">
+                            <label for="title" class="col-form-label">Business Unit <span class="text-danger"><small>( Optional for no business_unit file directory )*</small></span></label>
+                            <select id="business_unitFilter" class="form-select" aria-label="Team">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                        <div class="col-lg-12">
+                            <label for="title" class="col-form-label">Department <span class="text-danger"><small>( Optional for no department file directory )*</small></span></label>
+                            <select id="departmentFilter" class="form-select" aria-label="Team">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                        <div class="col-lg-12" id="dateImplem" style="display: none;">
+                            <label class="col-form-label">Date Implementation | Parallel:</label>
+                            <div class="input-group">
+                                <input type="date" id="date_implem" class="form-control" readonly="" placeholder="Select Date Implemented" data-provider="flatpickr" />
+                                <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                            </div>
+                        </div>
                         <div class="col-lg-12 mt-3">
                             <label for="fileUpload">Upload a File</label>
-                            <input type="file" id="fileUpload" class="filepond filepond-input-multiple" name="file[]" multiple data-allow-reorder="true" data-max-file-size="500MB" data-max-files="5" />
+                            <input type="file" id="fileUpload" class="filepond filepond-input-multiple" name="file[]" multiple data-allow-reorder="true" data-max-file-size="500MB" data-max-files="200" />
                             <input type="hidden" hidden id="file_team" name="file_team" class="hidden">
                             <input type="hidden" hidden id="file_module" name="file_module" class="hidden">
+                            <input type="hidden" hidden id="file_module_name" name="file_module_name" class="hidden" >
                             <input type="hidden" hidden id="file_sub_module" name="file_sub_module" class="hidden">
                         </div>
                     </div>
@@ -81,9 +115,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 <div class="container-fluid">
     <div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
@@ -140,6 +171,9 @@
         $('#teamFilter').select2({ placeholder: 'Team Name', allowClear: true, minimumResultsForSearch: Infinity });
         $('#moduleFilter').select2({ placeholder: 'Module Name', allowClear: true, minimumResultsForSearch: Infinity });
         $('#subModuleFilter').select2({ placeholder: 'Sub Module Name', allowClear: true, minimumResultsForSearch: Infinity });
+
+        $('#business_unitFilter, #buFilter').select2({ placeholder: 'Select Business Unit', allowClear: true, minimumResultsForSearch: Infinity });
+        $('#departmentFilter, #deptFilter').select2({ placeholder: 'Select Department', allowClear: true, minimumResultsForSearch: Infinity });
     });
 
     $(document).ready(function () {
@@ -188,6 +222,42 @@
         }
     });
 
+    $.ajax({
+        url: '<?php echo base_url('business_unit_current') ?>',
+        type: 'POST',
+        success: function (response) {
+            buData = JSON.parse(response);
+            $('#business_unitFilter, #buFilter').empty().append('<option value="">Select Business Unit</option>');
+            buData.forEach(function (bu) {
+                $('#business_unitFilter, #buFilter').append('<option value="' + bu.bcode + '">' + bu.business_unit + '</option>');
+            });
+            $('#deptFilter').prop('disabled', true);
+        }
+    });
+
+    $('#business_unitFilter, #buFilter').change(function () {
+        $('#deptFilter, #departmentFilter').empty().append('<option value="">Select Department</option>');
+        $('#deptFilter, #departmentFilter').prop('disabled', true);
+        var selectedBusinessUnit = $(this).val();
+        if (selectedBusinessUnit) {
+            $.ajax({
+                url: '<?php echo base_url('department_current') ?>',
+                type: 'POST',
+                data: {
+                    business_unit: selectedBusinessUnit
+                },
+                success: function (response) {
+                    deptData = JSON.parse(response);
+                    $('#deptFilter, #departmentFilter').empty().append('<option value="">Select Department</option>');
+                    deptData.forEach(function (dept) {
+                        $('#deptFilter, #departmentFilter').append('<option value="' + dept.dcode + '">' + dept.dept_name + '</option>');
+                    });
+                    $('#deptFilter, #departmentFilter').prop('disabled', false);
+                }
+            });
+        }
+    });
+
     let teamValue = '', moduleValue = '', subModuleValue = '', moduleName = '', subModuleName = '';
 
     $('#team').change(function () {
@@ -209,14 +279,16 @@
     $('#file_upload').on('show.bs.modal', function () {
         $('#file_team').val(teamValue);
         $('#file_module').val(moduleValue);
+        $('#file_module_name').val(moduleName);
         $('#file_sub_module').val(subModuleValue);
-
+        // $('#buFilter').val('').trigger('change');
         let displaySubModuleName = subModuleName || "";
 
 
         $('#uploaded_to').text(`${teamName} | ${moduleName} | ${displaySubModuleName}`);
     });
 
+    
     function toggleUploadButton() {
         const isDisabled = !teamValue || !moduleValue
         $('.create-folder-modal').prop('disabled', isDisabled);
@@ -226,9 +298,25 @@
 
     $('#team, #module, #sub_module').change(function () {
         teamValue = $('#team').val();
+        teamName = $('#team option:selected').text();
+        moduleName = $('#module option:selected').text();
+        submoduleName = $('#sub_module option:selected').text();
         moduleValue = $('#module').val();
         subModuleValue = $('#sub_module').val();
+
         toggleUploadButton();
+
+        Toastify({
+            text: `Successfully selected : ${teamName || ''} | ${moduleName || ''} | ${submoduleName || ''}`,
+            duration: 5000,
+            gravity: "top",
+            position: "left",
+            stopOnFocus: true,
+            close: true,
+            style: {
+                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+            },
+        }).showToast();
     });
 
 </script>
@@ -260,25 +348,16 @@
                 $.each(response, function (index, folder) {
                     folderListHTML += `
                     <div class="col-xxl-2 col-6 folder-card">
-                        <div class="card bg-light ribbon-box border" id="folder-` + index + `">
+                        <div class="card bg-light ribbon-box border" id="folder-` + index + `" onclick="openFolderModal('` + folder.name + `')" style="cursor: pointer">
                             <div class="card-body">
                                 <div class="d-flex mb-1">
                                     <div class="form-check form-check-danger mb-3 fs-15 flex-grow-1">
                                         <input type="hidden" id="foldername" value="` + folder.name + `">
                                     </div>
-                                    <div class="dropdown">
-                                        <button class="btn btn-ghost-primary btn-icon btn-sm dropdown shadow-none"
-                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="ri-more-2-fill fs-16 align-bottom"></i>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a class="dropdown-item open-folder-btn" data-folder="` + folder.name + `" onclick="openFolderModal('` + folder.name + `')">Open</a></li>
-                                        </ul>
-                                    </div>
                                 </div>
                                 <div class="text-center">
                                     <div class="mb-2">
-                                        <iconify-icon icon="ri:folder-6-fill"
+                                        <iconify-icon icon="material-symbols:folder-open"
                                             class="align-bottom text-warning fs-60"></iconify-icon>
                                     </div>
                                     <h6 class="fs-12 folder-name fw-bold">` + folder.name + `</h6>
@@ -299,18 +378,23 @@
                 });
                 $('#folderlist-data').html(folderListHTML);
 
-                $('.open-folder-btn').on('click', function () {
-                    var folderName = $(this).data('folder');
-                    openFolderModal(folderName);
-                });
-            },
+                // Remove the click handler for the dropdown button
+                // The entire card is now clickable, so no need for this handler anymore
+                // $('.open-folder-btn').on('click', function () {
+                //     var folderName = $(this).data('folder');
+                //     openFolderModal(folderName);
+                // });
+            }
+
         });
     }
-
     function openFolderModal(folderName) {
         var team = $('#team').val();
         var module = $('#module').val();
         var sub_module = $('#sub_module').val();
+        var business_unit = $('#buFilter').val();
+        var department = $('#deptFilter').val();
+
 
         $.ajax({
             url: '<?php echo base_url('get_filter_options'); ?>',
@@ -319,6 +403,7 @@
             success: function (response) {
                 var teamOptions = '<option value="">Select Team</option>';
                 var moduleOptions = '<option value="">Select Module</option>';
+                var buOptions = '<option value="">Select Business Unit</option>';
 
                 response.teams.forEach(function (teamItem) {
                     teamOptions += `<option value="${teamItem.team_id}">${teamItem.team_name}</option>`;
@@ -326,10 +411,14 @@
                 response.modules.forEach(function (moduleItem) {
                     moduleOptions += `<option value="${moduleItem.mod_id}">${moduleItem.mod_name}</option>`;
                 });
+                response.bu.forEach(function (bunit) {
+                    buOptions += `<option value="${bunit.bcode}">${bunit.business_unit}</option>`;
+                });
 
                 $('#teamFilter').html(teamOptions).val(team);
                 $('#moduleFilter').html(moduleOptions).val(module);
-
+                $('#buFilter').html(buOptions).val(business_unit);
+                $('#departmentFilter').html(buOptions).val(department);
                 $('#subModuleFilter').prop('disabled', true).html('<option value="">Select Submodule</option>');
 
                 var subModules = response.sub_modules;
@@ -360,12 +449,12 @@
                     $('#subModuleFilter').html(subModuleOptions).val('');
                 });
 
-                updateFolderModalContent(folderName, team, module, sub_module);
+                updateFolderModalContent(folderName, team, module, sub_module, business_unit, department);
                 filter();
             }
         });
     }
-    function updateFolderModalContent(folderName, team, module, sub_module) {
+    function updateFolderModalContent(folderName, team, module, sub_module, business_unit, department) {
         $.ajax({
             url: '<?php echo base_url('view_folder_modal'); ?>',
             type: 'GET',
@@ -373,7 +462,9 @@
                 folder_name: folderName,
                 team: team,
                 module: module,
-                sub_module: sub_module
+                sub_module: sub_module,
+                business_unit: business_unit,
+                department: department
             },
             dataType: 'json',
             success: function (response) {
@@ -387,11 +478,11 @@
                     <div class="element-item col-xxl-2 col-xl-2 col-sm-6">
                         <div class="gallery-box card">
                             <div class="form-check form-check-danger flex-grow-1 mb-1">
-                                <a class="form-check-input fs-15 text-danger" value=""><iconify-icon icon="tabler:xbox-x-filled" onclick="deleteFile('${folderName}', '${file.name}')"></iconify-icon></a>
+                                <a class="form-check-input fs-15 text-danger" value=""><iconify-icon icon="tabler:xbox-x-filled" onclick="deleteFile('${folderName}', '${file.name}', '${module}')"></iconify-icon></a>
                             </div>
                             <div class="gallery-container">
                                 ${['jpg', 'jpeg', 'png', 'gif', 'jfif'].includes(fileExtension) ? `
-                                    <a class="image-popup" href="${base_url}open_image/${folderName}/${file.name}" target="_blank">
+                                    <a class="image-popup" href="${base_url}open_image/${folderName}/${file.name}" target="_blank" title="${file.name}">
                                         <img src="${base_url}open_image/${folderName}/${file.name}" style="width: 100%; height: 150px; background-size: cover; background-repeat: no-repeat !important;" alt="${file.name}" />
                                         <div class="gallery-overlay">
                                             <h5 class="overlay-caption fs-12">${file.name}</h5>
@@ -401,7 +492,7 @@
                                 ` : ''}
 
                                 ${fileExtension === 'pdf' ? `
-                                    <a class="image-popup" href="${base_url}open_pdf/${folderName}/${file.name}" target="_blank">
+                                    <a class="image-popup" href="${base_url}open_pdf/${folderName}/${file.name}" target="_blank" title="${file.name}">
                                         <embed src="${base_url}open_pdf/${folderName}/${file.name}" type="application/pdf" style="width: 100%; height: 145px;" />
                                         <div class="gallery-overlay">
                                             <h5 class="overlay-caption fs-12">${file.name}</h5>
@@ -411,7 +502,7 @@
                                 ` : ''}
 
                                 ${fileExtension === 'txt' ? `
-                                    <a href="${base_url}open_txt/${folderName}/${file.name}" target="_blank">
+                                    <a href="${base_url}open_txt/${folderName}/${file.name}" target="_blank" title="${file.name}">
                                         <iframe src="${base_url}open_txt/${folderName}/${file.name}" style="width: 100%; height: 145px;"></iframe>
                                         <div class="gallery-overlay">
                                             <h5 class="overlay-caption fs-12">${file.name}</h5>
@@ -421,7 +512,7 @@
                                 ` : ''}
 
                                 ${fileExtension === 'docx' ? `
-                                    <a href="${base_url}open_docx/${folderName}/${file.name}" target="_blank">
+                                    <a href="${base_url}open_docx/${folderName}/${file.name}" target="_blank" title="${file.name}">
                                         <iconify-icon icon="tabler:file-type-docx" class="align-bottom text-info" style="font-size: 150px;"></iconify-icon>
                                         <div class="gallery-overlay">
                                             <h5 class="overlay-caption fs-12">${file.name}</h5>
@@ -433,7 +524,7 @@
                                 ` : ''}
 
                                 ${fileExtension === 'xlsx' ? `
-                                    <a href="${base_url}open_xlsx/${folderName}/${file.name}" target="_blank">
+                                    <a href="${base_url}open_xlsx/${folderName}/${file.name}" target="_blank" title="${file.name}">
                                         <iconify-icon icon="ri:file-excel-2-line" class="align-bottom text-success" style="font-size: 150px;"></iconify-icon>
                                         <div class="gallery-overlay">
                                             <h5 class="overlay-caption fs-12">${file.name}</h5>
@@ -445,7 +536,7 @@
                                 ` : ''}
 
                                 ${fileExtension === 'csv' ? `
-                                    <a href="${base_url}open_csv/${folderName}/${file.name}" target="_blank">
+                                    <a href="${base_url}open_csv/${folderName}/${file.name}" target="_blank" title="${file.name}">
                                         <iconify-icon icon="ri:file-excel-2-line" class="align-bottom text-success" style="font-size: 150px;"></iconify-icon>
                                         <div class="gallery-overlay">
                                             <h5 class="overlay-caption fs-12">${file.name}</h5>
@@ -455,7 +546,7 @@
                                 ` : ''}
 
                                 ${['mp3', 'wav', 'ogg'].includes(fileExtension) ? `
-                                    <a href="${base_url}open_audio/${folderName}/${file.name}" target="_blank">
+                                    <a href="${base_url}open_audio/${folderName}/${file.name}" target="_blank" title="${file.name}" >
                                     <iconify-icon icon="ri:folder-music-fill" class="align-bottom text-center text-success" style="font-size: 130px;"></iconify-icon>
                                     <audio controls style="width: 100%; height: 10px;">
                                         <source src="${base_url}open_audio/${folderName}/${file.name}" type="audio/${fileExtension}">
@@ -492,16 +583,19 @@
                 $('#folderModalBody').html(modalContent);
                 $('#folder_name').text(folderName + ' ' + 'FOLDER FILES');
                 $('#folderModal').modal('show');
+                
             },
         });
     }
 
-    $('#teamFilter, #moduleFilter, #subModuleFilter').on('change', function () {
+    $('#teamFilter, #moduleFilter, #subModuleFilter, #buFilter, #deptFilter').on('change', function () {
         var folderName = $('#folder_name').text().split(' ')[0];
         var team = $('#teamFilter').val();
         var module = $('#moduleFilter').val();
         var sub_module = $('#subModuleFilter').val();
-        updateFolderModalContent(folderName, team, module, sub_module);
+        var business_unit = $('#buFilter').val();
+        var department = $('#deptFilter').val();
+        updateFolderModalContent(folderName, team, module, sub_module, business_unit, department);
         filter(); 
     });
 
@@ -536,10 +630,15 @@
         document.querySelector('#uploadForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const directory = document.querySelector('#directory').value;
-            const team = document.querySelector('#file_team').value;
-            const module = document.querySelector('#file_module').value;
-            const sub_module = document.querySelector('#file_sub_module').value;
+            const directory         = document.querySelector('#directory').value;
+            const team              = document.querySelector('#file_team').value;
+            const module            = document.querySelector('#file_module').value;
+            const moduleName        = document.querySelector('#file_module_name').value;
+            const sub_module        = document.querySelector('#file_sub_module').value;
+            const business_unit     = document.querySelector('#business_unitFilter').value;
+            const department        = document.querySelector('#departmentFilter').value;
+            const isr               = document.querySelector('#isrSearch').value;
+            const date_implem       = document.querySelector('#date_implem').value
 
             Swal.fire({
                 title: 'Are you sure?',
@@ -556,18 +655,28 @@
                     formData.append('directory', directory);
                     formData.append('file_team', team);
                     formData.append('file_module', module);
+                    formData.append('file_module_name', moduleName);
                     formData.append('file_sub_module', sub_module);
+                    formData.append('business_unit', business_unit);
+                    formData.append('department', department);
+                    formData.append('isr', isr);
+                    formData.append('date_implem', date_implem);
 
                     const pond = FilePond.find(document.querySelector(".filepond-input-multiple"));
                     const files = pond.getFiles();
 
                     if (files.length === 0) {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'No files selected.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
+                        Toastify({
+                            text: `No files were selected`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         return;
                     }
 
@@ -596,93 +705,39 @@
                             response = JSON.parse(response);
 
                             if (response.success) {
-                                Swal.fire({
+                                Toastify({
                                     text: response.message,
-                                    icon: 'success',
-                                    toast: true,
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 1500,
-                                    timerProgressBar: true,
-                                });
+                                    duration: 5000,
+                                    gravity: "top",
+                                    position: "left",
+                                    stopOnFocus: true,
+                                    close: true,
+                                    style: {
+                                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                                    },
+                                }).showToast();
                                 $('#file_upload').modal('hide');
+                                const pond = FilePond.find(document.querySelector(".filepond-input-multiple"));
+                                    if (pond) {
+                                        pond.removeFiles();
+                                    }
+                                    document.getElementById('uploadForm').reset(); 
+                                    $('#directory').val('').trigger('change');
+                                    $('#business_unitFilter').val('').trigger('change');
+                                    $('#departmentFilter').val('').trigger('change');
                                 filter();
                             } else {
-                                Swal.fire({
-                                    title: 'Notice!',
+                                Toastify({
                                     text: response.message,
-                                    icon: 'info',
-                                    confirmButtonText: 'Proceed with Manager\'s Key',
-                                    cancelButtonText: 'Cancel',
-                                    showCancelButton: true,
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        $('#file_upload').modal('hide');
-                                        Swal.fire({
-                                            title: 'Enter Manager\'s Key',
-                                            input: 'password',
-                                            inputAttributes: {
-                                                autocapitalize: 'off',
-                                                autocomplete: 'off',
-                                                placeholder: 'Enter manager\'s key'
-                                            },
-                                            showCancelButton: true,
-                                            confirmButtonText: 'Submit',
-                                            cancelButtonText: 'Cancel',
-                                            allowOutsideClick: false,
-                                            allowEscapeKey: false,
-                                            preConfirm: (key) => {
-                                                if (!key) {
-                                                    Swal.showValidationMessage('Manager\'s key is required');
-                                                } else {
-                                                    return key;
-                                                }
-                                            }
-                                        }).then((keyResult) => {
-                                            if (keyResult.isConfirmed && keyResult.value) {
-                                                formData.append('manager_key', keyResult.value);
-                                                $.ajax({
-                                                    url: '<?php echo base_url('upload_file'); ?>',
-                                                    type: 'POST',
-                                                    data: formData,
-                                                    contentType: false,
-                                                    processData: false,
-                                                    success: function (overrideResponse) {
-                                                        overrideResponse = JSON.parse(overrideResponse);
-                                                        if (overrideResponse.success) {
-                                                            Swal.fire({
-                                                                text: overrideResponse.message,
-                                                                icon: 'success',
-                                                                toast: true,
-                                                                position: 'top-end',
-                                                                showConfirmButton: false,
-                                                                timer: 1500,
-                                                                timerProgressBar: true,
-                                                            });
-                                                            $('#file_upload').modal('hide');
-                                                            filter();
-                                                        } else {
-                                                            Swal.fire({
-                                                                title: 'Error!',
-                                                                text: overrideResponse.message,
-                                                                icon: 'error',
-                                                                confirmButtonText: 'OK'
-                                                            });
-                                                        }
-                                                    },
-                                                    error: function () {
-                                                        Swal.fire({
-                                                            title: 'Error!',
-                                                            text: 'An error occurred while retrying the upload with manager\'s key.',
-                                                            icon: 'error',
-                                                            confirmButtonText: 'OK'
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
+                                    duration: 5000,
+                                    gravity: "top",
+                                    position: "left",
+                                    stopOnFocus: true,
+                                    close: true,
+                                    style: {
+                                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                                    },
+                                }).showToast();
                             }
 
                             uploadButton.innerHTML = 'Upload Files';
@@ -697,10 +752,11 @@
         });
     });
 
-    function deleteFile(folderName, fileName) {
+
+    function deleteFile(folderName, fileName, module) {
     Swal.fire({
         title: 'Are you sure?',
-        text: 'You want to approve this file?',
+        text: 'You want to delete this file?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -714,38 +770,120 @@
                     type: 'POST',
                     data: {
                         folder_name: folderName,
-                        file_name: fileName
+                        file_name: fileName,
+                        module: module
                     },
                     dataType: 'json',
                     success: function (response) {
                         if (response.success) {
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 1500,
-                                timerProgressBar: true,
-                                icon: 'success',
-                                title: 'Successfully Deleted!',
-                            });
+                            Toastify({
+                                text: `Successfully deleted`,
+                                duration: 5000,
+                                gravity: "top",
+                                position: "left",
+                                stopOnFocus: true,
+                                close: true,
+                                style: {
+                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                                },
+                            }).showToast();
                             openFolderModal(folderName);
                             filter();
                         } else {
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 1500,
-                                timerProgressBar: true,
-                                icon: 'success',
-                                title: response.error,
-                            });
+                            Toastify({
+                                text: response.error,
+                                duration: 5000,
+                                gravity: "top",
+                                position: "left",
+                                stopOnFocus: true,
+                                close: true,
+                                style: {
+                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                                },
+                            }).showToast();
                         }
                     }
                 });
             }
         });
     }
+</script>
+<script>
+    $(document).ready(function () {
+        $('#directory').change(function () {
+            if ($(this).val() === 'ISR') {
+                $('#isrSearchDiv').show();
+                // $('#business_unitFilter, #departmentFilter, #fileUpload, #uploadBtn').prop('disabled', true);
+            } else {
+                $('#isrSearchDiv').hide();
+                // $('#business_unitFilter, #departmentFilter, #fileUpload, #uploadBtn').prop('disabled', false);
+            }
 
+            if ($(this).val() === 'LIVE_TESTING') {
+                $('#dateImplem').show();
+            } else {
+                $('#dateImplem').hide();
+            }
+
+        });
+
+        $('#searchISR').click(function () {
+            let requestNumber = $('#isrSearch').val();
+            if (!requestNumber) {
+                Toastify({
+                    text:'Please enter ISR Request Number.',
+                    duration: 5000,
+                    gravity: "top",
+                    position: "left",
+                    stopOnFocus: true,
+                    close: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    },
+                }).showToast();
+                $('#isrSearch').addClass('is-invalid');
+                return;
+            }
+            $.ajax({
+                url: '<?php echo base_url('get_isr_request'); ?>',
+                type: 'POST',
+                data: { requestnumber: requestNumber },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.length > 0) {
+                        Toastify({
+                            text:'ISR Request Number found.',
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
+                        $('#business_unitFilter, #departmentFilter, #fileUpload, #uploadBtn').prop('disabled', false);
+                    } else {
+                        Toastify({
+                            text:'ISR Request Number not found | Not yet approved.',
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
+                    }
+                },
+            });
+        });
+        $('#isrSearch').on('input', function () {
+            if ($(this).val() === '') {
+                $('#business_unitFilter, #departmentFilter, #fileUpload, #uploadBtn').prop('disabled', true);
+            }
+        });
+    });
 
 </script>

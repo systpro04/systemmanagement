@@ -48,16 +48,20 @@ class It_Respo extends CI_Controller {
             }
 
             $emp_data = $this->workload->get_emp($row['emp_id']);
+            $sub_mod_name   = !empty($row['sub_mod_name']) ? $row['sub_mod_name'] : '<span class="badge bg-secondary">N/A</span>'; 
+            $sub_mod_menu   = !empty($row['sub_mod_menu']) ? $row['sub_mod_menu'] : '<span class="badge bg-secondary">N/A</span>'; 
+            $description    = !empty($row['desc']) ? $row['desc'] : '<span class="badge bg-secondary">N/A</span>'; 
+            $remarks        = !empty($row['remarks']) ? $row['remarks'] : '<span class="badge bg-secondary">N/A</span>'; 
 
             $data[] = [
                 'team_name' => $row['team_name'],
                 'emp_id' => $emp_data['name'],
-                'user_type' => $emp_data['position'],
+                'user_type' => $row['user_type'],
                 'module' => $row['mod_name'],
-                'sub_mod_name' => $row['sub_mod_name'],
-                'sub_mod_menu' => $row['sub_mod_menu'],
-                'description' => $row['desc'],
-                'remarks' => $row['remarks'],
+                'sub_mod_name' =>  $sub_mod_name,
+                'sub_mod_menu' => $sub_mod_menu,
+                'description' => $description,
+                'remarks' => $remarks,
                 'status' => $status_badge,
                 'action' => '
                     <div class="hstack gap-1">
@@ -91,7 +95,7 @@ class It_Respo extends CI_Controller {
             $emp_data = $this->workload->get_employees($member->emp_id); 
             if (!empty($emp_data) && isset($emp_data[0]->name)) {
                 $member->emp_name = $emp_data[0]->name;
-                $member->position = $emp_data[0]->position;
+                // $member->position = $emp_data[0]->position;
             }
         }
         echo json_encode($members);
@@ -128,7 +132,7 @@ class It_Respo extends CI_Controller {
         $this->db->insert('workload', $data);
         $modul = $this->deploy->get_module_name($module_id);
         $module_name = $modul->mod_name;
-        $action = '<b>' . $this->session->name. '</b> updated a workload to <b>'.$emp_name.' | '.$module_name.'</b>';
+        $action = '<b>' . $this->session->name. '</b> added a workload to <b>'.$emp_name.' | '.$module_name.'</b>';
 
         $data1 = array(
             'emp_id' => $this->session->emp_id,

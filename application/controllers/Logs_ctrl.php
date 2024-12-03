@@ -35,7 +35,7 @@ class Logs_ctrl extends CI_Controller {
 
 
             $data[] = [
-                'emp_name'      =>  $emp_data['name'],
+                // 'id'      =>  $row['id'],
                 'action'        => $row['action'],
                 'date_added'    => $row['date_added'],
                 'date_updated'  => $row['date_updated'],

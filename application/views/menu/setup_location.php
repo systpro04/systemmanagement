@@ -1,12 +1,10 @@
-<!-- Create location -->
 <div class="modal fade" id="create_location" tabindex="-1" aria-labelledby="create_location" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg" style="width: 765px">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title">SETUP LOCATION IMPLEMENTED</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="row mb-3">
                     <label for="company" class="col-sm-3 col-form-label">Company:</label>
@@ -78,15 +76,13 @@
     </div>
 </div>
 
-<!-- edit location -->
 <div class="modal fade" id="edit_location" tabindex="-1" aria-labelledby="edit_location" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-lg" style="width: 765px">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title">EDIT SETUP LOCATION IMPLEMENTED</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="row mb-3">
                     <label for="company" class="col-sm-3 col-form-label">Company:</label>
@@ -158,6 +154,45 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="module_list_implemented_modal" tabindex="-1" aria-labelledby="module_list_implemented" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+        <div class="modal-content"> 
+            <div class="modal-header bg-info-subtle">
+                <h5 class="modal-title">SETUP LOCATION IMPLEMENTED OF THIS MODULE</h5>
+                <div class="d-flex align-items-center flex-shrink-0 ms-2 gap-2">
+                    <button class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#create_location"><i class="ri-add-fill align-bottom me-1"></i> Setup Implemented Location </button>
+                    <!-- <button class="btn btn-danger waves-effect waves-light"><i class="ri-printer-fill align-bottom me-1"></i> Generate Report </button> -->
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover no-wrap" id="location_setup">
+                        <thead class="table-primary text-center">
+                            <tr>
+                                <th>Company</th>
+                                <th>Business Unit</th>
+                                <th>Department</th>
+                                <th>Module</th>
+                                <th>Sub Module</th>
+                                <th>Date Parallel</th>
+                                <th>Date Online</th>
+                                <th>Remarks</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -179,26 +214,15 @@
             <div class="card">
                 <div class="card-header border-1">
                     <div class="d-flex align-items-center justify-content-between">
-                        <h5 class="card-title mb-0 flex-grow-1 fw-bold">List of Business Unit | Department Implemented</h5>
-                        <div class="d-flex align-items-center flex-shrink-0 ms-2 gap-2">
-                            <button class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#create_location"><i class="ri-add-fill align-bottom me-1"></i> Setup Implemented Location </button>
-                            <button class="btn btn-danger waves-effect waves-light"><i class="ri-printer-fill align-bottom me-1"></i> Generate Report </button>
-                        </div>
+                        <h5 class="card-title mb-0 flex-grow-1 fw-bold">List of Modules | Business Unit | Department Implemented</h5>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover no-wrap" id="location_setup">
+                        <table class="table table-striped table-hover no-wrap table-bordered" id="module_list_implemented">
                             <thead class="table-primary text-center">
                                 <tr>
-                                    <th>Company</th>
-                                    <th>Business Unit</th>
-                                    <th>Department</th>
-                                    <th>Module</th>
-                                    <th>Sub Module</th>
-                                    <th>Date Parallel</th>
-                                    <th>Date Online</th>
-                                    <th>Remarks</th>
+                                    <th>Module List</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -213,58 +237,124 @@
 </div>
 <script>
     $(document).ready(function () {
+        var table = $('#module_list_implemented').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
+            "pageLength": 10,
+            "ajax": {
+                "url": "<?php echo base_url('module_list_implemented') ?>",
+                "type": "POST"
+            },
+            "columns": [
+                {
+                    "data": "module"
+                },
+                {
+                    "data": "action"
+                }
+            ],
+            "columnDefs": [
+                { "className": "text-center", "targets": ['_all'] }
+            ],
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
         $('#company, #edit_company').select2({ placeholder: 'Select Company', allowClear: true, minimumResultsForSearch: Infinity});
         $('#business_unit, #edit_business_unit').select2({ placeholder: 'Select Business Unit', allowClear: true, minimumResultsForSearch: Infinity});
         $('#department, #edit_department').select2({ placeholder: 'Select Department', allowClear: true, minimumResultsForSearch: Infinity});
 
         $('#module, #edit_module').select2({ placeholder: 'Select Module Name', allowClear: true, minimumResultsForSearch: Infinity});
-        $('#sub_module, #sub_module').select2({ placeholder: 'Select Sub Module Name', allowClear: true, minimumResultsForSearch: Infinity});
+        $('#sub_module, #edit_sub_module').select2({ placeholder: 'Select Sub Module Name', allowClear: true, minimumResultsForSearch: Infinity});
     });
 
-    var table = $('#location_setup').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "destroy": true,
-        "stateSave": true,
-        "ajax": {
-            "url": "<?php echo base_url('setup_location_list'); ?>",
-            "type": "POST",
-        },
-        "columns": [
-            { "data": "company" },
-            { "data": "business_unit" },
-            { "data": "department" },
-            { "data": "module" },
-            { "data": "sub_module" },
-            { "data": 'date_parallel',
+    function module_list_implemented_modal(mod_id) {
+        var table = $('#location_setup').DataTable();
+        table.destroy();
+
+        $('#location_setup').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
+            "pageLength": 10,
+            "ajax": {
+                "url": "<?php echo base_url('setup_location_list'); ?>",
+                "type": "POST",
+                "data": {
+                    "mod_id": mod_id
+                }
+            },
+            "columns": [
+                { "data": "company" },
+                { "data": "business_unit" },
+                { "data": "department" },
+                { "data": "module" },
+                { "data": "sub_module" },
+                { "data": "date_parallel",
                     "render": function(data, type, row) {
-                        if (data) {
-                            var date = new Date(data);
-                            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
-                            });
-                        }else{
-                            return '';
-                        }
+                        return data ? new Date(data).toLocaleDateString('en-US', {
+                            year: 'numeric', month: 'long', day: 'numeric'
+                        }) : '';
                     }
                 },
-                { "data": 'date_online',
+                { "data": "date_online",
                     "render": function(data, type, row) {
-                        if (data) {
-                            var date = new Date(data);
-                            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
-                            });
-                        }else{
-                            return '';
-                        }
+                        return data ? new Date(data).toLocaleDateString('en-US', {
+                            year: 'numeric', month: 'long', day: 'numeric'
+                        }) : '';
                     }
                 },
-            { "data": "remarks" },
-            { "data": "action" }
-        ],
-        "columnDefs": [
-            { "className": "text-center", "targets": ['_all'] }
-        ],
-    });
+                { "data": "remarks" },
+                { "data": "action" }
+            ],
+            "columnDefs": [
+                { "className": "text-center", "targets": ['_all'] }
+            ],
+            "dom": 
+                "<'row mb-1'<'col-md-12 text-start'B>>" +
+                "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
+                "<'row'<'col-md-12'tr>>" +
+                "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
+            "buttons": [
+                {
+                    "extend": 'excelHtml5',
+                    "title": 'LOCATION SETUP IMPLEMENTED - Excel Export', 
+                    "exportOptions": {
+                        "columns": ':visible:not(:last-child)'
+                    }
+                },
+                {
+                    "extend": 'pdfHtml5',
+                    "title": 'LOCATION SETUP IMPLEMENTED - PDF Export',
+                    "text": 'Generate Report',
+                    "exportOptions": {
+                        "columns": ':visible:not(:last-child)'
+                    },
+                    "customize": function (doc) {
+                        doc.defaultStyle.fontSize = 8;
+                        doc.styles.title.fontSize = 12;
+                        doc.styles.tableHeader.fontSize = 10;
+                        if (!doc.styles.tableBodyOdd) {
+                            doc.styles.tableBodyOdd = {};
+                        }
+                        if (!doc.styles.tableBodyEven) {
+                            doc.styles.tableBodyEven = {};
+                        }
+                        doc.styles.tableBodyOdd.alignment = 'center';
+                        doc.styles.tableBodyEven.alignment = 'center';
+                    }
+                },
+                'colvis'
+            ],
+        });
+
+        // Open the modal
+        $('#module_list_implemented_modal').modal('show');
+    }
 
     $.ajax({
         url: '<?php echo base_url('setup_location') ?>',
@@ -287,6 +377,8 @@
         $('#business_unit, #edit_business_unit').empty().append('<option value="">Select Business Unit</option>');
         $('#department, #edit_department').empty().append('<option value="">Select Department</option>');
         $('#business_unit, #edit_business_unit').prop('disabled', true);
+        $('#department, #edit_department').prop('disabled', true);
+
 
         var selectedCompany = companyData.find(company => company.company_code == companyCode);
 
@@ -301,9 +393,9 @@
     $('#business_unit, #edit_business_unit').change(function () {
         var companyCode = $('#company').val() || $('#edit_company').val(); 
         var businessUnitCode = $(this).val();
-        $('#department, #edit_department').empty().append('<option value="">Select Department</option>').prop('disabled', true);
+        $('#department, #edit_department').empty().append('<option value="">Select Department</option>');
+        $('#department, #edit_department').prop('disabled', true);
 
-        console.log(companyCode, businessUnitCode);
         var selectedCompany = companyData.find(company => company.company_code == companyCode);
         if (selectedCompany) {
             selectedCompany.department.forEach(function (dept) {
@@ -361,15 +453,18 @@
         var remarks         = $('#remarks').val();
 
         if (company === "" || business_unit === "" || department === "" || module === "" || date_parallel === "" || date_online === "" || remarks === "") {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1500,
-                timerProgressBar: true,
-                icon: 'error',
-                title: 'Please fill up fields!',
-            });
+            Toastify({
+                text: `Please fill up the required fields.`,
+                duration: 5000,
+                gravity: "top",
+                position: "left",
+                
+                stopOnFocus: true,
+                close: true,
+                style: {
+                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                },
+            }).showToast();
             if (desc === "" || concern === "" || remarks === "" || status === "") {
                 $('#company, #business_unit, #department, #module, #sub_module, #date_parallel, #date_online, #remarks').addClass('is-invalid');
             }
@@ -403,16 +498,20 @@
                         remarks: remarks
                     },
                     success: function (response) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'Location setup successfully',
-                        });
+                        Toastify({
+                            text: `Location setup added successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         $('#create_location').modal('hide');
+                        module_list_implemented_modal(module)
                         table.ajax.reload();
                     }
                 });
@@ -427,6 +526,7 @@
             success: function (response) {
                 let data = JSON.parse(response);
                 $('#edit_id').val(data.id);
+                $('#module_list_implemented_modal').modal('hide');
                 setTimeout(function () {
                     $('#edit_company').val(data.company).trigger('change').promise().done(function () {
                         $('#edit_business_unit').val(data.business_unit).trigger('change').promise().done(function () {
@@ -483,16 +583,20 @@
                         remarks: remarks
                     },
                     success: function (response) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'Location updated successfully',
-                        });
+                        Toastify({
+                            text: `Location setup updated successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         $('#edit_location').modal('hide');
+                        module_list_implemented_modal(module)
                         table.ajax.reload();
                     }
                 });
@@ -516,16 +620,19 @@
                     type: 'POST',
                     data: { id: id },
                     success: function (response) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',    
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'Location setup deleted successfully',
-                        });
-                        table.ajax.reload();
+                        Toastify({
+                            text: `Location setup deleted successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
+                        $('#location_setup').DataTable().ajax.reload();
                     }
                 });
             }

@@ -20,7 +20,7 @@
                 <div class="card-body p-4">
                     <div class="text-center">
                         <div class="profile-user position-relative d-inline-block mx-auto  mb-4">
-                            <img src="http://172.16.161.34:8080/hrms/<?php echo $this->session->userdata('photo') ?>" class="rounded-circle avatar-xl img-thumbnail user-profile-image  shadow" alt="user-profile-image" />
+                            <img src="http://172.16.161.34:8080/hrms/<?php echo $this->session->userdata('photo') ?>" class="rounded-circle avatar-xl img-thumbnail user-profile-image  shadow" alt="user-profile-image" style="border-color: orange"/>
                         </div>
                         <h5 class="fs-16 mb-1 fw-bold"> <?php echo $this->session->userdata('name') ?> </h5>
                         <p class="text-muted mb-0"><?php echo $this->session->userdata('hrms_position')?></p>
@@ -140,15 +140,18 @@ function update_password() {
             var password = $('#password').val();
 
             if (!username || !password) {
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    timerProgressBar: true,
-                    icon: 'error',
-                    title: 'Please fill in all fields!',
-                });
+                Toastify({
+                    text: `Please fill in the required field.`,
+                    duration: 5000,
+                    gravity: "top",
+                    position: "left",
+                    className: "birthday-toast primary",
+                    stopOnFocus: true,
+                    close: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    },
+                }).showToast();
                 return;
             }
 
@@ -161,15 +164,18 @@ function update_password() {
                     password: password
                 },
                 success: function(response) {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 1500,
-                        timerProgressBar: true,
-                        icon: 'success',
-                        title: 'Username and password updated successfully!',
-                    });
+                    Toastify({
+                        text: `Password updated successfully.`,
+                        duration: 5000,
+                        gravity: "top",
+                        position: "left",
+                        className: "birthday-toast primary",
+                        stopOnFocus: true,
+                        close: true,
+                        style: {
+                            background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                        },
+                    }).showToast();
 
                     setTimeout(() => {
                         window.location.href = '<?php echo base_url(); ?>profile';

@@ -5,7 +5,7 @@ class File_mod_new extends CI_Model
 		parent::__construct();
         $this->db2 = $this->load->database('pis', TRUE);
 	}
-    public function get_file_details($file_name, $team = null, $module = null, $sub_module = null) {
+    public function get_file_details($file_name, $team = null, $module = null, $sub_module = null, $business_unit = null, $department = null) {
 
         $this->db->where('file_name', $file_name);
         if ($team) {
@@ -17,9 +17,14 @@ class File_mod_new extends CI_Model
         if ($sub_module) {
             $this->db->where('sub_mod_id', $sub_module);
         }
+        if($business_unit) {
+            $this->db->where('business_unit', $business_unit);
+        }
+        if($department) {
+            $this->db->where('department', $department);
+        }
     
         $this->db->where('typeofsystem', 'new');
-        // $this->db->where('file_status', 'Approve');
         $query = $this->db->get('system_files');
         return $query->row();
     }
@@ -30,6 +35,9 @@ class File_mod_new extends CI_Model
         $this->db2->from('locate_company c');
         $this->db2->join('locate_business_unit b', 'c.company_code = b.company_code');
         $this->db2->where('c.status', 'active');
+        $this->db2->where('b.status', 'active');
+        $this->db2->order_by('b.business_unit', 'ASC');
+        $this->db2->group_by('b.bcode', 'ASC');
         $business_unit = $this->db2->get()->result();
     
         foreach ($business_unit as &$bu) {
@@ -39,8 +47,19 @@ class File_mod_new extends CI_Model
             $bu->buData = $this->db2->get()->result();
         }
         return $business_unit;
-
     }
+    public function get_departments($bcode) {
+        $this->db2->select('dept.*');
+        $this->db2->from('locate_department dept');
+        $this->db2->join('locate_business_unit b', 'dept.bunit_code = b.bunit_code');
+        $this->db2->where('dept.status', 'active');
+        $this->db2->where('CONCAT(dept.company_code, dept.bunit_code) =', $bcode);
+        $this->db2->group_by('dept.dcode', 'ASC');
+        $query = $this->db2->get();
+        return $query->result();
+    }
+    
+    
     public function get_module_new()
     {
         $this->db->select('m.mod_id, m.mod_name, sb.sub_mod_id, sb.sub_mod_name');
@@ -88,10 +107,33 @@ class File_mod_new extends CI_Model
         return $query->num_rows() > 0;
     }
 
-    public function delete_file_record($file_name) {
-        $this->db->where('file_name', $file_name);
-        $this->db->delete('system_files');
+    public function delete_file_record($file_name, $uploaded_to) {
+        $fields = [
+            'ISR'             => 'isr_status',
+            'ATTENDANCE'      => 'att_status',
+            'MINUTES'         => 'minute_status',
+            'WALKTHROUGH'     => 'wt_status',
+            'FLOWCHART'       => 'flowchart_status',
+            'DFD'             => 'dfd_status',
+            'SYSTEM_PROPOSED' => 'proposed_status',
+            'LOCAL_TESTING'   => 'local_status',
+            'UAT'             => 'uat_status',
+            'LIVE_TESTING'    => 'live_status',
+        ];
+        if (array_key_exists($uploaded_to, $fields)) {
+            $status_field = $fields[$uploaded_to];
+    
+            $this->db->where('file_name', $file_name);
+            $this->db->where($status_field, 'pending');
+            $this->db->where('typeofsystem', 'new');
+            $this->db->delete('system_files');
+    
+            return $this->db->affected_rows() > 0;
+        }
+    
+        return false;
     }
+    
 
 
     public function get_teams() {
@@ -104,7 +146,7 @@ class File_mod_new extends CI_Model
     public function get_modules() {
         $this->db->select('*');
         $this->db->from('module');
-        $this->db->where('active !=', 'Inactive');
+        $this->db->where('active', 'Active');
         $this->db->where('typeofsystem', 'new');
         $query = $this->db->get();
     

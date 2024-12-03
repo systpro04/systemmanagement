@@ -167,5 +167,17 @@ class Weekly extends CI_Controller {
     public function delete_weekly(){
         $id = $this->input->post('id');
         $this->weekly->delete_weekly($id);
+
+        
+        $action = '<b>' . $this->session->name. '</b> deleted a weekly report';
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_updated' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
+
+
     }
 }

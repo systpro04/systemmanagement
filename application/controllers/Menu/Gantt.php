@@ -29,12 +29,17 @@ class Gantt extends CI_Controller {
     
         $module = $this->gantt->getGanttData($team_id, $start, $length, $order_column, $order_dir, $search_value);
         $data = [];
-        
+
         foreach ($module as $row) {
+            if($row['sub_mod_name'] == null) {
+                $sub_module = '<span class="badge bg-info">N/A</span>';      
+            }else{
+                $sub_module = $row['sub_mod_name'];
+            }
             $data[] = [
                 'emp_name'      => $row['emp_name'],
                 'mod_name'      => $row['mod_name'],
-                'sub_mod_name'  => $row['sub_mod_name'],
+                'sub_mod_name'  => $sub_module,
                 'desc'          => $row['desc'],
                 'date_req'      => $row['date_req'],
                 'date_parallel' => $row['date_parallel'],
@@ -43,7 +48,7 @@ class Gantt extends CI_Controller {
                 'date_end'      => $row['date_end'],
                 'action'        => '
                     <div class="hstack gap-1 d-flex justify-content-center">
-                        <button class="btn btn-sm btn-soft-info btn-label waves-effect waves-light" onclick="edit_gantt(' . $row['id'] . ')" data-bs-toggle="modal" data-bs-target="#edit_submodule"><i class="ri-edit-line label-icon align-bottom me-2"></i> Edit</button>
+                        <button class="btn btn-sm btn-soft-info btn-label waves-effect waves-light" onclick="edit_gantt(' . $row['id'] . ')" data-bs-toggle="modal" data-bs-target="#edit_submodule"><iconify-icon icon="solar:pen-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon>  Edit</button>
                         <button class="btn btn-sm btn-soft-danger btn-label waves-effect waves-light" onclick="delete_gantt(' . $row['id'] . ')"><iconify-icon icon="ri:delete-bin-5-fill" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Delete</button>
                     </div>'
             ];

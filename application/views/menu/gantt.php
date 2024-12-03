@@ -2,11 +2,10 @@
     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-lg" style="width: 655px">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title">GANTT | SETUP SYSTEM</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="row mb-3">
                     <label for="team_name" class="col-sm-3 col-form-label">Team:</label>
@@ -105,11 +104,10 @@
 <div class="modal fade" id="edit_system_gantt" tabindex="-1" aria-labelledby="edit_system_gantt" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-lg" style="width: 655px;">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title">EDIT GANTT | SETUP SYSTEM</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="row mb-3">
                     <label for="team_name" class="col-sm-3 col-form-label">Team:</label>
@@ -249,7 +247,7 @@
                     <div class="tab-content">
                         <div class="mt-2 tab-pane active" id="System Analyst" role="tabpanel">
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover compact" id="gantt_list">
+                                <table class="table table-striped table-hover" id="gantt_list">
                                     <thead class="table-primary text-center">
                                         <tr>
                                             <th>Incharge</th>
@@ -286,6 +284,8 @@
         "serverSide": true,
         "destroy": true,
         "stateSave": true,
+        "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
+        "pageLength": 10,
         "ajax": {
             "url": "<?php echo base_url('gantt_list'); ?>",
             "type": "POST",
@@ -304,6 +304,8 @@
                         var date = new Date(data);
                         return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
                         });
+                    }else {
+                        return '<span class="badge bg-info">N/A</span>';
                     }
                 }
             },
@@ -313,6 +315,8 @@
                         var date = new Date(data);
                         return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
                         });
+                    }else {
+                        return '<span class="badge bg-info">N/A</span>';
                     }
                 }
             },
@@ -322,6 +326,8 @@
                         var date = new Date(data);
                         return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
                         });
+                    }else {
+                        return '<span class="badge bg-info">N/A</span>';
                     }
                 }
             },
@@ -331,6 +337,8 @@
                         var date = new Date(data);
                         return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
                         });
+                    }else {
+                        return '<span class="badge bg-info">N/A</span>';
                     }
                 }
             },
@@ -340,6 +348,8 @@
                         var date = new Date(data);
                         return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
                         });
+                    }else {
+                        return '<span class="badge bg-info">N/A</span>';
                     }
                 }
             },
@@ -347,7 +357,43 @@
         ],
         "columnDefs": [
             { "className": "text-center", "targets": '_all' }
-        ]
+        ],
+        "dom": 
+            "<'row mb-1'<'col-md-12 text-start'B>>" +
+            "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
+            "<'row'<'col-md-12'tr>>" +
+            "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
+        "buttons": [
+            {
+                "extend": 'excelHtml5',
+                "title": 'GANTT Report - Excel Export', 
+                "exportOptions": {
+                    "columns": ':visible:not(:last-child)'
+                }
+            },
+            {
+                "extend": 'pdfHtml5',
+                "title": 'GANTT Report - PDF Export',
+                "text": 'Generate Report',
+                "exportOptions": {
+                    "columns": ':visible:not(:last-child)'
+                },
+                "customize": function (doc) {
+                    doc.defaultStyle.fontSize = 8;
+                    doc.styles.title.fontSize = 12;
+                    doc.styles.tableHeader.fontSize = 10;
+                    if (!doc.styles.tableBodyOdd) {
+                        doc.styles.tableBodyOdd = {};
+                    }
+                    if (!doc.styles.tableBodyEven) {
+                        doc.styles.tableBodyEven = {};
+                    }
+                    doc.styles.tableBodyOdd.alignment = 'center';
+                    doc.styles.tableBodyEven.alignment = 'center';
+                }
+            },
+            'colvis'
+        ],
     });
 
 
@@ -466,16 +512,18 @@
         var date_start = $('#date_start').val();
         var date_end = $('#date_end').val();
 
-        if (team == '' || incharge == '' || module == '' || description == '' || date_request == '' || date_parallel == '' || date_implementation == '' || date_start == '' || date_end == '') {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1500,
-                timerProgressBar: true,
-                icon: 'error',
-                title: 'Please fill up fields!',
-            });
+        if (team == '' || incharge == '' || module == '' || description == '' || date_request == '' || date_implementation == '' || date_start == '' || date_end == '') {
+            Toastify({
+                text: `Please fill up the required fields.`,
+                duration: 5000,
+                gravity: "top",
+                position: "left",
+                stopOnFocus: true,
+                close: true,
+                style: {
+                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                },
+            }).showToast();
             if (description === "") {
                 $('#description').addClass('is-invalid');
             }
@@ -526,15 +574,17 @@
                         date_end: date_end
                     },
                     success: function (response) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'Gantt data added successfully',
-                        });
+                        Toastify({
+                            text: `Gantt data added successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         $('#add_system_gantt').modal('hide');
                         $('#gantt_list').DataTable().ajax.reload();
                     }
@@ -586,7 +636,7 @@
 
         Swal.fire({
             title: 'Are you sure?',
-            text: 'You want to update this module?',
+            text: 'You want to update this data?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -616,15 +666,17 @@
 
                     },
                     success: function (response) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'Gantt data updated successfully',
-                        });
+                        Toastify({
+                            text: `Gantt data updated successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         $('#edit_system_gantt').modal('hide');
                         $('#gantt_list').DataTable().ajax.reload();
                     }
@@ -649,15 +701,17 @@
                     type: 'POST',
                     data: { id: id },
                     success: function (response) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'Gantt data deleted successfully',
-                        });
+                        Toastify({
+                            text: `Gantt data deleted successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         $('#gantt_list').DataTable().ajax.reload();
                     },
                 });

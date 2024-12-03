@@ -25,19 +25,19 @@
                     <ul class="nav nav-pills animation-nav nav-justified gap-2 mb-3" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link waves-effect waves-light active typeofsystem fw-bold" data-bs-toggle="tab" id="current" role="tab">
-                                CURRENT SYSTEM | MODULE
+                                CURRENT SYSTEM | MODULE 
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link waves-effect waves-light typeofsystem fw-bold" data-bs-toggle="tab" id="new" role="tab">
-                                NEW SYSTEM | MODULE
+                                NEW SYSTEM | MODULE  
                             </a>
                         </li>
                     </ul>
                     <hr>
                     <div class="col-xxl-12">
                         <div class="row">
-                            <div class="col-lg-3">
+                            <div class="col-lg-2" data-simplebar style="max-height: 550px">
                                 <div class="nav nav-pills flex-column nav-pills-tab custom-verti-nav-pills text-center" role="tablist" aria-orientation="vertical">
                                     <a href="#!" id="ISR" class="fw-bold nav-link active type" data-bs-toggle="pill" role="tab">ISR <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_ISR"></span></a>
                                     <a href="#!" id="ATTENDANCE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">ATTENDANCE <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_ATTENDANCE"></span></a>
@@ -55,7 +55,7 @@
                                     <a href="#!" id="BUSINESS_ACCEPTANCE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">BUSINESS ACCEPTANCE <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_BUSINESS_ACCEPTANCE"></span></a>
                                 </div>
                             </div>
-                            <div class="col-lg-9">
+                            <div class="col-lg-10">
                                 <div class="d-flex gap-2 mb-2">
                                     <select class="form-select" id="team" name="team">
                                         <option value=""></option>
@@ -79,6 +79,7 @@
                                                                     <tr>
                                                                         <th>TEAM</th>
                                                                         <th>FILENAME</th>
+                                                                        <th>MODULE</th>
                                                                         <th>UPLOADED TO</th>
                                                                         <th>STATUS</th>
                                                                         <th>ACTION</th>
@@ -157,6 +158,7 @@
     });
     $('#team, #module, #sub_module').change(function () {
         $('#typeofsystem_table').DataTable().ajax.reload();
+        fetchDirectoryCounts();
 
     });
 
@@ -168,6 +170,7 @@
 
     load_system_content(typeofsystem, type);
     load_module(typeofsystem);
+    fetchDirectoryCounts();
     $("a.typeofsystem").click(function () {
         $("a.typeofsystem").removeClass('btn-primary');
         $(this).addClass('btn-primary');
@@ -190,6 +193,7 @@
         }
         load_module(typeofsystem);
         load_system_content(typeofsystem, type);
+        fetchDirectoryCounts();
     });
 
     
@@ -206,6 +210,8 @@
             stateSave: true,
             destroy: true,
             responsive: true,
+            lengthMenu: [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
+            pageLength: 10,
             ajax: {
                 url: '<?php echo base_url('typeofsystem_data'); ?>',
                 type: 'POST',
@@ -220,6 +226,7 @@
             columns: [
                 { data: 'team_name' },
                 { data: 'file_name' },
+                { data: 'mod_name' },
                 { data: 'uploaded_to' },
                 { data: 'status' },
                 { data: 'action' }
@@ -227,10 +234,46 @@
             columnDefs: [
                 { "className": "text-center", "targets": ['_all'] }
             ],
+            "dom": 
+                "<'row mb-1'<'col-md-12 text-start'B>>" +
+                "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
+                "<'row'<'col-md-12'tr>>" +
+                "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
+            "buttons": [
+                {
+                    "extend": 'excelHtml5',
+                    "title": 'REQUESTS - Excel Export', 
+                    "exportOptions": {
+                        "columns": ':visible:not(:last-child)'
+                    }
+                },
+                {
+                    "extend": 'pdfHtml5',
+                    "title": 'REQUESTS - PDF Export',
+                    "text": 'Generate Report',
+                    "exportOptions": {
+                        "columns": ':visible:not(:last-child)'
+                    },
+                    "customize": function (doc) {
+                        doc.defaultStyle.fontSize = 8;
+                        doc.styles.title.fontSize = 12;
+                        doc.styles.tableHeader.fontSize = 10;
+                        if (!doc.styles.tableBodyOdd) {
+                            doc.styles.tableBodyOdd = {};
+                        }
+                        if (!doc.styles.tableBodyEven) {
+                            doc.styles.tableBodyEven = {};
+                        }
+                        doc.styles.tableBodyOdd.alignment = 'center';
+                        doc.styles.tableBodyEven.alignment = 'center';
+                    }
+                },
+                'colvis'
+            ],
         });
     }
 
-    function approved(fileId, type, typeofsystem) {
+    function approved(fileId, type, typeofsystem, mod_id) {
         Swal.fire({
             title: 'Are you sure?',
             text: 'You want to approve this file?',
@@ -248,21 +291,26 @@
                     data: {
                         file_id: fileId,
                         type: type,
-                        typeofsystem: typeofsystem
+                        typeofsystem: typeofsystem,
+                        mod_id: mod_id
                     },
                     success: function () {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: type + ' file approved successfully',
-                        });
+                        Toastify({
+                            text: type + ' file approved successfully',
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         var table = $('#typeofsystem_table').DataTable();
                         var currentPage = table.page();
-
+                        updateNotificationCount();
+                        fetchDirectoryCounts();
                         table.ajax.reload(function () {
                             table.page(currentPage).draw(false);
                         }, false);
@@ -271,7 +319,7 @@
             }
         });
     }
-    function backtopending(fileId, type, typeofsystem) {
+    function backtopending(fileId, type, typeofsystem, mod_id) {
         Swal.fire({
             title: 'Are you sure?',
             text: 'You want to recall this file?',
@@ -289,28 +337,56 @@
                     data: {
                         file_id: fileId,
                         type: type,
-                        typeofsystem: typeofsystem
+                        typeofsystem: typeofsystem,
+                        mod_id: mod_id
                     },
                     success: function () {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: type + ' file recall to pending',
-                        });
+                        Toastify({
+                            text: type + ' file recall to pending',
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
+
                         var table = $('#typeofsystem_table').DataTable();
                         var currentPage = table.page();
+                        updateNotificationCount();
 
                         table.ajax.reload(function () {
                             table.page(currentPage).draw(false);
                         }, false);
+
+                        fetchDirectoryCounts();
                     },
                 });
             }
         });
     }
+    function fetchDirectoryCounts() {
+        const data = {
+            team: $('#team').val(),
+            module: $('#module').val(),
+            sub_module: $('#sub_module').val(),
+            typeofsystem: typeofsystem,
+        };
 
+        $.ajax({
+            url: '<?php echo base_url('Admin/get_directory_counts'); ?>',
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function (response) {
+                for (const directory in response) {
+                    const count = response[directory];
+                    $(`#count_${directory}`).text(count > 0 ? count : '');
+                }
+            },
+        });
+    }
 </script>

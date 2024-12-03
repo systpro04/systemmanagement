@@ -317,6 +317,7 @@ class Admin extends CI_Controller {
             }else{
                 $bu_name = '<span class="badge bg-info">Implemented</span>';
             }
+
             $data[] = [
                 'mod_name' => $row['mod_name'],
                 'status' => $status,
@@ -434,6 +435,8 @@ class Admin extends CI_Controller {
     
         if($date_request === "") {
             $date_request = null;
+        }else{
+            $date_request = date('Y-m-d', strtotime($date_request));
         }
         if($bcode === "") {
             $bcode = null;
@@ -447,7 +450,7 @@ class Admin extends CI_Controller {
             'mod_abbr'          => $mod_abbr,
             'requested_to'      => $bcode,
             'bu_name'           => $business_unit,
-            'date_request'      => date('Y-m-d', strtotime($date_request)),
+            'date_request'      => $date_request,
             'date_updated'      => date('Y-m-d H:i:s'),
         ];
     
@@ -518,6 +521,42 @@ class Admin extends CI_Controller {
                         ],
                         "columnDefs": [
                             { "className": "text-center", "targets": ['_all'] }
+                        ],
+                        "dom": 
+                            "<'row mb-1'<'col-md-12 text-start'B>>" +
+                            "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
+                            "<'row'<'col-md-12'tr>>" +
+                            "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
+                        "buttons": [
+                            {
+                                "extend": 'excelHtml5',
+                                "title": 'SUB MODULE LIST - Excel Export', 
+                                "exportOptions": {
+                                    "columns": ':visible:not(:last-child)'
+                                }
+                            },
+                            {
+                                "extend": 'pdfHtml5',
+                                "title": 'SUB MODULE LIST - PDF Export',
+                                "text": 'Generate Report',
+                                "exportOptions": {
+                                    "columns": ':visible:not(:last-child)'
+                                },
+                                "customize": function (doc) {
+                                    doc.defaultStyle.fontSize = 8;
+                                    doc.styles.title.fontSize = 12;
+                                    doc.styles.tableHeader.fontSize = 10;
+                                    if (!doc.styles.tableBodyOdd) {
+                                        doc.styles.tableBodyOdd = {};
+                                    }
+                                    if (!doc.styles.tableBodyEven) {
+                                        doc.styles.tableBodyEven = {};
+                                    }
+                                    doc.styles.tableBodyOdd.alignment = 'center';
+                                    doc.styles.tableBodyEven.alignment = 'center';
+                                }
+                            },
+                            'colvis'
                         ],
                     });
                 });
@@ -736,15 +775,16 @@ class Admin extends CI_Controller {
                 $data[] = [
                     'team_name' => $row['team_name'],
                     'file_name' => '<a href="' . $file_link . '" target="_blank">' . $row['file_name'] . '</a>',
+                    'mod_name' => $row['mod_name'],
                     'uploaded_to' => $row['uploaded_to'],
                     'status' => $status_badge,
                     'action' => '
                         <div class="hstack gap-1 d-flex justify-content-center">' .
                         ($status === 'Pending' ? 
-                            '<button type="button" class="btn btn-soft-primary btn-label waves-effect waves-light btn-sm" onclick="approved(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\')">' .
+                            '<button type="button" class="btn btn-soft-primary btn-label waves-effect waves-light btn-sm" onclick="approved(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
                             '<iconify-icon icon="ri:thumb-up-fill" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Update</button>'
                             : 
-                            '<button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="backtopending(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\')">' .
+                            '<button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="backtopending(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
                             '<iconify-icon icon="tabler:refresh-alert" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Recall</button>') .
                         '</div>'
                 ];
@@ -832,15 +872,16 @@ class Admin extends CI_Controller {
                 $data[] = [
                     'team_name' => $row['team_name'],
                    'file_name' => '<a href="' . $file_link . '" target="_blank">' . $row['file_name'] . '</a>',
+                   'mod_name' => $row['mod_name'],
                     'uploaded_to' => $row['uploaded_to'],
                     'status' => $status_badge,
                     'action' => '
                         <div class="hstack gap-1 d-flex justify-content-center">' .
                         ($status === 'Pending' ? 
-                            '<button type="button" class="btn btn-soft-primary btn-label waves-effect waves-light btn-sm" onclick="approved(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\')">' .
+                            '<button type="button" class="btn btn-soft-primary btn-label waves-effect waves-light btn-sm" onclick="approved(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
                             '<iconify-icon icon="ri:thumb-up-fill" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Update</button>'
                             : 
-                            '<button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="backtopending(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\')">' .
+                            '<button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="backtopending(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
                             '<iconify-icon icon="tabler:refresh-alert" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Recall</button>') .
                         '</div>'
                 ];
@@ -857,21 +898,44 @@ class Admin extends CI_Controller {
         ];
         echo json_encode($output);
     }
-    // public function get_directory_counts()
-    // {
-    //     $directories = ['ISR', 'ATTENDANCE', 'MINUTES', 'WALKTHROUGH', 'FLOWCHART', 'DFD', 'SYSTEM_PROPOSED', 'GANTT_CHART', 'LOCAL_TESTING', 'UAT', 'LIVE_TESTING', 'USER_GUIDE', 'MEMO', 'BUSINESS_ACCEPTANCE'];
-    //     $counts = [];
-    //     $team       = $this->input->post('team');
-    //     $mod_id     = $this->input->post('module');
-    //     $sub_mod_id = $this->input->post('sub_module');
-    //     $typeofsystem = $this->input->post('typeofsystem');
-
-
-    //     foreach ($directories as $directory) {
-    //         $counts[$directory] = $this->admin->get_file_count_by_directory($directory, $team, $mod_id, $sub_mod_id, $typeofsystem);
-    //     }
-    //     echo json_encode($counts);
-    // }
+    public function get_directory_counts()
+    {
+        $directories = [
+            'ISR', 'ATTENDANCE', 'MINUTES', 'WALKTHROUGH', 
+            'FLOWCHART', 'DFD', 'SYSTEM_PROPOSED', 
+            'GANTT_CHART', 'LOCAL_TESTING', 'UAT', 
+            'LIVE_TESTING', 'USER_GUIDE', 'MEMO', 
+            'BUSINESS_ACCEPTANCE'
+        ];
+    
+        $counts = [];
+        $team = $this->input->post('team');
+        $mod_id = $this->input->post('module');
+        $sub_mod_id = $this->input->post('sub_module');
+        $typeofsystem = $this->input->post('typeofsystem');
+    
+        $totalCurrentPending = 0;
+        $totalNewPending = 0;
+    
+        foreach ($directories as $directory) {
+            $count = $this->admin->get_file_count_by_directory($directory, $mod_id, $sub_mod_id, $team, $typeofsystem);
+            $counts[$directory] = $count;
+    
+            // Separate counts for current and new systems
+            if ($typeofsystem === 'current') {
+                $totalCurrentPending += $count;
+            } elseif ($typeofsystem === 'new') {
+                $totalNewPending += $count;
+            }
+        }
+    
+        // Add aggregated counts for the frontend
+        $counts['current_pending'] = $totalCurrentPending;
+        $counts['new_pending'] = $totalNewPending;
+    
+        echo json_encode($counts);
+    }
+    
 
     public function setup_module()
     {
@@ -884,6 +948,7 @@ class Admin extends CI_Controller {
         $file_id = $this->input->post('file_id');
         $type = $this->input->post('type');
         $typeofsystem = $this->input->post('typeofsystem');
+        $mod_id = $this->input->post('mod_id');
     
         $status_field = '';
     
@@ -968,6 +1033,11 @@ class Admin extends CI_Controller {
             }
         }
     
+        if($type == 'LIVE_TESTING'){
+            $this->db->set('implem_type', '1');
+            $this->db->where('mod_id', $mod_id);
+            $this->db->update('module');
+        }
         $update_data = [
             $status_field => 'Approve'
         ];
@@ -979,7 +1049,7 @@ class Admin extends CI_Controller {
         $file_id = $this->input->post('file_id');
         $type = $this->input->post('type');
         $typeofsystem = $this->input->post('typeofsystem');
-    
+        $mod_id = $this->input->post('mod_id');
         $status_field = '';
     
         if ($typeofsystem === 'current') {
@@ -1063,6 +1133,12 @@ class Admin extends CI_Controller {
             }
         }
     
+        if($type == 'LIVE_TESTING'){
+            $this->db->set('implem_type', '0');
+            $this->db->where('mod_id', $mod_id);
+            $this->db->update('module');
+        }
+
         $update_data = [
             $status_field => 'Pending'
         ];
@@ -1070,6 +1146,16 @@ class Admin extends CI_Controller {
         $this->admin->backtopending($file_id, $update_data, $typeofsystem);
     }
     
+    public function fetch_notifications()
+    {
+        $notifications = $this->admin->get_notifications();
+        echo json_encode($notifications);
+    }
+    public function get_notification_count()
+    {
+        $count = $this->admin->get_pending_notification_count();
+        echo json_encode(['count' => $count]);
+    }
 
 }
 

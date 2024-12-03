@@ -408,15 +408,17 @@
                 reasons:        reasons,
             };
             if(team_id == "" || mod_id == "" || date == "" || time == "" || location == "" || reasons == "") {
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    timerProgressBar: true,
-                    icon: 'error',
-                    title: 'Please fill in all fields',
-                });
+                Toastify({
+                    text: `Please fill up the required fields`,
+                    duration: 5000,
+                    gravity: "top",
+                    position: "left",
+                    stopOnFocus: true,
+                    close: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    },
+                }).showToast();
                 return ;
             }
             calendar.addEvent(eventData);
@@ -436,15 +438,17 @@
                         type: 'POST',
                         data: eventData,
                         success: function (response) {
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 1500,
-                                timerProgressBar: true,
-                                icon: 'success',
-                                title: 'Meeting Scheduled Assigned',
-                            });
+                            Toastify({
+                                text: `Meeting schedule added successfully.`,
+                                duration: 5000,
+                                gravity: "top",
+                                position: "left",
+                                stopOnFocus: true,
+                                close: true,
+                                style: {
+                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                                },
+                            }).showToast();
                             calendar.addEvent(eventData);
                             calendar.refetchEvents();
                             $('#meeting_modal').modal('hide');
@@ -476,15 +480,17 @@
                         type: 'POST',
                         data: deleteData,
                         success: function (response) {
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 1500,
-                                timerProgressBar: true,
-                                icon: 'success',
-                                title: 'Meeting Scheduled Deleted',
-                            });
+                            Toastify({
+                                text: `Meeting schedule deleted successfully.`,
+                                duration: 5000,
+                                gravity: "top",
+                                position: "left",
+                                stopOnFocus: true,
+                                close: true,
+                                style: {
+                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                                },
+                            }).showToast();
                             calendar.addEvent(deleteData);
                             calendar.refetchEvents();
                             $('#edit_meeting_modal').modal('hide');
@@ -531,15 +537,17 @@
                         type: 'POST',
                         data: updateData,
                         success: function (response) {
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 1500,
-                                timerProgressBar: true,
-                                icon: 'success',
-                                title: 'Meeting Scheduled Updated',
-                            });
+                            Toastify({
+                                text: `Meeting schedule updated successfully.`,
+                                duration: 5000,
+                                gravity: "top",
+                                position: "left",
+                                stopOnFocus: true,
+                                close: true,
+                                style: {
+                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                                },
+                            }).showToast();
                             calendar.addEvent(updateData);
                             calendar.refetchEvents();
                             $('#edit_meeting_modal').modal('hide');
@@ -563,25 +571,33 @@
             success: function (events) {
                 var eventList = $('#upcoming-event-list');
                 eventList.empty();
-                events.forEach(function (event) {
-                    var eventHTML = `
-                        <div class='card mb-3'>
-                            <div class='card-body'>
-                                <div class='d-flex mb-3'>
-                                    <div class='flex-grow-1'><i class='mdi mdi-checkbox-blank-circle me-2 text-warning'></i>
-                                        <span class='fw-bold fs-11'>${new Date(event.date_meeting).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                                    </div>
-                                    <div class='flex-shrink-0'>
-                                        <small class='badge bg-primary-subtle text-primary ms-auto'>${event.time}</small>                         
-                                    </div> 
-                                </div>                                
-                                    <h6 class='card-title fs-16'></h6>
-                                    <p class='text-muted text-truncate-two-lines mb-0'>${event.team_name}</p>
-                            </div>             
-                        </div>
-                    `;
-                    eventList.append(eventHTML);
-                });
+                if (events.length === 0) {
+                    eventList.append(`
+                        <li class="list-group-item ps-0 text-center text-muted">
+                            No Upcoming Meetings Available
+                        </li>
+                    `);
+                } else {
+                    events.forEach(function (event) {
+                        var eventHTML = `
+                            <div class='card mb-3'>
+                                <div class='card-body'>
+                                    <div class='d-flex mb-3'>
+                                        <div class='flex-grow-1'><i class='mdi mdi-checkbox-blank-circle me-2 text-warning'></i>
+                                            <span class='fw-bold fs-11'>${new Date(event.date_meeting).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                                        </div>
+                                        <div class='flex-shrink-0'>
+                                            <small class='badge bg-primary-subtle text-primary ms-auto'>${event.time}</small>                         
+                                        </div> 
+                                    </div>                                
+                                        <h6 class='card-title fs-16'></h6>
+                                        <p class='text-muted text-truncate-two-lines mb-0'>${event.team_name}</p>
+                                </div>             
+                            </div>
+                        `;
+                        eventList.append(eventHTML);
+                    });
+                }
             },
         });
     }

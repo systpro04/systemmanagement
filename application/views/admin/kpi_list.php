@@ -3,11 +3,10 @@
     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title" id="varyingcontentModalLabel">CREATE KPI</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="mb-3">
                     <label for="title" class="col-form-label">Title:</label>
@@ -40,11 +39,10 @@
     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title" id="varyingcontentModalLabel">UPDATE KPI</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="" id="edit_kpi_content"></div>
             </div>
@@ -150,6 +148,8 @@
             serverSide: true,
             stateSave: true,
             destroy: true,
+            lengthMenu: [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
+            pageLength: 10,
             ajax: {
                 url: '<?php echo base_url('kpi_list'); ?>',
                 type: 'POST',
@@ -169,6 +169,42 @@
             columnDefs: [
                 { "className": "text-center", "targets": ['_all'] }
             ],
+            "dom": 
+                "<'row mb-1'<'col-md-12 text-start'B>>" +
+                "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
+                "<'row'<'col-md-12'tr>>" +
+                "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
+            "buttons": [
+                {
+                    "extend": 'excelHtml5',
+                    "title": 'KPI LIST - Excel Export', 
+                    "exportOptions": {
+                        "columns": ':visible:not(:last-child)'
+                    }
+                },
+                {
+                    "extend": 'pdfHtml5',
+                    "title": 'KPI LIST - PDF Export',
+                    "text": 'Generate Report',
+                    "exportOptions": {
+                        "columns": ':visible:not(:last-child)'
+                    },
+                    "customize": function (doc) {
+                        doc.defaultStyle.fontSize = 8;
+                        doc.styles.title.fontSize = 12;
+                        doc.styles.tableHeader.fontSize = 10;
+                        if (!doc.styles.tableBodyOdd) {
+                            doc.styles.tableBodyOdd = {};
+                        }
+                        if (!doc.styles.tableBodyEven) {
+                            doc.styles.tableBodyEven = {};
+                        }
+                        doc.styles.tableBodyOdd.alignment = 'center';
+                        doc.styles.tableBodyEven.alignment = 'center';
+                    }
+                },
+                'colvis'
+            ],
         });
     }
 
@@ -179,15 +215,18 @@
         let description     = $('#desc').val();
 
         if (title === "" || type === "" || description === "") {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1500,
-                timerProgressBar: true,
-                icon: 'error',
-                title: 'Please fill up fields!',
-            });
+            Toastify({
+                text: `Please fill up required fields.`,
+                duration: 5000,
+                gravity: "top",
+                position: "left",
+                className: "birthday-toast primary",
+                stopOnFocus: true,
+                close: true,
+                style: {
+                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                },
+            }).showToast();
             if (title === "") {
                 $('#title').addClass('is-invalid');
             }
@@ -214,15 +253,18 @@
             success: function() {
                 $('#create_kpi').modal('hide');
                 $('#kpi').DataTable().ajax.reload();
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    timerProgressBar: true,
-                    icon: 'success',
-                    title: 'KPI created successfully.',
-                });
+                Toastify({
+                    text: `Kpi added successfully.`,
+                    duration: 5000,
+                    gravity: "top",
+                    position: "left",
+                    className: "birthday-toast primary",
+                    stopOnFocus: true,
+                    close: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    },
+                }).showToast();
                 
             },
         });
@@ -234,11 +276,18 @@
             type: 'POST',
             data: {id: id},
             error: function () {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong!'
-                });
+                Toastify({
+                    text: `Opps!!! Something went wrong.`,
+                    duration: 5000,
+                    gravity: "top",
+                    position: "left",
+                    className: "birthday-toast primary",
+                    stopOnFocus: true,
+                    close: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    },
+                }).showToast();
             },
             success: function (data) {
                 $("#edit_kpi_content").html(data);
@@ -273,15 +322,18 @@
                     success: function() {
                         $('#edit_kpi').modal('hide');
                         $('#kpi').DataTable().ajax.reload();
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'KPI updated successfully.',
-                        });
+                        Toastify({
+                            text: `Kpi updated successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         
                     },
                 });
@@ -308,15 +360,18 @@
                     },
                     success: function() {
                         $('#kpi').DataTable().ajax.reload();
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'KPI deleted successfully.',
-                        });
+                        Toastify({
+                            text: `Kpi deleted successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                     },
                 });
             }

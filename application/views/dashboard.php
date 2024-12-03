@@ -11,11 +11,11 @@
                                 </span>
                             </div>
                             <div class="flex-grow-1 overflow-hidden ms-3">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3">SYSTEM PROGRAMMERS </p>
+                                <p class="text-uppercase fw-bold text-muted text-truncate mb-3">SYSTEM PROGRAMMERS </p>
                                 <div class="d-flex align-items-center mb-3">
                                     <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value" data-target="<?php echo $programmers_count; ?>"></span></h4>
                                 </div>
-                                <p class="text-muted text-truncate mb-0">Active Programmers </p>
+                                <p class="text-muted text-truncate mb-0 fs-6">Active Programmers </p>
                             </div>
                         </div>
                     </div>
@@ -32,11 +32,11 @@
                                 </span>
                             </div>
                             <div class="flex-grow-1 overflow-hidden ms-3">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3">SYSTEM ANALYSTS </p>
+                                <p class="text-uppercase fw-bold text-muted text-truncate mb-3">SYSTEM ANALYSTS </p>
                                 <div class="d-flex align-items-center mb-3">
                                     <h4 class="fs-4 flex-grow-1 mb-0 text-end"><span class="counter-value" data-target="<?php echo $analysts_count; ?>"></span></h4>
                                 </div>
-                                <p class="text-muted text-truncate mb-0">Active Analysts </p>
+                                <p class="text-muted text-truncate mb-0 fs-6">Active Analysts </p>
                             </div>
                         </div>
                     </div>
@@ -53,12 +53,12 @@
                                 </span>
                             </div>
                             <div class="flex-grow-1 overflow-hidden ms-3">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3">
+                                <p class="text-uppercase fw-bold text-muted text-truncate mb-3">
                                     RMS TEAM </p>
                                 <div class="d-flex align-items-center mb-3">
                                     <h4 class="fs-4 flex-grow-1 mb-0 text-end"><span class="counter-value" data-target="<?php echo $others_count; ?>"></span> </h4>
                                 </div>
-                                <p class="text-muted text-truncate mb-0">Active Rms </p>
+                                <p class="text-muted text-truncate mb-0 fs-6">Active Rms </p>
                             </div>
                         </div>
                     </div>
@@ -69,8 +69,8 @@
         <div class="row">
             <div class="col-xl-12">
                 <div class="card card-height-100">
-                    <div class="card-header align-items-center d-flex">
-                        <h4 class="card-title mb-0 flex-grow-1">Upcoming Meeting Schedules </h4>
+                    <div class="card-header align-items-center d-flex ">
+                        <h4 class="card-title mb-0 flex-grow-1 fw-bold">Upcoming Meeting Schedules </h4>
                     </div>
                     <div class="card-body pt-0" data-simplebar style="max-height: 500px;">
                         <ul id="upcoming-event-list" class="list-group list-group-flush border-dashed"></ul>
@@ -90,6 +90,7 @@
         </div>
 
     </div>
+    <!-- Toast -->
 
     <div class="col-xxl-4">
         <div class="card" >
@@ -114,6 +115,8 @@
     </div>
 
 </div>
+
+
 <script>
 $(document).ready(function () {
     const calendarElement = document.getElementById('birthday-calendar');
@@ -128,6 +131,7 @@ $(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 birthdayList.empty();
+                let todayBirthdays = []; // To store birthdays for today
 
                 if (response.status === 'success' && response.data.length > 0) {
                     const birthdayDates = [];
@@ -136,12 +140,27 @@ $(document).ready(function () {
                         const birthDate = new Date(birthday.birthdate);
                         birthdayDates.push(birthDate.getDate());
 
-                        const formattedDate = birthDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', });
+                        const formattedDate = birthDate.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                        });
                         let age = year - birthDate.getFullYear();
-                        const isBeforeBirthday = (currentDate.getMonth() + 1) < month || ((currentDate.getMonth() + 1) === month && currentDate.getDate() < birthDate.getDate());
+                        const isBeforeBirthday =
+                            currentDate.getMonth() + 1 < month ||
+                            (currentDate.getMonth() + 1 === month &&
+                                currentDate.getDate() < birthDate.getDate());
                         if (isBeforeBirthday) {
                             age--;
                         }
+
+                        if (
+                            birthDate.getDate() === currentDate.getDate() &&
+                            birthDate.getMonth() === currentDate.getMonth()
+                        ) {
+                            todayBirthdays.push(`${birthday.firstname} ${birthday.lastname}`);
+                        }
+
                         const birthdayHTML = `
                             <div class="mini-stats-wid d-flex align-items-center mt-2">
                                 <div class="flex-shrink-0 avatar-sm">
@@ -159,6 +178,20 @@ $(document).ready(function () {
                             </div>`;
                         birthdayList.append(birthdayHTML);
                     });
+                    if (todayBirthdays.length > 0) {
+                        const toastMessage = `🎉 Happy Birthday to ${todayBirthdays.join(', ')}! 🎂`;
+                        Toastify({
+                            text: toastMessage,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
+                    }
 
                     updateCalendar(birthdayDates, month, year, response.data);
                 }
@@ -204,6 +237,7 @@ $(document).ready(function () {
         }
     }
 
+
     const flatpickrInstance = flatpickr(calendarElement, {
         defaultDate: currentDate,
         inline: true,
@@ -230,30 +264,42 @@ $(document).ready(function () {
             success: function (events) {
                 var eventList = $('#upcoming-event-list');
                 eventList.empty();
-                events.forEach(function (event) {
-                    var eventHTML = `
-                        <li class="list-group-item ps-0">
-                            <div class="row align-items-center g-3">
-                                <div class="col-auto">
-                                    <div class="avatar-sm p-1 py-2 h-auto bg-light rounded-3 shadow">
-                                        <div class="text-center">
-                                            <h5 class="mb-0 fw-bold text-info">${new Date(event.date_meeting).getDate()}</h5>
-                                            <div class="text-muted">${new Date(event.date_meeting).toLocaleString('en-GB', { weekday: 'short' })}</div>
+                
+                if (events.length === 0) {
+                    eventList.append(`
+                        <li class="list-group-item ps-0 text-center text-muted">
+                            No Upcoming Meetings Available
+                        </li>
+                    `);
+                } else {
+                    events.forEach(function (event) {
+                        var eventHTML = `
+                            <li class="list-group-item ps-0">
+                                <a href="<?php echo base_url('meeting_schedule'); ?>" class="d-block text-decoration-none">
+                                    <div class="row align-items-center g-3">
+                                        <div class="col-auto">
+                                            <div class="avatar-sm p-1 py-2 h-auto bg-light rounded-3 shadow">
+                                                <div class="text-center">
+                                                    <h5 class="mb-0 fw-bold text-info">${new Date(event.date_meeting).getDate()}</h5>
+                                                    <div class="text-muted">${new Date(event.date_meeting).toLocaleString('en-GB', { weekday: 'short' })}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <h5 class="text-muted mt-0 mb-1 fs-12">${event.time}</h5>
+                                            <p class="fs-14 mb-0">${event.reasons}</p>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col">
-                                    <h5 class="text-muted mt-0 mb-1 fs-12">${event.time}</h5>
-                                    <a href="#" class="text-reset fs-14 mb-0">${event.reasons}</a>
-                                </div>
-                            </div>
-                        </li>
-                    `;
-                    eventList.append(eventHTML);
-                });
+                                </a>
+                            </li>
+                        `;
+                        eventList.append(eventHTML);
+                    });
+                }
             },
         });
     }
+
     loadUpcomingEvents();
 });
 </script>

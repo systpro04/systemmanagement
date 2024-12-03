@@ -1,12 +1,12 @@
+
 <div class="modal fade" id="addUser" tabindex="-1" aria-labelledby="create_kpiLabel" aria-hidden="true"
     data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title" id="varyingcontentModalLabel">SETUP USER</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="mb-3">
                     <label for="title" class="col-form-label">Team:</label>
@@ -39,13 +39,12 @@
 
 <div class="modal fade" id="updateUser" tabindex="-1" aria-labelledby="create_kpiLabel" aria-hidden="true"
     data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title" id="varyingcontentModalLabel">SETUP USER</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="mb-3">
                     <label for="title" class="col-form-label">Team:</label>
@@ -137,10 +136,8 @@
         </div>
     </div>
 </div>
-<link href="<?php echo base_url(); ?>assets/jquery-ui.min.css" rel="stylesheet" type="text/css">
-<script src="<?php echo base_url(); ?>assets/jquery.min.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>assets/jquery-ui.min.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>assets/js/datatable2.1.8.js"></script>
+
+
 <script>
     $(document).ready(function () {
         $('#team_id, #filter_team, #edit_team_id').select2({
@@ -174,35 +171,70 @@
 
     $(document).ready(function () {
         let table = $('#user_list').DataTable({
-            processing: true,
-            serverSide: true,
-            stateSave: true,
-            destroy: true,
-            scrollCollapse: true,
-            lengthmenu: [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
-            pageLength: 10,
-            scrollY: '50vh',
-            stateSave: true,
-            ajax: {
-                url: '<?php echo base_url('user_list'); ?>',
-                type: 'POST',
+            "processing": true,
+            "serverSide": true,
+            "stateSave": true,
+            "destroy": true,
+            "scrollCollapse": true,
+            "lengthmenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
+            "pageLength": 10,
+            "stateSave": true,
+            "ajax": {
+                "url": '<?php echo base_url('user_list'); ?>',
+                "type": 'POST',
                 data: function (d) {
                     d.filter_team = $('#filter_team').val();
                 }
             },
-            columns: [
-                { data: 'team_name' },
-                { data: 'emp_id' },
-                { data: 'name' },
-                { data: 'position' },
-                { data: 'type' },
-                { data: 'action' }
+            "columns": [
+                { "data": 'team_name' },
+                { "data": 'emp_id' },
+                { "data": 'name' },
+                { "data": 'position' },
+                { "data": 'type' },
+                { "data": 'action' }
             ],
-            paging: true,
-            searching: true,
-            ordering: true,
-            columnDefs: [
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "columnDefs": [
                 { "className": "text-center", "targets": ['_all'] }
+            ],
+            "dom": 
+                "<'row mb-1'<'col-md-12 text-start'B>>" +
+                "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
+                "<'row'<'col-md-12'tr>>" +
+                "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
+            "buttons": [
+                {
+                    "extend": 'excelHtml5',
+                    "title": 'PROGRAMMER | ANALYSTS | RMS - Excel Export', 
+                    "exportOptions": {
+                        "columns": ':visible:not(:last-child)'
+                    }
+                },
+                {
+                    "extend": 'pdfHtml5',
+                    "title": 'PROGRAMMER | ANALYSTS | RMS - PDF Export',
+                    "text": 'Generate Report',
+                    "exportOptions": {
+                        "columns": ':visible:not(:last-child)'
+                    },
+                    "customize": function (doc) {
+                        doc.defaultStyle.fontSize = 8;
+                        doc.styles.title.fontSize = 12;
+                        doc.styles.tableHeader.fontSize = 10;
+                        if (!doc.styles.tableBodyOdd) {
+                            doc.styles.tableBodyOdd = {};
+                        }
+                        if (!doc.styles.tableBodyEven) {
+                            doc.styles.tableBodyEven = {};
+                        }
+                        doc.styles.tableBodyOdd.alignment = 'center';
+                        doc.styles.tableBodyEven.alignment = 'center';
+                    }
+                },
+                'colvis'
             ],
         });
         $('#filter_team').change(function () {
@@ -277,15 +309,18 @@
                         is_parttime: isParttimeChecked
                     },
                     success: function (data) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Successfully Added.',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                        });
+                        Toastify({
+                            text: `User added successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         $('#addUser').modal('hide');
                         $('#user_list').DataTable().ajax.reload();
                     }
@@ -333,15 +368,18 @@
                         type: type
                     },
                     success: function (data) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Successfully Added.',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                        });
+                        Toastify({
+                            text: `User updated successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         $('#user_list').DataTable().ajax.reload();
                         $('#updateUser').modal('hide');
                     }
@@ -366,15 +404,18 @@
                     type: 'POST',
                     data: { id: id },
                     success: function (data) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Success! Password reset!!!',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                        });
+                        Toastify({
+                            text: `Password reset successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         $('#user_list').DataTable().ajax.reload();
                     }
                 });

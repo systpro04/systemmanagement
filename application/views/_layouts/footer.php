@@ -26,7 +26,7 @@
      <!--preloader-->
      <div id="preloader">
         <div id="status">
-            <img src="<?php echo base_url(); ?>assets/images/cube.gif" alt="Loading..." class="avatar-sm" lazy="loading" style="height: 150px; width: 150px">
+            <img src="<?php echo base_url(); ?>assets/images/cube.gif" alt="Loading..." class="avatar-sm" lazy="loading" style="height: 70px; width: 70px">
         </div>
     </div>
 
@@ -43,15 +43,12 @@
      <script src="<?php echo base_url(); ?>assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
      <!-- apexcharts -->
      <!-- <script src="<?php echo base_url(); ?>assets/libs/apexcharts/apexcharts.min.js"></script> -->
-     <script type="text/javascript" src="<?php echo base_url(); ?>assets/libs/flatpickr/flatpickr.min.js"></script>
+     <!-- <script type="text/javascript" src="<?php echo base_url(); ?>assets/libs/flatpickr/flatpickr.min.js"></script> -->
 
      <!-- App js -->
      <script src="<?php echo base_url(); ?>assets/js/app.js"></script>
      <script src="<?php echo base_url(); ?>assets/js/select2.js"></script>
     <script src="<?php echo base_url(); ?>assets/libs/sweetalert2/sweetalert2.min.js"></script>
-
-    <script src="<?php echo base_url(); ?>assets/js/pages/sweetalerts.init.js"></script>
-
          <!-- dropzone min -->
     <script src="<?php echo base_url(); ?>assets/js/dropzone.js"></script>
      <!-- filepond js -->
@@ -61,6 +58,7 @@
     <script src="<?php echo base_url(); ?>assets/js/filepond-plugin-image-exif-orientation.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/filepond-plugin-file-encode.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/pages/password-addon.init.js"></script>
+
     <script>
         var previewTemplate,
             dropzone,
@@ -110,15 +108,18 @@
 
 <script type="text/javascript">
     function swal_message1(msg_type, msg) {
-        Swal.fire({
-            toast: true,
-            position: 'top',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            icon: msg_type,
-            title: msg
-        });
+        Toastify({
+            text: msg,
+            duration: 5000,
+            gravity: "top",
+            position: "center",
+            className: "birthday-toast primary",
+            stopOnFocus: true,
+            close: true,
+            style: {
+                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+            },
+        }).showToast();
     }
 
     <?php
@@ -128,19 +129,94 @@
         $name = $this->session->userdata('name');
 
         if ($hour >= 5 && $hour < 12) {
-            $greeting = 'Good morning, ';
+            $greeting = 'GOOD MORNING, ';
         } elseif ($hour >= 12 && $hour < 17) {
-            $greeting = 'Good afternoon, ';
+            $greeting = 'GOOD AFTERNOON, ';
         } else {
-            $greeting = 'Good evening, ';
+            $greeting = 'GOOD EVENING, ';
         }
 
         $greeting = addslashes($greeting);
         $name = addslashes($name);
 
-        echo "swal_message1('success', '<h6>{$greeting}<i>{$name}</i></h6>');";
+        echo "swal_message1('success', '{$greeting} {$name}');";
     }
     ?>
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#page-header-notifications-dropdown').on('click', function () {
+            $.ajax({
+                url: '<?php echo base_url('fetch_notifications'); ?>',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    let notificationsHtml = '';
+
+                    if (data.length > 0) {
+                        data.forEach(notification => {
+                            // Format the date_uploaded into a human-readable format
+                            const dateUploaded = new Date(notification.date_uploaded);
+                            const formattedDate = dateUploaded.toLocaleString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true
+                            });
+
+                            notificationsHtml += 
+                                `
+                                <div class="text-reset notification-item d-block dropdown-item position-relative">
+                                    <div class="d-flex">
+                                        <div class="avatar-xs me-3 flex-shrink-0">
+                                            <span class="avatar-title bg-info-subtle text-info rounded-circle fs-16">
+                                                <i class="bx bx-badge-check"></i>
+                                            </span>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <a href="#!" class="stretched-link">
+                                                <h6 class="mt-0 mb-2 lh-base">Team <b>${notification.team_name} </b> added a new request  
+                                                    <span class="text-secondary">for </span> Approval! 
+                                                    <span><b>( ${notification.uploaded_to} | ${notification.mod_name} | ${notification.typeofsystem} )</b></span>
+                                                </h6>
+                                            </a>
+                                            <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
+                                                <span><i class="mdi mdi-clock-outline"></i> ${formattedDate} </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>`;
+                        });
+                    } else {
+                        notificationsHtml = '<p class="text-center text-muted py-2">No new notifications</p>';
+                    }
+                    $('#all-noti-tab .pe-2').html(notificationsHtml);
+                },
+            });
+        });
+    });
+
+
+    function updateNotificationCount() {
+        $.ajax({
+            url: '<?php echo base_url('get_notification_count') ?>',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                if (response.count > 0) {
+                    $('.topbar-badge, .count').text(response.count).show();
+                } else {
+                    $('.topbar-badge, .count').text('0').show();
+                }
+            },
+        });
+    }
+
+    updateNotificationCount();
+
 </script>
  </body>
 

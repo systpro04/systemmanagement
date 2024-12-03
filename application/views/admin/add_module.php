@@ -1,13 +1,12 @@
 <!-- Create Module -->
 <div class="modal fade" id="create_module" tabindex="-1" aria-labelledby="create_module" aria-hidden="true"
     data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title" id="varyingcontentModalLabel">CREATE MODULE</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="mb-2">
                     <label for="title" class="col-form-label">Module | System Name:</label>
@@ -56,11 +55,10 @@
     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title" id="varyingcontentModalLabel">EDIT MODULE NAME</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="" id="edit_module_content">
                 </div>
@@ -75,11 +73,10 @@
     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title" id="varyingcontentModalLabel">SUB MODULES</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="" id="submodule_content">
                 </div>
@@ -96,11 +93,10 @@
     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title" id="varyingcontentModalLabel">ADD SUBMODULE NAME</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="" id="add_submodule_content"></div>
             </div>
@@ -114,11 +110,10 @@
     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title" id="varyingcontentModalLabel">EDIT SUBMODULE NAME</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="" id="edit_submodule_content">
 
@@ -221,7 +216,6 @@
             "serverSide": true,
             "destroy": true,
             'scrollCollapse': true,
-            'scrollY': '50vh',
             'lengthMenu': [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
             'pageLength': 10,
             'stateSave': true,
@@ -256,6 +250,42 @@
             "columnDefs": [
                 { "className": "text-center", "targets": ['_all'] }
             ],
+            "dom": 
+                "<'row mb-1'<'col-md-12 text-start'B>>" +
+                "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
+                "<'row'<'col-md-12'tr>>" +
+                "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
+            "buttons": [
+                {
+                    "extend": 'excelHtml5',
+                    "title": 'MODULE LIST - Excel Export', 
+                    "exportOptions": {
+                        "columns": ':visible:not(:last-child)'
+                    }
+                },
+                {
+                    "extend": 'pdfHtml5',
+                    "title": 'MODULE LIST - PDF Export',
+                    "text": 'Generate Report',
+                    "exportOptions": {
+                        "columns": ':visible:not(:last-child)'
+                    },
+                    "customize": function (doc) {
+                        doc.defaultStyle.fontSize = 8;
+                        doc.styles.title.fontSize = 12;
+                        doc.styles.tableHeader.fontSize = 10;
+                        if (!doc.styles.tableBodyOdd) {
+                            doc.styles.tableBodyOdd = {};
+                        }
+                        if (!doc.styles.tableBodyEven) {
+                            doc.styles.tableBodyEven = {};
+                        }
+                        doc.styles.tableBodyOdd.alignment = 'center';
+                        doc.styles.tableBodyEven.alignment = 'center';
+                    }
+                },
+                'colvis'
+            ],
             
         });
     }
@@ -289,15 +319,18 @@
         var date_request    = $('#date_request').val();
 
         if (mod_name === "" || mod_abbr === "" || typeofsystem === "") {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1500,
-                timerProgressBar: true,
-                icon: 'error',
-                title: 'Please fill up fields!',
-            });
+            Toastify({
+                text: `Please fill in required fields.`,
+                duration: 5000,
+                gravity: "top",
+                position: "left",
+                className: "birthday-toast primary",
+                stopOnFocus: true,
+                close: true,
+                style: {
+                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                },
+            }).showToast();
             if (mod_name === "") {
                 $('#mod_name').addClass('is-invalid');
             }
@@ -323,15 +356,18 @@
             success: function () {
                 $('#create_module').modal('hide');
                 $('#module_list').DataTable().ajax.reload();
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    timerProgressBar: true,
-                    icon: 'success',
-                    title: 'Module added successfully.',
-                });
+                Toastify({
+                    text: `Module added successfully.`,
+                    duration: 5000,
+                    gravity: "top",
+                    position: "left",
+                    className: "birthday-toast primary",
+                    stopOnFocus: true,
+                    close: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    },
+                }).showToast();
             },
         });
     }
@@ -341,11 +377,18 @@
             type: 'POST',
             data: { mod_id: mod_id },
             error: function () {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong!'
-                });
+                Toastify({
+                    text: `Oops!!! Something went wrong.`,
+                    duration: 5000,
+                    gravity: "top",
+                    position: "left",
+                    className: "birthday-toast primary",
+                    stopOnFocus: true,
+                    close: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    },
+                }).showToast();
             },
             success: function (data) {
                 $("#submodule_content").html(data);
@@ -359,11 +402,18 @@
             type: 'POST',
             data: { mod_id: mod_id },
             error: function () {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong!'
-                });
+                Toastify({
+                    text: `Oops!!! Something went wrong`,
+                    duration: 5000,
+                    gravity: "top",
+                    position: "left",
+                    className: "birthday-toast primary",
+                    stopOnFocus: true,
+                    close: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    },
+                }).showToast();
             },
             success: function (data) {
                 $("#add_submodule_content").html(data);
@@ -376,15 +426,18 @@
         var sub_mod_name = $('#sub_mod_name').val();
 
         if (sub_mod_name === "") {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1500,
-                timerProgressBar: true,
-                icon: 'error',
-                title: 'Sub module name is required!',
-            });
+            Toastify({
+                text: `Sub module name is required.`,
+                duration: 5000,
+                gravity: "top",
+                position: "left",
+                className: "birthday-toast primary",
+                stopOnFocus: true,
+                close: true,
+                style: {
+                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                },
+            }).showToast();
             return;
         }
         Swal.fire({
@@ -410,15 +463,18 @@
                         });
                     },
                     success: function (data) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'Sub module added successfully.',
-                        });
+                        Toastify({
+                            text: `Sub module added successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         $('#submodule_list').DataTable().ajax.reload();
                         view_submodule(mod_id);
                         $('#submodule').modal('show');
@@ -441,11 +497,18 @@
                 date_request: date_request
              },
             error: function () {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong!'
-                });
+                Toastify({
+                    text: `Oops!!! something went wrong.`,
+                    duration: 5000,
+                    gravity: "top",
+                    position: "left",
+                    className: "birthday-toast primary",
+                    stopOnFocus: true,
+                    close: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    },
+                }).showToast();
             },
             success: function (data) {
                 $("#edit_module_content").html(data);
@@ -490,15 +553,18 @@
                         });
                     },
                     success: function (data) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'Module updated successfully.',
-                        });
+                        Toastify({
+                            text: `Module updated successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         $('#edit_module').modal('hide');
                         $('#module_list').DataTable().ajax.reload();
                     }
@@ -514,11 +580,18 @@
             data: { sub_mod_id: sub_mod_id },
             cache: false, 
             error: function () {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong!'
-                });
+                Toastify({
+                    text: `Opps!!! something went wrong`,
+                    duration: 5000,
+                    gravity: "top",
+                    position: "left",
+                    className: "birthday-toast primary",
+                    stopOnFocus: true,
+                    close: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    },
+                }).showToast();
             },
             success: function (data) {
                 $("#edit_submodule_content").html(data);
@@ -545,22 +618,32 @@
                         type: 'POST',
                         data: { sub_mod_id: sub_mod_id, sub_mod_name: sub_mod_name },
                         error: function () {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Something went wrong!',
-                            });
+                            Toastify({
+                            text: `Opps!!! something went wrong`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         },
                         success: function (data) {
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 1500,
-                                timerProgressBar: true,
-                                icon: 'success',
-                                title: 'Sub module updated successfully.',
-                            });
+                            Toastify({
+                                text: `Sub module updated successfully.`,
+                                duration: 5000,
+                                gravity: "top",
+                                position: "left",
+                                className: "birthday-toast primary",
+                                stopOnFocus: true,
+                                close: true,
+                                style: {
+                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                                },
+                            }).showToast();
                             $('#edit_submodule').modal('hide');
                             $('#submodule').modal('show');
                             $('#submodule_list').DataTable().ajax.reload();
@@ -590,15 +673,18 @@
                         id: id,
                     },
                     success: function () {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: ' New System approved successfully',
-                        });
+                        Toastify({
+                            text: `New system approved successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         var table = $('#module_list').DataTable();
                         var currentPage = table.page();
 
@@ -629,15 +715,18 @@
                         id: id,
                     },
                     success: function () {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: ' New System approved successfully',
-                        });
+                        Toastify({
+                            text: `New system recalled successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         var table = $('#module_list').DataTable();
                         var currentPage = table.page();
 
@@ -669,15 +758,18 @@
                         mod_id: mod_id,
                     },
                     success: function () {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: ' Module deleted successfully',
-                        });
+                        Toastify({
+                            text: `Module deleted successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         var table = $('#module_list').DataTable();
                         var currentPage = table.page();
 

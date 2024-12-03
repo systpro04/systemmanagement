@@ -5,35 +5,40 @@
  <html lang="en" data-layout="vertical" data-topbar="dark" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="img-2" data-preloader="enable" data-layout-width="fluid" data-layout-position="fixed" data-sidebar-visibility="show">
  <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-     <meta charset="utf-8" />
-     <title>Sysdev</title>
-     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-     <!-- App favicon -->
-     <link rel="shortcut icon" href="<?php echo base_url(); ?>assets/images/favicon.ico" />
+    <meta charset="utf-8" />
+    <title>Sysdev</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
      <!-- Layout config Js -->
-     <script src="<?php echo base_url(); ?>assets/js/layout.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/layout.js"></script>
      <!-- Bootstrap Css -->
-     <link href="<?php echo base_url(); ?>assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url(); ?>assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
      <!-- Icons Css -->
-     <link href="<?php echo base_url(); ?>assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-     <link href="<?php echo base_url(); ?>assets/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url(); ?>assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url(); ?>assets/css/select2.css" rel="stylesheet" type="text/css" />
      <!-- App Css-->
-     <link href="<?php echo base_url(); ?>assets/css/datatable.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url(); ?>assets/css/datatable.css" rel="stylesheet" type="text/css" />
       
-     <link href="<?php echo base_url(); ?>assets/css/app.min.css" rel="stylesheet" type="text/css" />
-     <link href="<?php echo base_url(); ?>assets/css/responsive.css" rel="stylesheet" type="text/css" />
-     <link href="<?php echo base_url(); ?>assets/css/buttons.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url(); ?>assets/css/app.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url(); ?>assets/css/responsive.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url(); ?>assets/css/buttons.css" rel="stylesheet" type="text/css" />
      <!-- custom Css-->
-     <link href="<?php echo base_url(); ?>assets/css/custom.min.css" rel="stylesheet" type="text/css" />
-     <script src="<?php echo base_url(); ?>assets/js/iconify.js"></script>
-     <script src="<?php echo base_url(); ?>assets/js/jquery3.6.0.js"></script>
-     <!-- <script src="<?php echo base_url(); ?>assets/js/responsive.js"></script>
-     <script src="<?php echo base_url(); ?>assets/js/buttons.js"></script> -->
+    <link href="<?php echo base_url(); ?>assets/css/custom.min.css" rel="stylesheet" type="text/css" />
 
-     <script src="<?php echo base_url(); ?>assets/js/datatable2.1.8.js"></script>
-     <link href="<?php echo base_url(); ?>assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
-
-          <!-- dropzone css -->
+    <script src="<?php echo base_url(); ?>assets/js/iconify.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/jquery3.6.0.js"></script>
+    <link href="<?php echo base_url(); ?>assets/jquery-ui.min.css" rel="stylesheet" type="text/css">
+    <script src="<?php echo base_url(); ?>assets/jquery.min.js" type="text/javascript"></script>
+    <script src="<?php echo base_url(); ?>assets/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="<?php echo base_url(); ?>assets/js/datatable2.1.8.js"></script>
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/js/datatable/buttons.css">
+    <script src="<?php echo base_url(); ?>assets/js/datatable/buttons.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/datatable/buttons5.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/datatable/jszip.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/datatable/pdfmake.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/datatable/vfsfonts.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/datatable/html5.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/datatable/colvis.js"></script>
+    <link href="<?php echo base_url(); ?>assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/dropzone.css" type="text/css" />
 
     <!-- Filepond css -->
@@ -42,26 +47,20 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/flatpickr.css">
     <script src="<?php echo base_url(); ?>assets/js/flatpickr.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/fullcalendar.js"></script>
-     
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/toastify.css">
+    <script src="<?php echo base_url(); ?>assets/js/toastify.js"></script>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/libs/glightbox/css/glightbox.min.css" />
+    <script src="<?php echo base_url(); ?>assets/libs/glightbox/js/glightbox.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/libs/isotope-layout/isotope.pkgd.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/pages/gallery.init.js"></script>
  </head>
- <body style="font-family: 'Inter-Regular', sans-serif">
+ <body>
      <!-- Begin page -->
      <div id="layout-wrapper">
          <header id="page-topbar">
             <div class="layout-width">
                 <div class="navbar-header">
                     <div class="d-flex">
-                    <!-- LOGO -->
-                        <div class="navbar-brand-box horizontal-logo">
-                            <a href="#!" class="logo logo-light">
-                                <span class="logo-sm">
-                                    <img src="#" alt="" height="20" />
-                                </span>
-                                <span class="logo-lg">
-                                    <img src="<?php echo base_url(); ?>assets/images/logo-light.png" alt="" height="17" />
-                                </span>
-                            </a>
-                        </div>
                         <button type="button" class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger shadow-none" id="topnav-hamburger-icon">
                             <span class="hamburger-icon">
                                 <span></span>
@@ -72,27 +71,67 @@
                     </div>
 
                     <div class="d-flex align-items-center">
-
-                        <div class="dropdown d-md-none topbar-head-dropdown header-item">
-                            <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-search fs-22"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-search-dropdown">
-                                <form class="p-3">
-                                    <div class="form-group m-0">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username" />
-                                            <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i></button>
-                                        </div>
+                        <div class="dropdown topbar-head-dropdown ms-1 header-item">
+                        <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class='bx bx-category-alt fs-22'></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-lg p-0 dropdown-menu-end">
+                            <div class="p-3 border-top-0 border-start-0 border-end-0 border-dashed border">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h6 class="m-0 fw-semibold fs-15"> TEAM GALLERY  </h6>
                                     </div>
-                                </form>
+                                    <div class="col-auto">
+                                        <a href="<?php echo base_url('team_events'); ?>" class="btn btn-sm btn-soft-info shadow-none"> View All Image Files
+                                            <i class="ri-arrow-right-s-line align-middle"></i></a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
+                    </div>
                         <div class="ms-1 header-item d-none d-sm-flex">
                             <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" data-toggle="fullscreen">
                                 <i class='bx bx-fullscreen fs-22'></i>
                             </button>
+                        </div>
+                        <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
+                            <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                            <iconify-icon icon="line-md:bell-filled-loop" class="fs-22"></iconify-icon><span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger">0</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown">
+
+                                <div class="dropdown-head bg-primary bg-pattern rounded-top">
+                                    <div class="p-3">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <h6 class="m-0 fs-16 fw-semibold text-white"> Notifications  </h6>
+                                            </div>
+                                            <div class="col-auto dropdown-tabs">
+                                                <span class="badge bg-light-subtle text-body fs-13 count"> </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="px-2 pt-2">
+                                        <ul class="nav nav-tabs dropdown-tabs nav-tabs-custom" data-dropdown-tabs="true" id="notificationItemsTab" role="tablist">
+                                            <li class="nav-item waves-effect waves-light">
+                                                <a class="nav-link active" data-bs-toggle="tab" href="#all-noti-tab" role="tab" aria-selected="true">
+                                                    Requests
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="tab-content position-relative">
+                                    <div class="tab-pane fade show active py-2 ps-2" id="all-noti-tab" role="tabpanel" data-simplebar="" style="max-height: 400px;">
+                                        <div class="pe-2"></div>
+                                        <div class="my-3 text-center view-all">
+                                            <a href="<?php echo base_url(); ?>request" type="button" class="btn btn-soft-success waves-effect waves-light">View Requests  <i class="ri-arrow-right-line align-middle"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="dropdown ms-sm-3 header-item topbar-user">
@@ -101,7 +140,7 @@
                                     <img class="rounded-circle header-profile-user avatar-sm" src="http://172.16.161.34:8080/hrms/<?=$this->session->userdata('photo'); ?>" alt="Header Avatar" />
                                     <span class="text-start ms-xl-2">
                                         <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text fw-bold"><?php echo $this->session->userdata('name'); ?> </span>
-                                        <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text"><i><?php echo $this->session->userdata('emp_id'); ?> </i></span>
+                                        <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text"><i><?php echo $this->session->userdata('emp_id'); ?> - <?php echo $this->session->userdata('hrms_position'); ?> </i></span>
                                     </span>
                                 </span>
                             </button>
@@ -117,26 +156,8 @@
             </div>
         </header>
          <div class="app-menu navbar-menu">
-             <!-- LOGO -->
-             <!-- <div class="navbar-brand-box">
-                 <a href="<?php echo base_url('dashboard'); ?>" class="logo logo-light">
-                     <span class="logo-lg">
-                     <img class="rounded-circle" src="<?php echo base_url(); ?>assets/images/users/avatar-1.jpg" alt="" style=" height: 80px; margin-top: 35px; color:white;" border="3" />
-                        <h5 class="mt-2 text-white"><span>Louei Genita</span></h5>
-                        <h6 class="mt-2"><span>Administrator</span></h6>
-                     </span>
-
-                     <span class="logo-sm">
-                        <img class="rounded-circle" src="<?php echo base_url(); ?>assets/images/users/avatar-1.jpg" alt="" style="height: 50px; color:white" border="3" />
-                     </span>
-                 </a>
-                 <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
-                     <i class="ri-record-circle-line"></i>
-                 </button>
-             </div> -->
-
              <div class="navbar-brand-box">
-                 <a href="#" class="logo logo-light">
+                 <a href="<?php echo base_url('dashboard'); ?>" class="logo logo-light">
                      <span class="logo-sm">
                      <img src="http://172.16.161.34:8080/hrms/<?=$this->session->userdata('photo'); ?>" height="20" class="rounded-circle avatar-sm"  />
                      </span>
@@ -148,8 +169,6 @@
                      <i class="ri-record-circle-line"></i>
                  </button>
              </div>
-
-
              <div id="scrollbar">
                  <div class="container-fluid">
                      <div id="two-column-menu">

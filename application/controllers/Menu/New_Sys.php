@@ -112,13 +112,13 @@ class New_Sys extends CI_Controller {
         return $total_size;
     }
     
-    private function get_matched_files($folder_path, $team, $module, $sub_module) {
+    private function get_matched_files($folder_path, $team, $module, $sub_module, $business_unit, $department) {
         $matched_files = [];
         $files = glob($folder_path . '\\*');
 
         foreach ($files as $file) {
             if (is_file($file)) {
-                $file_detail = $this->file_mod->get_file_details(basename($file), $team, $module, $sub_module);
+                $file_detail = $this->file_mod->get_file_details(basename($file), $team, $module, $sub_module, $business_unit, $department);
 
                 if ($file_detail) {
                     $matched_files[] = [
@@ -139,11 +139,12 @@ class New_Sys extends CI_Controller {
         $team = $this->input->get('team');
         $module = $this->input->get('module');
         $sub_module = $this->input->get('sub_module');
+        $business_unit = $this->input->get('business_unit');
+        $department = $this->input->get('department');
     
         $folder_path = '\\\\172.16.42.144\\system\\' . $folder_name;
     
-        $matched_files = $this->get_matched_files($folder_path, $team, $module, $sub_module);
-
+        $matched_files = $this->get_matched_files($folder_path, $team, $module, $sub_module, $business_unit, $department);
         $data = [
             'matched_files' => $matched_files
         ];
@@ -159,6 +160,11 @@ class New_Sys extends CI_Controller {
 
     public function business_unit() {
         $bu = $this->file_mod->get_business_units();
+        echo json_encode($bu);
+    }
+    public function department() {
+        $bcode = $this->input->post('business_unit');
+        $bu = $this->file_mod->get_departments($bcode);
         echo json_encode($bu);
     }
 
@@ -208,26 +214,49 @@ class New_Sys extends CI_Controller {
     public function delete_file_new() {
         $folder_name = $this->input->post('folder_name');
         $file_name = $this->input->post('file_name');
-        
+        $module = $this->input->post('module');
+
         $file_path = '\\\\172.16.42.144\\system\\' . $folder_name . '\\' . $file_name;
+    
+        if($module != ''){
+            if (file_exists($file_path)) {
+                if ($this->file_mod->delete_file_record($file_name, $folder_name)) {
+                    if (unlink($file_path)) {
+    
+                        if($folder_name == 'LIVE_TESTING'){
+                            $this->db->set('date_implem', '');
+                            $this->db->where('mod_id', $module);
+                            $this->db->update('module');
+                        }
+    
+                        $action = '<b>' . $this->session->name . '</b> deleted a file in <b>' . $folder_name . ' | ' . $file_name . '</b>';
+                        $log_data = [
+                            'emp_id'       => $this->session->emp_id,
+                            'action'       => $action,
+                            'date_updated' => date('Y-m-d H:i:s'),
+                        ];
+                        $this->load->model('Logs', 'logs');
+                        $this->logs->addLogs($log_data);
         
-        if (file_exists($file_path)) {
-            if (unlink($file_path)) {
-                $this->file_mod->delete_file_record($file_name);
-                echo json_encode(['success' => true]);
+                        echo json_encode(['success' => true]);
+                    } else {
+                        echo json_encode(['success' => false, 'error' => 'Failed to delete the file from the file system.']);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'File cannot be deleted because it is already Approved. Please upload a new file']);
+                }
             } else {
-                echo json_encode(['success' => false, 'error' => 'Unable to delete file.']);
+                echo json_encode(['success' => false, 'error' => 'File does not exist.']);
             }
-        } else {
-            echo json_encode(['success' => false, 'error' => 'File does not exist.']);
+        }else{
+            echo json_encode(['success' => false, 'error' => 'Opps!!! Select a module first before deleting a file.']);
         }
     }
-
+    
 
 
     public function upload_new_files() {
         $response = ['success' => false, 'message' => ''];
-        // Define the ordered sequence of directories
         $directory_order = [
             "ISR", "ATTENDANCE", "MINUTES", "WALKTHROUGH", "FLOWCHART", "DFD", "SYSTEM_PROPOSED", "LOCAL_TESTING", "UAT", "LIVE_TESTING"
         ];
@@ -235,8 +264,13 @@ class New_Sys extends CI_Controller {
         $selected_directory = $this->input->post('directory');
         $team = $this->input->post('file_team');
         $module = $this->input->post('file_module');
+        $moduleName = $this->input->post('file_module_name');
         $sub_module = $this->input->post('file_sub_module');
+        $business_unit = $this->input->post('business_unit');
+        $department = $this->input->post('department');
+        $isr                = $this->input->post('isr');
         $manager_key = $this->input->post('manager_key');
+        $date_implem = $this->input->post('date_implem');
     
         if ($manager_key) {
             if (!$this->validate_manager_key($manager_key)) {
@@ -283,7 +317,12 @@ class New_Sys extends CI_Controller {
         $success_count = 0;
     
         for ($i = 0; $i < $files_count; $i++) {
-            $file_name = $uploaded_files['name'][$i];
+            $original_file_name = $uploaded_files['name'][$i];
+            if($isr){
+                $file_name = $selected_directory . '_'. $isr .'_' . $moduleName . '_' . date('Y-m-d_his_A') . '_' . $business_unit . '_' . $department . '_' . $original_file_name;
+            }else{
+                $file_name = $selected_directory . '_' . $moduleName . '_' . date('Y-m-d_his_A') . '_' . $business_unit . '_' . $department . '_' . $original_file_name;
+            }
             $file_exists_db = $this->file_mod->file_exists_new($file_name, $team, $module, $sub_module, $selected_directory);
     
             $file_path = $folder_path . '\\' . $file_name;
@@ -335,7 +374,13 @@ class New_Sys extends CI_Controller {
                     $statuses[$status_fields[$selected_directory]] = 'Pending';
                 }
 
-                
+                if ($selected_directory == 'LIVE_TESTING'){
+                    // $this->db->set('implem_type', '1');
+                    $this->db->set('date_implem', $date_implem);
+                    $this->db->where('mod_id', $module);
+                    $this->db->update('module');
+                }
+
                 $data = array_merge([
                     'team_id'       => $team,
                     'mod_id'        => $module,
@@ -344,9 +389,13 @@ class New_Sys extends CI_Controller {
                     'file_name'     => $uploaded_data['file_name'],
                     'date_uploaded' => date('Y-m-d H:i:s'),
                     'typeofsystem'  => 'new',
+                    'business_unit' => $business_unit,
+                    'department'    => $department
                 ], $statuses);
     
                 $this->file_mod->upload_file($data);
+
+
                 $modul = $this->deploy->get_module_name($module);
                 $module_name = $modul->mod_name;
                 $action = '<b>' . $this->session->name. '</b> uploaded a file to <b>'.$selected_directory.' | '.$module_name.' | new</b>';
@@ -366,98 +415,28 @@ class New_Sys extends CI_Controller {
         }
         echo json_encode($response);
     }
-    
+    public function update_module_if_implemented()
+    {
+
+    }
     private function validate_manager_key($key) {
         $valid_key = 'new';
         return $key === $valid_key;
     }
-    
-    
-    // public function upload_new_files() {
-
-    //     $response = ['success' => false, 'message' => ''];
-    //     $path = $this->input->post('directory');
-    //     $team = $this->input->post('file_team');
-    //     $module = $this->input->post('file_module');
-    //     $sub_mod_id = $this->input->post('file_sub_module');
-    
-    //     $folder_path = '\\\\172.16.42.144\\system\\' . $path;
-    
-    //     $config['upload_path'] = $folder_path;
-    //     $config['allowed_types'] = '*'; 
-    //     $config['max_size'] = 5000000000;
-        
-    //     $this->load->library('upload', $config);
-    
-    //     $uploaded_files = $_FILES['file'];
-    //     $files_count = count($uploaded_files['name']);
-    //     $success_count = 0;
-    
-    //     for ($i = 0; $i < $files_count; $i++) {
-    //         $file_name = $uploaded_files['name'][$i];
-    //         $file_exists_db = $this->file_mod->file_exists_new($file_name, $team, $module, $sub_mod_id, $path);
-            
-    //         $file_path = $folder_path . '\\' . $file_name;
-    //         if ($file_exists_db || file_exists($file_path)) {
-    //             $response['message'] = "File '{$file_name}' already exists in the directory.";
-    //             continue;
-    //         }
-
-    //         $_FILES['file']['name'] = $file_name;
-    //         $_FILES['file']['type'] = $uploaded_files['type'][$i];
-    //         $_FILES['file']['tmp_name'] = $uploaded_files['tmp_name'][$i];
-    //         $_FILES['file']['error'] = $uploaded_files['error'][$i];
-    //         $_FILES['file']['size'] = $uploaded_files['size'][$i];
-    
-    //         $this->upload->initialize($config);
-    //         if ($this->upload->do_upload('file')) {
-    //             $success_count++;
-    
-    //             $uploaded_data = $this->upload->data();
-    //             $data = [
-    //                 'team_id'           => $team,
-    //                 'mod_id'            => $module,
-    //                 'sub_mod_id'        => $sub_mod_id,
-    //                 'uploaded_to'       => $path,
-    //                 'file_name'         => $uploaded_data['file_name'],
-    //                 'date_uploaded'     => date('Y-m-d H:i:s'),
-    //                 'isr_status'        => 'pending',
-    //                 'wt_status'         => 'pending',
-    //                 'flowchart_status'  => 'pending',
-    //                 'dfd_status'        => 'pending',
-    //                 'proposed_status'   => 'pending',
-    //                 'local_status'      => 'pending',
-    //                 'uat_status'        => 'pending',
-    //                 'live_status'       => 'pending',
-    //                 'typeofsystem'      => 'new'
-    //             ];
-    
-    //             $this->file_mod->upload_file($data);
-    //         }
-    //     }
-    
-    //     if ($success_count === $files_count) {
-    //         $response['success'] = true;
-    //         $response['message'] = 'Files uploaded successfully.';
-    //     }
-    //     echo json_encode($response);
-    // }
-
-
-
-    
-
 
     public function get_filter_options_new()
     {
         $teams = $this->file_mod->get_teams();
         $modules = $this->file_mod->get_modules();
         $sub_modules = $this->file_mod->get_sub_modules();
+        $bu = $this->file_mod->get_business_units();
+
     
         echo json_encode([
             'teams' => $teams,
             'modules' => $modules,
-            'sub_modules' => $sub_modules
+            'sub_modules' => $sub_modules,
+            'bu' => $bu,
         ]);
     }
 

@@ -99,6 +99,9 @@ $route['request']                           = 'Admin/request';
 $route['typeofsystem_data']                 = 'Admin/typeofsystem_data';
 $route['approved']                          = 'Admin/approved';
 $route['backtopending']                     = 'Admin/backtopending';
+$route['fetch_notifications']               = 'Admin/fetch_notifications';
+$route['get_notification_count']            = 'Admin/get_notification_count';
+
 
 // Menu
 $route['structure']                         = 'Menu/Structure/index';
@@ -147,6 +150,9 @@ $route['update_location']                   = 'Menu/Location/update_location';
 $route['delete_setup_location']             = 'Menu/Location/delete_setup_location';
 $route['setup_location']                    = 'Menu/Location/setup_location';
 $route['submit_location']                   = 'Menu/Location/submit_location';
+
+$route['module_list_implemented']           = 'Menu/Location/module_list_implemented';
+
 //Gantt
 $route['gantt_view']                        = 'Menu/Gantt/index';
 $route['gantt_list']                        = 'Menu/Gantt/gantt_list';
@@ -181,6 +187,10 @@ $route['setup_module_current']              = 'Menu/Current_Sys/setup_module_cur
 $route['upload_file']                       = 'Menu/Current_Sys/upload_file';
 $route['delete_file']                       = 'Menu/Current_Sys/delete_file';
 $route['get_filter_options']                = 'Menu/Current_Sys/get_filter_options';
+$route['business_unit_current']             = 'Menu/Current_Sys/business_unit_current';
+$route['department_current']                = 'Menu/Current_Sys/department_current';
+
+$route['get_isr_request']                    = 'Menu/Current_Sys/get_isr_request';
 
 $route['open_image/(:any)/(:any)']          = 'Menu/Current_Sys/open_image/$1/$2';
 $route['open_pdf/(:any)/(:any)']            = 'Menu/Current_Sys/open_pdf/$1/$2';
@@ -202,6 +212,7 @@ $route['delete_file_new']                   = 'Menu/New_Sys/delete_file_new';
 $route['check_directory_status']            = 'Menu/New_Sys/check_directory_status';
 $route['get_files_for_upload']              = 'Menu/New_Sys/get_files_for_upload';
 $route['business_unit']                     = 'Menu/New_Sys/business_unit';
+$route['department']                        = 'Menu/New_Sys/department';
 $route['get_filter_options_new']            = 'Menu/New_Sys/get_filter_options_new';
 
 $route['open_new_image/(:any)/(:any)']      = 'Menu/New_Sys/open_new_image/$1/$2';
@@ -215,6 +226,8 @@ $route['open_new_audio/(:any)/(:any)']      = 'Menu/New_Sys/open_new_audio/$1/$2
 
 // FAQ section
 $route['faq_view']                          = 'Menu/FAQ/index';
+$route['team_events']                       = 'TeamEvents/index';
+$route['get_images_directory']                  = 'TeamEvents/get_images_directory';
 
 
 

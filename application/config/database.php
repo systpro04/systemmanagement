@@ -117,3 +117,25 @@ $db['pis'] = array(
 	'save_queries' => TRUE
 );
 
+$db['isr'] = array(
+	'dsn'	=> '',
+	'hostname' => '172.16.161.43',
+	'username' => 'rfstor',
+	'password' => 'rfstor2023',	
+	'database' => 'rfstor',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);
+

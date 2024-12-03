@@ -3,11 +3,10 @@
     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-lg" style="width: 765px">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title">SETUP WORKLOAD</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="row mb-3">
                     <label for="team_name" class="col-sm-3 col-form-label">Team Name:</label>
@@ -62,7 +61,7 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="status" class="col-sm-3 col-form-label">Status:</label>
+                    <label for="status" class="col-sm-3 col-form-label">Status: <span style="color: red">*</span></label>
                     <div class="col-sm-9">
                         <select class="form-select mb-3" id="workload_status">
                             <option></option>
@@ -86,11 +85,10 @@
     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-lg" style="width: 765px">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title">SETUP WORKLOAD</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="row mb-3">
                     <label for="team_name" class="col-sm-3 col-form-label">Team Name:</label>
@@ -155,7 +153,7 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="status" class="col-sm-3 col-form-label">Status:</label>
+                    <label for="status" class="col-sm-3 col-form-label">Status: <span style="color: red">*</span></label>
                     <div class="col-sm-9">
                         <select class="form-select mb-3" id="edit_workload_status">
                             <option></option>
@@ -201,7 +199,7 @@
                                 <button class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal"
                                     data-bs-target="#create_workload"><i class="ri-add-fill align-bottom me-1"></i> Add
                                     Workload </button>
-                                <button class="btn btn-danger waves-effect waves-light"><i class="ri-printer-fill align-bottom me-1"></i> Generate Report </button>
+                                <!-- <button class="btn btn-danger waves-effect waves-light"><i class="ri-printer-fill align-bottom me-1"></i> Generate Report </button> -->
                             </div>
                         </div>
                     </div>
@@ -275,7 +273,7 @@
             allowClear: true,
             minimumResultsForSearch: Infinity
         });
-        $('#sub_module, #sub_module').select2({
+        $('#sub_module, #edit_sub_module').select2({
             placeholder: 'Select Sub Module Name',
             allowClear: true,
             minimumResultsForSearch: Infinity
@@ -303,6 +301,8 @@
             "serverSide": true,
             "destroy": true,
             "stateSave": true,
+            "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
+            "pageLength": 10,
             "ajax": {
                 "url": "<?php echo base_url('workload_list'); ?>",
                 "type": "POST",
@@ -322,11 +322,47 @@
                 { "data": "status" },
                 { "data": "action" }
             ],
-            paging: true,
-            searching: true,
-            ordering: true,
-            columnDefs: [
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "columnDefs": [
                 { "className": "text-center", "targets": ['_all'] }
+            ],
+            "dom": 
+                "<'row mb-1'<'col-md-12 text-start'B>>" +
+                "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
+                "<'row'<'col-md-12'tr>>" +
+                "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
+            "buttons": [
+                {
+                    "extend": 'excelHtml5',
+                    "title": 'IT RESPONSIBILITIES | WORKLOAD - Excel Export', 
+                    "exportOptions": {
+                        "columns": ':visible:not(:last-child)'
+                    }
+                },
+                {
+                    "extend": 'pdfHtml5',
+                    "title": 'IT RESPONSIBILITIES | WORKLOAD - PDF Export',
+                    "text": 'Generate Report',
+                    "exportOptions": {
+                        "columns": ':visible:not(:last-child)'
+                    },
+                    "customize": function (doc) {
+                        doc.defaultStyle.fontSize = 8;
+                        doc.styles.title.fontSize = 12;
+                        doc.styles.tableHeader.fontSize = 10;
+                        if (!doc.styles.tableBodyOdd) {
+                            doc.styles.tableBodyOdd = {};
+                        }
+                        if (!doc.styles.tableBodyEven) {
+                            doc.styles.tableBodyEven = {};
+                        }
+                        doc.styles.tableBodyOdd.alignment = 'center';
+                        doc.styles.tableBodyEven.alignment = 'center';
+                    }
+                },
+                'colvis'
             ],
         });
     }
@@ -444,17 +480,19 @@
         var status          = $('#workload_status').val();
 
         if (team_id === "" || emp_id === "" || module_id === "") {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1500,
-                timerProgressBar: true,
-                icon: 'error',
-                title: 'Please fill up fields!',
-            });
-            if (sub_module_menu === "" || description === "" || remarks === "") {
-                $('#sub_module_menu, #description, #remarks, #workload_status').addClass('is-invalid');
+            Toastify({
+                text: `Please fill up the required fields`,
+                duration: 5000,
+                gravity: "top",
+                position: "left",
+                stopOnFocus: true,
+                close: true,
+                style: {
+                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                },
+            }).showToast();
+            if (status === "") {
+                $('#workload_status').addClass('is-invalid');
             }
             return;
         }
@@ -486,15 +524,17 @@
                         status: status
                     },
                     success: function (response) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'Workload added successfully',
-                        });
+                        Toastify({
+                            text: `Workload added successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         $('#create_workload').modal('hide');
                         $('#workload').DataTable().ajax.reload();
                     }
@@ -539,8 +579,8 @@
                 setTimeout(function() {
                     $('#edit_name').val(data.emp_id).trigger('change');
                     $('#edit_position').val(data.user_type);
-                    $('#edit_module_id').val(data.mod_id).trigger('change');
-                    $('#edit_sub_module').val(data.sub_mod).trigger('change');
+                    $('#edit_module_id').val(data.mod_id || '').trigger('change');
+                    $('#edit_sub_module').val(data.sub_mod || '').trigger('change');
                     $('#edit_sub_module_menu').val(data.sub_mod_menu);
                     $('#edit_description').val(data.desc);
                     $('#edit_remarks').val(data.remarks);
@@ -564,6 +604,25 @@
         var description     = $('#edit_description').val();
         var remarks         = $('#edit_remarks').val();
         var status          = $('#edit_workload_status').val();
+
+        if (team_id === "" || emp_id === "" || position === "") {
+            Toastify({
+                text: `Please fill up the required fields`,
+                duration: 5000,
+                gravity: "top",
+                position: "left",
+                stopOnFocus: true,
+                close: true,
+                style: {
+                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                },
+            }).showToast();
+            if (position === "") {
+                $('#edit_position').addClass('is-invalid');
+            }
+            return;
+        }
+
 
         Swal.fire({
             title: 'Are you sure?',
@@ -593,15 +652,17 @@
                         status: status
                     },
                     success: function (response) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'Workload added successfully',
-                        });
+                        Toastify({
+                            text: `Workload updated successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         $('#edit_workload').modal('hide');
                         $('#workload').DataTable().ajax.reload();
                     }
@@ -609,6 +670,7 @@
             }
         });
     }
+
 
     function delete_workload(id){
         Swal.fire({
@@ -630,15 +692,17 @@
                     },
                     success: function() {
                         $('#workload').DataTable().ajax.reload();
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'Workload deleted successfully.',
-                        });
+                        Toastify({
+                            text: `Workload deleted successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                     },
                 });
             }

@@ -2,11 +2,10 @@
 <div class="modal fade" id="create_weekly_report" tabindex="-1" aria-labelledby="create_weekly_report" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-lg" style="width: 765px">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title">SETUP WEEKLY REPORT</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="row mb-3">
                     <label for="team_name" class="col-sm-3 col-form-label">Date Range:</label>
@@ -81,11 +80,10 @@
 <div class="modal fade" id="edit_weekly_report" tabindex="-1" aria-labelledby="edit_weekly_report" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-lg" style="width: 765px">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title">UPDATE WEEKLY REPORT</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
             <div class="modal-body">
                 <div class="row mb-3">
                     <label for="team_name" class="col-sm-3 col-form-label">Date Range:</label>
@@ -194,10 +192,10 @@
                             </select>
                         </div>
                         <div class="ms-3">
-                            <button class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#create_weekly_report"><i class="ri-add-fill align-bottom me-1"></i></button>
-                            <button class="btn btn-danger waves-effect waves-light">
+                            <button class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#create_weekly_report"><i class="ri-add-fill align-bottom me-1"></i> Add Weekly Report</button>
+                            <!-- <button class="btn btn-danger waves-effect waves-light">
                                 <i class="ri-printer-fill align-bottom me-1"></i> 
-                            </button>
+                            </button> -->
                         </div>
                     </div>
                 </div>
@@ -229,6 +227,7 @@
         </div>
     </div>
 </div>
+
 <script>
     $(document).ready(function () {
         $('#team, #edit_team, #team_filter').select2({ placeholder: 'Select Team', allowClear: true});
@@ -242,6 +241,8 @@
         "serverSide": true,
         "destroy": true,
         "stateSave": true,
+        "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
+        "pageLength": 10,
         "ajax": {
             "url": "<?php echo base_url('weekly_list'); ?>",
             "type": "POST",
@@ -264,6 +265,42 @@
         ],
         "columnDefs": [
             { "className": "text-center", "targets": ['_all'] },
+        ],
+        "dom": 
+            "<'row mb-1'<'col-md-12 text-start'B>>" +
+            "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
+            "<'row'<'col-md-12'tr>>" +
+            "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
+        "buttons": [
+            {
+                "extend": 'excelHtml5',
+                "title": 'Weekly Report - Excel Export', 
+                "exportOptions": {
+                    "columns": ':visible:not(:last-child)'
+                }
+            },
+            {
+                "extend": 'pdfHtml5',
+                "title": 'Weekly Report - PDF Export',
+                "text": 'Generate Report',
+                "exportOptions": {
+                    "columns": ':visible:not(:last-child)'
+                },
+                "customize": function (doc) {
+                    doc.defaultStyle.fontSize = 8;
+                    doc.styles.title.fontSize = 12;
+                    doc.styles.tableHeader.fontSize = 10;
+                    if (!doc.styles.tableBodyOdd) {
+                        doc.styles.tableBodyOdd = {};
+                    }
+                    if (!doc.styles.tableBodyEven) {
+                        doc.styles.tableBodyEven = {};
+                    }
+                    doc.styles.tableBodyOdd.alignment = 'center';
+                    doc.styles.tableBodyEven.alignment = 'center';
+                }
+            },
+            'colvis'
         ],
     });
 
@@ -360,15 +397,18 @@
         var remarks         = $('#remarks').val();
 
         if (team === "" || module === "" || date_range === "" || weekly_status === "" || remarks === "") {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1500,
-                timerProgressBar: true,
-                icon: 'error',
-                title: 'Please fill up fields!',
-            });
+            Toastify({
+                text: `Please fill up the required fields.`,
+                duration: 5000,
+                gravity: "top",
+                position: "left",
+                className: "birthday-toast primary",
+                stopOnFocus: true,
+                close: true,
+                style: {
+                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                },
+            }).showToast();
             if (team === "" || module === "" || date_range === "" || weekly_status === "" || remarks === "") {
                 $('#team, #module, #sub_module, #date_range, #name, #weekly_status, #remarks').addClass('is-invalid');
             }
@@ -401,15 +441,18 @@
                         remarks: remarks
                     },
                     success: function (response) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'Weekly report added successfully',
-                        });
+                        Toastify({
+                            text: `Weekly Report added successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         $('#create_weekly_report').modal('hide');
                         table.ajax.reload();
                     }
@@ -485,15 +528,18 @@
                         remarks: remarks
                     },
                     success: function (response) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'Report updated successfully',
-                        });
+                        Toastify({
+                            text: `Weekly Report updated successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         $('#edit_weekly_report').modal('hide');
                         table.ajax.reload();
                     }
@@ -518,15 +564,18 @@
                     type: 'POST',
                     data: { id: id },
                     success: function (response) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',    
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            icon: 'success',
-                            title: 'Report deleted successfully',
-                        });
+                        Toastify({
+                            text: `Weekly Report deleted successfully.`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "left",
+                            className: "birthday-toast primary",
+                            stopOnFocus: true,
+                            close: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            },
+                        }).showToast();
                         table.ajax.reload();
                     }
                 });

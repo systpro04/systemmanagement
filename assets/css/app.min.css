@@ -18396,7 +18396,7 @@ span.flatpickr-weekday {
   }
   
   .fs-60 {
-    font-size: 60px !important;
+    font-size: 70px !important;
   }
   
   .fw-medium {
@@ -18447,6 +18447,11 @@ span.flatpickr-weekday {
 		color: white !important;
 		background-color: #0073ff !important;
 	}
-
+    footer {
+        position: relative;
+        clear: both;
+        margin-top: 50px;  /* Adjust the space above the footer */
+    }
+    
 /*# sourceMappingURL=app.min.css.map */
 

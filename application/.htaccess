@@ -4,3 +4,11 @@
 <IfModule !authz_core_module>
     Deny from all
 </IfModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access 1 year"
+    ExpiresByType image/png "access 1 year"
+    ExpiresByType image/gif "access 1 year"
+    ExpiresByType image/webp "access 1 year"
+</IfModule>

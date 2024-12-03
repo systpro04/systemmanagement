@@ -29,7 +29,7 @@
                             <table class="table table-striped table-hover" id="logs">
                                 <thead class="table-primary text-center">
                                     <tr>
-                                        <th>Name</th>
+                                        <!-- <th>Emp ID</th> -->
                                         <th>Action</th>
                                         <th>Date Added</th>
                                         <th>Date Updated</th>
@@ -52,12 +52,14 @@
             serverSide: true,
             stateSave: true,
             destroy: true,
+            lengthMenu: [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
+            pageLength: 10,
             ajax: {
                 url: '<?php echo base_url('logs_list'); ?>',
                 type: 'POST',
             },
             columns: [
-                { data: 'emp_name' },
+                // { data: 'id' },
                 { data: 'action' },
                 { "data": 'date_added',
                     "render": function(data, type, row) {

@@ -6,13 +6,14 @@ class Deploy_mod extends CI_Model
 	}
 
     public function get_implementation_data($start, $length, $order_column, $order_dir, $search_value) {
-        $this->db->select('m.*, t.team_name, GROUP_CONCAT(s.uploaded_to SEPARATOR ", ") as uploaded_to');
+        $this->db->select('m.*, t.team_name, GROUP_CONCAT(DISTINCT s.uploaded_to SEPARATOR ", ") as uploaded_to');
         $this->db->from('module m');
         $this->db->join('system_files s', 's.mod_id = m.mod_id');
         $this->db->join('team t', 's.team_id = t.team_id');
-        $this->db->where('m.implem_type', '0');
+        // $this->db->where('m.implem_type', '0');
         $this->db->group_by('m.mod_id');
         $this->db->where('m.active !=', 'Inactive');
+        $this->db->where('m.typeofsystem', 'new');
         if (!empty($search_value)) {
             $this->db->group_start(); 
             $this->db->like('m.mod_name', $search_value);
@@ -33,9 +34,11 @@ class Deploy_mod extends CI_Model
         $this->db->from('module m');
         $this->db->join('system_files s', 's.mod_id = m.mod_id');
         $this->db->join('team t', 's.team_id = t.team_id');
-        $this->db->where('m.implem_type', '0');
+        // $this->db->where('m.implem_type', '0');
         $this->db->group_by('m.mod_id');
         $this->db->where('m.active !=', 'Inactive');
+        $this->db->where('m.typeofsystem', 'new');
+
         if (!empty($search_value)) {
             $this->db->group_start(); 
             $this->db->like('m.mod_name', $search_value);
@@ -53,6 +56,7 @@ class Deploy_mod extends CI_Model
         $this->db->from('system_files s');
         $this->db->where('s.mod_id', $mod_id);
         $this->db->group_by('s.mod_id');
+        
         if (!empty($search_value)) {
             $this->db->like('s.uploaded_to', $search_value);
         }

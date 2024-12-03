@@ -46,6 +46,10 @@ class Admin_mod extends CI_Model
                      ->or_like('users.emp_id', $search_value)
                      ->or_like('users.position', $search_value)
                      ->group_end();
+                     $emp_ids = $this->get_emp_ids_by_name_search($search_value);
+                     if (!empty($emp_ids)) {
+                         $this->db->or_where_in('users.emp_id', $emp_ids);
+                     }
         }
 
         $this->db->order_by($order_by_column, $order_dir);
@@ -61,6 +65,21 @@ class Admin_mod extends CI_Model
         return $query->result_array();
     }
     
+    public function get_emp_ids_by_name_search($search_value)
+	{
+		$this->db2->select('emp_id, name');
+		$this->db2->from('employee3');
+		$this->db2->like('name', $search_value);
+		$query = $this->db2->get();
+		
+		$emp_ids = [];
+		foreach ($query->result_array() as $row) {
+			$emp_ids[] = $row['emp_id'];
+		}
+
+		return $emp_ids;
+	}
+
     public function get_user_count($filter_team,$search_value = null) {
         $this->db->select('users.*, team.*');
         $this->db->from('users');
@@ -73,6 +92,10 @@ class Admin_mod extends CI_Model
                      ->or_like('users.emp_id', $search_value)
                      ->or_like('users.position', $search_value)
                      ->group_end();
+                     $emp_ids = $this->get_emp_ids_by_name_search($search_value);
+                     if (!empty($emp_ids)) {
+                         $this->db->or_where_in('users.emp_id', $emp_ids);
+                     }
         }
         if (!empty($filter_team)) {
             $this->db->where('team.team_id', $filter_team);
@@ -96,29 +119,55 @@ class Admin_mod extends CI_Model
         $this->db->set('password', md5($this->session->userdata('emp_id')));
         $this->db->update('users');
     }
-    // public function get_file_count_by_directory($directory, $mod_id, $sub_mod_id, $team, $typeofsystem)
-    // {
-    //     $this->db->select('*');
-    //     $this->db->from('system_files');
-        
-    //     if (!empty($typeofsystem)) {
-    //         $this->db->where('typeofsystem', $typeofsystem);
-    //     }
-    //     if (!empty($mod_id)) {
-    //         $this->db->where('mod_id', $mod_id);
-    //     }
-    //     if (!empty($sub_mod_id)) {
-    //         $this->db->where('sub_mod_id', $sub_mod_id);
-    //     }
-    //     if (!empty($team)) {
-    //         $this->db->where('team_id', $team);
-    //     }
-    //     $this->db->where('uploaded_to', $directory);
-        
-    //     $query = $this->db->get();
-        
-    //     return $query->num_rows();
-    // }
+    public function get_file_count_by_directory($directory, $mod_id, $sub_mod_id, $team, $typeofsystem)
+    {
+        // Define the mapping of directories to their status fields
+        $status_fields = [
+            'ISR'                   => 'isr_status',
+            'ATTENDANCE'            => 'att_status',
+            'MINUTES'               => 'minute_status',
+            'WALKTHROUGH'           => 'wt_status',
+            'FLOWCHART'             => 'flowchart_status',
+            'DFD'                   => 'dfd_status',
+            'SYSTEM_PROPOSED'       => 'proposed_status',
+            'GANTT_CHART'           => 'gantt_status',
+            'LOCAL_TESTING'         => 'local_status',
+            'UAT'                   => 'uat_status',
+            'LIVE_TESTING'          => 'live_status',
+            'USER_GUIDE'            => 'guide_status',
+            'MEMO'                  => 'memo_status',
+            'BUSINESS_ACCEPTANCE'   => 'acceptance_status',
+        ];
+    
+        if (!array_key_exists($directory, $status_fields)) {
+            return 0;
+        }
+
+        $status_field = $status_fields[$directory];
+    
+        $this->db->select('*');
+        $this->db->from('system_files');
+        if (!empty($typeofsystem)) {
+            $this->db->where('typeofsystem', $typeofsystem);
+        }
+        if (!empty($mod_id)) {
+            $this->db->where('mod_id', $mod_id);
+        }
+        if (!empty($sub_mod_id)) {
+            $this->db->where('sub_mod_id', $sub_mod_id);
+        }
+        if (!empty($team)) {
+            $this->db->where('team_id', $team);
+        }
+    
+        $this->db->where('uploaded_to', $directory);
+        $this->db->where($status_field, 'pending');
+    
+        $query = $this->db->get();
+    
+        return $query->num_rows();
+    }
+    
     
     public function get_module($type)
     {
@@ -337,15 +386,17 @@ class Admin_mod extends CI_Model
 
     public function get_current_system_data($team, $module_id, $sub_mod_id, $type, $typeofsystem, $start, $length, $order_column, $order_dir, $search_value)
     {
-        $this->db->select('system_files.*, team.*');
+        $this->db->select('system_files.*, team.*, module.mod_name, module.mod_id');
         $this->db->from('system_files');
         $this->db->join('team', 'team.team_id = system_files.team_id');
+        $this->db->join('module', 'module.mod_id = system_files.mod_id');
         $this->db->where('uploaded_to', $type);
-        $this->db->where('typeofsystem', $typeofsystem);
+        $this->db->where('system_files.typeofsystem', $typeofsystem);
 
         if ($search_value) {
             $this->db->like('team.team_name', $search_value);
             $this->db->or_like('system_files.file_name', $search_value);
+            $this->db->or_like('module.mod_name', $search_value);
         }
 
         $columns = ['team_name', 'file_name', 'uploaded_to'];
@@ -368,15 +419,18 @@ class Admin_mod extends CI_Model
 
     public function get_new_system_data($team, $module_id, $sub_mod_id, $type, $typeofsystem, $start, $length, $order_column, $order_dir, $search_value)
     {
-        $this->db->select('system_files.*, team.*');
+        $this->db->select('system_files.*, team.*, module.mod_name, module.mod_id');
         $this->db->from('system_files');
         $this->db->join('team', 'team.team_id = system_files.team_id');
+        $this->db->join('module', 'module.mod_id = system_files.mod_id');
+
         $this->db->where('uploaded_to', $type);
-        $this->db->where('typeofsystem', $typeofsystem);
+        $this->db->where('system_files.typeofsystem', $typeofsystem);
 
         if ($search_value) {
             $this->db->like('team.team_name', $search_value);
             $this->db->or_like('system_files.file_name', $search_value);
+            $this->db->or_like('module.mod_name', $search_value);
         }
 
         $columns = ['team_name', 'file_name', 'uploaded_to'];
@@ -400,11 +454,12 @@ class Admin_mod extends CI_Model
 
     public function getTotalModuleCurrent($team, $module_id, $sub_mod_id, $search_value = null, $type)
     {
-        $this->db->select('COUNT(*) as total, team.*');
+        $this->db->select('COUNT(*) as total, team.*, module.mod_name');
         $this->db->from('system_files');
         $this->db->join('team', 'team.team_id = system_files.team_id');
+        $this->db->join('module', 'module.mod_id = system_files.mod_id');
         $this->db->where('uploaded_to', $type);
-        $this->db->where('typeofsystem', 'current');
+        $this->db->where('system_files.typeofsystem', 'current');
 
         if ($team) {
             $this->db->where('system_files.team_id', $team);
@@ -426,11 +481,12 @@ class Admin_mod extends CI_Model
     }
     public function getTotalModuleNew($team, $module_id, $sub_mod_id, $search_value = null, $type)
     {
-        $this->db->select('COUNT(*) as total, team.*');
+        $this->db->select('COUNT(*) as total, team.*, module.mod_name');
         $this->db->from('system_files');
         $this->db->join('team', 'team.team_id = system_files.team_id');
+        $this->db->join('module', 'module.mod_id = system_files.mod_id');
         $this->db->where('uploaded_to', $type);
-        $this->db->where('typeofsystem', 'new');
+        $this->db->where('system_files.typeofsystem', 'new');
         if ($team) {
             $this->db->where('system_files.team_id', $team);
         }
@@ -478,6 +534,52 @@ class Admin_mod extends CI_Model
         }
     }
 
+    public function get_notifications()
+    {
+        $this->db->select('system_files.*, team.team_name, m.mod_name');
+        $this->db->from('system_files');
+        $this->db->join('team', 'team.team_id = system_files.team_id');
+        $this->db->join('module m', 'm.mod_id = system_files.mod_id');
+        $this->db->order_by('system_files.date_uploaded', 'DESC'); 
+        $this->db->where('isr_status', 'pending');
+        $this->db->or_where('att_status', 'pending');
+        $this->db->or_where('minute_status', 'pending');
+        $this->db->or_where('wt_status', 'pending');
+        $this->db->or_where('flowchart_status', 'pending');
+        $this->db->or_where('dfd_status', 'pending');
+        $this->db->or_where('gantt_status', 'pending');
+        $this->db->or_where('proposed_status', 'pending');
+        $this->db->or_where('local_status', 'pending');
+        $this->db->or_where('uat_status', 'pending');
+        $this->db->or_where('live_status', 'pending');
+        $this->db->or_where('guide_status', 'pending');
+        $this->db->or_where('memo_status', 'pending');
+        $this->db->or_where('acceptance_status', 'pending');
 
+        return $this->db->get()->result_array();
+    }
+    public function get_pending_notification_count()
+    {
+        $this->db->select('system_files.*, team.team_name, m.mod_name');
+        $this->db->from('system_files');
+        $this->db->join('team', 'team.team_id = system_files.team_id');
+        $this->db->join('module m', 'm.mod_id = system_files.mod_id');
+        $this->db->order_by('system_files.date_uploaded', 'DESC'); 
+        $this->db->where('isr_status', 'pending');
+        $this->db->or_where('att_status', 'pending');
+        $this->db->or_where('minute_status', 'pending');
+        $this->db->or_where('wt_status', 'pending');
+        $this->db->or_where('flowchart_status', 'pending');
+        $this->db->or_where('dfd_status', 'pending');
+        $this->db->or_where('gantt_status', 'pending');
+        $this->db->or_where('proposed_status', 'pending');
+        $this->db->or_where('local_status', 'pending');
+        $this->db->or_where('uat_status', 'pending');
+        $this->db->or_where('live_status', 'pending');
+        $this->db->or_where('guide_status', 'pending');
+        $this->db->or_where('memo_status', 'pending');
+        $this->db->or_where('acceptance_status', 'pending');
+        return $this->db->count_all_results();
+    }
 
 }
