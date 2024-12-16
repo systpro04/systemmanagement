@@ -24,6 +24,8 @@ class It_Respo extends CI_Controller {
     public function workload_list() {
 
         $status = $this->input->post('status');
+        $team = $this->input->post('team');
+        $module = $this->input->post('module');
         $start = $this->input->post('start');
         $length = $this->input->post('length');
         $order = $this->input->post('order');
@@ -31,52 +33,52 @@ class It_Respo extends CI_Controller {
         $order_column = $order[0]['column'];
         $order_dir = $order[0]['dir'];
 
-
-
-        $workload = $this->workload->getWorkloads($status, $start, $length, $order_column, $order_dir, $search_value);
+        $workload = $this->workload->getWorkloads($team, $module, $status, $start, $length, $order_column, $order_dir, $search_value);
         $data = [];
     
         foreach ($workload as $row) {
-
-            $status_badge = '';
-            if ($row['status'] === 'Pending') {
-                $status_badge = '<span class="badge rounded-pill bg-warning-subtle text-warning">' . $row['status'] . '</span>';
-            } elseif ($row['status'] === 'Ongoing') {
-                $status_badge = '<span class="badge rounded-pill bg-info-subtle text-info">' . $row['status'] . '</span>';
-            } elseif ($row['status'] === 'Done') {
-                $status_badge = '<span class="badge rounded-pill bg-success-subtle text-success">' . $row['status'] . '</span>';
-            }
-
-            $emp_data = $this->workload->get_emp($row['emp_id']);
-            $sub_mod_name   = !empty($row['sub_mod_name']) ? $row['sub_mod_name'] : '<span class="badge bg-secondary">N/A</span>'; 
-            $sub_mod_menu   = !empty($row['sub_mod_menu']) ? $row['sub_mod_menu'] : '<span class="badge bg-secondary">N/A</span>'; 
-            $description    = !empty($row['desc']) ? $row['desc'] : '<span class="badge bg-secondary">N/A</span>'; 
-            $remarks        = !empty($row['remarks']) ? $row['remarks'] : '<span class="badge bg-secondary">N/A</span>'; 
-
+            $emp_data       = $this->workload->get_emp($row['emp_id']);
+            $sub_mod_name = !empty($row['sub_mod_name']) 
+                ? ucwords(strtolower($row['sub_mod_name'])) 
+                : '<span class="badge bg-secondary">N/A</span>';
+            
+            $sub_mod_menu = !empty($row['sub_mod_menu']) 
+                ? ucwords(strtolower($row['sub_mod_menu'])) 
+                : '<span class="badge bg-secondary">N/A</span>';
+            
+            $description = !empty($row['desc']) 
+                ? ucwords(strtolower($row['desc'])) 
+                : '<span class="badge bg-secondary">N/A</span>';
+            
+            $remarks = !empty($row['remarks']) 
+                ? ucwords(strtolower($row['remarks'])) 
+                : '<span class="badge bg-secondary">N/A</span>';
+            
             $data[] = [
-                'team_name' => $row['team_name'],
-                'emp_id' => $emp_data['name'],
-                'user_type' => $row['user_type'],
-                'module' => $row['mod_name'],
-                'sub_mod_name' =>  $sub_mod_name,
-                'sub_mod_menu' => $sub_mod_menu,
-                'description' => $description,
-                'remarks' => $remarks,
-                'status' => $status_badge,
-                'action' => '
+                'id'            => $row['id'],
+                'team_name'     => ucwords(strtolower($row['team_name'])),
+                'emp_id'        => ucwords(strtolower($emp_data['name'])),
+                'user_type'     => $row['user_type'],
+                'module'        => ucwords(strtolower($row['mod_name'])),
+                'sub_mod_name'  => $sub_mod_name,
+                'sub_mod_menu'  => $sub_mod_menu,
+                'description'   => $description,
+                'remarks'       => $remarks,
+                'status'        => $row['status'] ,
+                'action'        => '
                     <div class="hstack gap-1">
-                        <button type="button" class="btn btn-soft-secondary btn-label waves-effect waves-light btn-sm" onclick="edit_workload_content(' . $row['id'] . ')" data-bs-toggle="modal" data-bs-target="#edit_workload">
-                            <iconify-icon icon="solar:pen-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Edit
+                        <button type="button" class="btn btn-soft-secondary waves-effect waves-light btn-sm" onclick="edit_workload_content(' . $row['id'] . ')" data-bs-toggle="modal" data-bs-target="#edit_workload">
+                            <iconify-icon icon="solar:pen-bold-duotone" class=" align-bottom fs-16"></iconify-icon>
                         </button>
-                        <button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="delete_workload(' . $row['id'] . ')">
-                            <iconify-icon icon="solar:trash-bin-minimalistic-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Delete
+                        <button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onclick="delete_workload(' . $row['id'] . ')">
+                            <iconify-icon icon="solar:trash-bin-minimalistic-bold-duotone" class=" align-bottom fs-16"></iconify-icon> 
                         </button>
                     </div>
                 '
             ];
         }
         
-        $total_records = $this->workload->getTotalWorkloads($status, $search_value);
+        $total_records = $this->workload->getTotalWorkloads($team, $module, $status, $search_value);
 
         $output = [
             "draw" => intval($this->input->post('draw')),
@@ -184,6 +186,26 @@ class It_Respo extends CI_Controller {
             'emp_id' => $this->session->emp_id,
             'action' => $action,
             'date_updated' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
+    }
+
+    public function update_workload_status(){
+        $id             = $this->input->post('id');
+        $status         = $this->input->post('status');
+        $emp_name       = $this->input->post('emp_name');
+
+        $this->db->where('id', $id);
+        $this->db->set('status', $status);
+        $this->db->update('workload');
+
+        $action = '<b>' . $this->session->name. '</b> updated a workload report status of <b>'.$emp_name.'</b> to <b>'.$status.'</b>';
+
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_added' => date('Y-m-d H:i:s'),
         );
         $this->load->model('Logs', 'logs');
         $this->logs->addLogs($data1);

@@ -107,10 +107,20 @@
                     </ul>
                     <hr>
                     <div class="tab-content">
+                    <div class="dropdown">
+                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown" aria-expanded="false"> Column Visibility</button>
+                        <ul class="dropdown-menu" aria-labelledby="columnDropdown" id="columnSelectorDropdown" data-simplebar style="max-height: 300px;">
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> Title</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> Description</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> Type</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="3" checked> Action</label></li>
+                        </ul>
+                        <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
+                    </div>
                         <div class="mt-2 tab-pane active" id="System Analyst" role="tabpanel">
                             <div class="table-responsive">
                             <table class="table table-striped table-hover" id="kpi">
-                                <thead class="table-primary text-center">
+                                <thead class="table-info text-center text-uppercase">
                                     <tr>
                                         <th>Title</th>
                                         <th>Description</th>
@@ -132,6 +142,8 @@
 
 <script>
     var type = "System Analyst";
+    var table = null;
+    var printWindow = null; 
     loadkpi(type);
 
     $("a.type").click(function () {
@@ -142,11 +154,13 @@
     });
 
     function loadkpi(type){
-
-        $('#kpi').DataTable({
+        if (table) {
+            table.destroy();
+        }
+        table =$('#kpi').DataTable({
             processing: true,
             serverSide: true,
-            stateSave: true,
+            // stateSave: true,
             destroy: true,
             lengthMenu: [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
             pageLength: 10,
@@ -168,43 +182,84 @@
             ordering: true,
             columnDefs: [
                 { "className": "text-center", "targets": ['_all'] }
-            ],
-            "dom": 
-                "<'row mb-1'<'col-md-12 text-start'B>>" +
-                "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
-                "<'row'<'col-md-12'tr>>" +
-                "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
-            "buttons": [
-                {
-                    "extend": 'excelHtml5',
-                    "title": 'KPI LIST - Excel Export', 
-                    "exportOptions": {
-                        "columns": ':visible:not(:last-child)'
+            ]
+        });
+
+        
+        $('#columnSelectorDropdown').on('click', function (e) {
+            e.stopPropagation();
+        });
+        $('#columnSelectorDropdown .column-toggle').each(function () {
+            let columnIdx = $(this).val();
+            $(this).prop('checked', table.column(columnIdx).visible());
+        });
+
+        $('#columnSelectorDropdown .column-toggle').on('change', function () {
+            let columnIdx = $(this).val();
+            let isChecked = $(this).prop('checked');
+            table.column(columnIdx).visible(isChecked);
+        });
+        $('#generate_report').on('click', function () {
+
+            if (printWindow && !printWindow.closed) {
+                return;
+            }
+
+            let visibleColumns = [];
+            let visibleHeaders = [];
+            let desc = -1;
+            table.columns().every(function (index) {
+                let headerText = this.header().textContent.trim();
+                if (this.visible() && headerText.toLowerCase() !== 'action') {
+                    visibleColumns.push(index);
+                    visibleHeaders.push(headerText);
+                    if (headerText.toLowerCase() === 'description') {
+                        desc = visibleColumns.length - 1;
                     }
-                },
-                {
-                    "extend": 'pdfHtml5',
-                    "title": 'KPI LIST - PDF Export',
-                    "text": 'Generate Report',
-                    "exportOptions": {
-                        "columns": ':visible:not(:last-child)'
-                    },
-                    "customize": function (doc) {
-                        doc.defaultStyle.fontSize = 8;
-                        doc.styles.title.fontSize = 12;
-                        doc.styles.tableHeader.fontSize = 10;
-                        if (!doc.styles.tableBodyOdd) {
-                            doc.styles.tableBodyOdd = {};
-                        }
-                        if (!doc.styles.tableBodyEven) {
-                            doc.styles.tableBodyEven = {};
-                        }
-                        doc.styles.tableBodyOdd.alignment = 'center';
-                        doc.styles.tableBodyEven.alignment = 'center';
-                    }
-                },
-                'colvis'
-            ],
+                }
+            });
+
+            let rowData = table.rows({ filter: 'applied' }).data().toArray();
+            let reportData = rowData.map(row => visibleColumns.map(index => row[table.column(index).dataSrc()]));
+            let printContent = `
+            <style>
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }
+                th, td {
+                    padding: 10px;
+                    text-align: left;
+                    border: 1px solid #ddd;
+                    word-wrap: break-word;
+                    max-width: 200px;
+                    white-space: normal;
+                }
+                .description {
+                    width: 300px;
+                }
+            </style>
+            <div style="text-align: center; margin-bottom: 20px;"><h4>LIST OF KPI</h4></div>
+            <table>
+                <thead>
+                    <tr>${visibleHeaders.map((header, index) => 
+                        `<th class="${index === desc ? 'description' : ''}">${header}</th>`
+                    ).join('')}</tr>
+                </thead>
+                <tbody>
+                    ${reportData.map((row, rowIndex) => 
+                        `<tr>${row.map((cell, cellIndex) => 
+                            `<td class="${cellIndex === desc ? 'description' : ''}">${cell}</td>`
+                        ).join('')}</tr>`
+                    ).join('')}
+                </tbody>
+            </table>`;
+            printWindow = window.open('', '', '');
+            printWindow.document.title = 'KPI LIST - PDF Export';
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
         });
     }
 
@@ -252,7 +307,12 @@
             data: data,
             success: function() {
                 $('#create_kpi').modal('hide');
-                $('#kpi').DataTable().ajax.reload();
+                var table = $('#kpi').DataTable();
+                var currentPage = table.page();
+
+                table.ajax.reload(function () {
+                    table.page(currentPage).draw(false);
+                }, false);
                 Toastify({
                     text: `Kpi added successfully.`,
                     duration: 5000,
@@ -321,7 +381,12 @@
                     },
                     success: function() {
                         $('#edit_kpi').modal('hide');
-                        $('#kpi').DataTable().ajax.reload();
+                        var table = $('#kpi').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                         Toastify({
                             text: `Kpi updated successfully.`,
                             duration: 5000,
@@ -359,7 +424,11 @@
                         id: id
                     },
                     success: function() {
-                        $('#kpi').DataTable().ajax.reload();
+                        var table = $('#kpi').DataTable();
+                        var currentPage = table.page();
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                         Toastify({
                             text: `Kpi deleted successfully.`,
                             duration: 5000,

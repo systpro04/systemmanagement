@@ -24,11 +24,7 @@ class Admin extends CI_Controller {
         $search_value = $this->input->post('search')['value'];
         $order_column = $order[0]['column'];
         $order_dir = $order[0]['dir'];
-
-        $columns = ['team_name', 'name', 'position'];
-        $order_by_column = isset($columns[$order_column]) ? $columns[$order_column] : 'team_name';
-    
-        $userlist = $this->admin->get_user_list($filter_team , $start, $length, $search_value, $order_by_column, $order_dir);
+        $userlist = $this->admin->get_user_list($filter_team , $start, $length, $search_value, $order_column, $order_dir);
         $total_filtered = $this->admin->get_user_count($filter_team, $search_value);
     
         $result = [
@@ -53,9 +49,9 @@ class Admin extends CI_Controller {
                 $type = '<span class="badge rounded-pill bg-success-subtle text-success">Fulltime</span>';
             }
             $result['data'][] = [
-                'team_name'     => $value['team_name'], 
+                'team_name'     => ucwords(strtolower($value['team_name'])), 
                 'emp_id'        => $value['emp_id'], 
-                'name'          => $emp_data['name'],
+                'name'          => ucwords(strtolower($emp_data['name'])),
                 'position'      => $emp_data['position'],
                 'type'          => $type,
                 'action'        => $button
@@ -264,6 +260,7 @@ class Admin extends CI_Controller {
     public function module_list() 
     {
         $typeofsystem = $this->input->post('typeofsystem');
+        $team = $this->input->post('team');
         $start = $this->input->post('start');
         $length = $this->input->post('length');
         $order = $this->input->post('order');
@@ -271,7 +268,7 @@ class Admin extends CI_Controller {
         $order_column = $order[0]['column'];
         $order_dir = $order[0]['dir'];
         
-        $module = $this->admin->getModule($typeofsystem, $start, $length, $order_column, $order_dir, $search_value);
+        $module = $this->admin->getModule($team, $typeofsystem, $start, $length, $order_column, $order_dir, $search_value);
         $data = [];
         
         foreach ($module as $row) {
@@ -280,7 +277,7 @@ class Admin extends CI_Controller {
                     <button type="button" class="btn btn-soft-primary waves-effect waves-light btn-sm" onclick="view_submodule('.$row['mod_id'].')" data-bs-toggle="modal" data-bs-target="#submodule">
                         <iconify-icon icon="solar:checklist-minimalistic-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon>
                     </button>
-                    <button type="button" class="btn btn-soft-info waves-effect waves-light btn-sm" onclick="edit_module('.$row['mod_id'].',\''.$row['requested_to'].'\',\''.$row['bu_name'].'\',\''.$row['date_request'].'\')" data-bs-toggle="modal" data-bs-target="#edit_module">
+                    <button type="button" class="btn btn-soft-info waves-effect waves-light btn-sm" onclick="edit_module('.$row['mod_id'].',\''.$row['requested_to'].'\',\''.$row['bu_name'].'\',\''.$row['date_request'].'\',\''.$row['belong_team'].'\')" data-bs-toggle="modal" data-bs-target="#edit_module">
                         <iconify-icon icon="solar:pen-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon>
                     </button>
                     <button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onclick="delete_module('.$row['mod_id'].')">
@@ -308,26 +305,43 @@ class Admin extends CI_Controller {
             }
 
             if($typeofsystem === 'new'){
-                $bu_name = '<span class="badge bg-info">' . $row['bu_name'] . '</span>';
-                if ($row['bu_name'] === null) {
-                    $bu_name = '<span class="badge bg-warning">'.$row['bu_name'].'</span>';
+                if ($row['bu_name'] !== null && $row['bu_name'] !== "") {
+                    $bu_name = '<span class="badge bg-primary">'.ucwords(strtolower($row['bu_name'])).'</span>';
                 }else{
-
+                    $bu_name = '<span class="badge bg-info">N/A</span>';
                 }
             }else{
-                $bu_name = '<span class="badge bg-info">Implemented</span>';
+                if ($row['bu_name'] !== null && $row['bu_name'] !== "") {
+                    $bu_name = '<span class="badge bg-primary">'.ucwords(strtolower($row['bu_name'])).'</span>';
+                }else{
+                    $bu_name = '<span class="badge bg-info">N/A</span>';
+                }
             }
 
+            if($row['date_implem'] == null) {
+                $date_implem = '<span class="badge bg-info">N/A</span>';      
+            }else{
+                $date_implem = date('F d, Y', strtotime($row['date_implem']));
+            }
+            if($row['date_request'] == null) {
+                $date_request = '<span class="badge bg-info">N/A</span>';      
+            }else{
+                $date_request = date('F d, Y', strtotime($row['date_request']));
+            }
+
+
+
             $data[] = [
-                'mod_name' => $row['mod_name'],
-                'status' => $status,
-                'bu_name' => $bu_name,
-                'date_request' => $row['date_request'],
-                'action' => $action
+                'mod_name'      => ucwords(strtolower($row['mod_name'])),
+                'status'        => $status,
+                'bu_name'       => $bu_name,
+                'date_request'  => $date_request,
+                'date_implem'   => $date_implem,
+                'action'        => $action
             ];
         }
         
-        $total_records = $this->admin->getTotalModule($typeofsystem, $search_value);
+        $total_records = $this->admin->getTotalModule($team,$typeofsystem, $search_value);
 
         $output = [
             "draw" => intval($this->input->post('draw')),
@@ -343,8 +357,9 @@ class Admin extends CI_Controller {
         $mod_abbr       = $this->input->post('mod_abbr');
         $typeofsystem   = $this->input->post('typeofsystem');
         $date_request   = $this->input->post('date_request');
-        $bcode        = $this->input->post('bcode');
+        $bcode          = $this->input->post('bcode');
         $business_unit  = $this->input->post('business_unit');
+        $team           = $this->input->post('team');
     
         if($date_request === "") {
             $date_request = null;
@@ -356,6 +371,7 @@ class Admin extends CI_Controller {
             'requested_to'  => $bcode,
             'bu_name'       => $business_unit,
             'date_request'  => $date_request,
+            'belong_team'   => $team,
             'status'        => 'Approve',
             'date_added'    => date('Y-m-d H:i:s'),
         ];
@@ -368,6 +384,12 @@ class Admin extends CI_Controller {
         $row = $this->admin->get_module_data($mod_id);
     
         echo '<div class="mb-3">
+            <div class="mb-2">
+                <label for="title" class="col-form-label">Team Name</label>
+                <select id="edit_team_" class="form-select" aria-label="Team">
+                    <option value="'.htmlspecialchars($row['belong_team']) . '">"'. $row['team_name'] .'"></option>
+                </select>
+            </div>
             <label for="title" class="col-form-label">Module Name:</label>
                 <input type="text" class="form-control" id="edit_mod_name" name="mod_name" value="' . htmlspecialchars($row['mod_name']) . '"/>
                 <input type="hidden" class="form-control" id="edit_mod_id" name="mod_id" value="' . htmlspecialchars($mod_id ). '"/>
@@ -390,19 +412,44 @@ class Admin extends CI_Controller {
                     <option value="'.htmlspecialchars($row['requested_to']) . '">' . $row['bu_name'] . '"></option>
                 </select>
             </div>
+
+            <div class="mb-2">
+                <label class="col-form-label">Date Implem:</label>
+                    <div class="input-group">
+                        <input type="date" id="edit_date_implem" class="form-control" readonly="" placeholder="Select Date Implemented" data-provider="flatpickr" value="' . $row['date_implem'] . '" />
+                        <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                    </div>
+            </div>
+
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="submiteditedmodule(' . $mod_id . ')">Submit</button>
                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
             </div>';
             ?>
             <script>
-                flatpickr("#edit_date_request", {
+                flatpickr("#edit_date_request, #edit_date_implem", {
                     dateFormat: "F j, Y"
                 });
                 $('#edit_business_unit').select2({
                     placeholder: "Select Business Unit",
                     allowClear: true,
                     minimumResultsForSearch: Infinity
+                });
+                $('#edit_team_').select2({ placeholder: 'Select Team', allowClear: true, minimumResultsForSearch: Infinity });
+
+                $.ajax({
+                    url: '<?php echo base_url('get_team') ?>',
+                    type: 'POST',
+                    success: function (response) {
+                        const teamData = JSON.parse(response);
+                        const existingTeam = $('#edit_team_').val();
+                        $('#edit_team_').empty().append('<option value="">Select Team Name</option>');
+                        teamData.forEach(function (team) {
+                            const selected = (team.team_id === existingTeam) ? 'selected' : '';
+                            $('#edit_team_').append('<option value="' + team.team_id + '" ' + selected + '>' + team.team_name + '</option>');
+                        });
+                    }
                 });
                 load_business_unit();
                 function load_business_unit() {
@@ -432,11 +479,18 @@ class Admin extends CI_Controller {
         $bcode          = $this->input->post('bcode');
         $business_unit  = $this->input->post('business_unit');
         $date_request   = $this->input->post('date_request');
+        $date_implem    = $this->input->post('date_implem');
+        $team           = $this->input->post('team');
     
         if($date_request === "") {
             $date_request = null;
         }else{
             $date_request = date('Y-m-d', strtotime($date_request));
+        }
+        if($date_implem === "") {
+            $date_implem = null;
+        }else{
+            $date_implem = date('Y-m-d', strtotime($date_implem));
         }
         if($bcode === "") {
             $bcode = null;
@@ -451,7 +505,9 @@ class Admin extends CI_Controller {
             'requested_to'      => $bcode,
             'bu_name'           => $business_unit,
             'date_request'      => $date_request,
+            'date_implem'       => $date_implem,
             'date_updated'      => date('Y-m-d H:i:s'),
+            'belong_team'      => $team
         ];
     
         $this->admin->updateModule($data, $mod_id);
@@ -529,13 +585,6 @@ class Admin extends CI_Controller {
                             "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
                         "buttons": [
                             {
-                                "extend": 'excelHtml5',
-                                "title": 'SUB MODULE LIST - Excel Export', 
-                                "exportOptions": {
-                                    "columns": ':visible:not(:last-child)'
-                                }
-                            },
-                            {
                                 "extend": 'pdfHtml5',
                                 "title": 'SUB MODULE LIST - PDF Export',
                                 "text": 'Generate Report',
@@ -546,14 +595,39 @@ class Admin extends CI_Controller {
                                     doc.defaultStyle.fontSize = 8;
                                     doc.styles.title.fontSize = 12;
                                     doc.styles.tableHeader.fontSize = 10;
-                                    if (!doc.styles.tableBodyOdd) {
-                                        doc.styles.tableBodyOdd = {};
-                                    }
-                                    if (!doc.styles.tableBodyEven) {
-                                        doc.styles.tableBodyEven = {};
-                                    }
-                                    doc.styles.tableBodyOdd.alignment = 'center';
-                                    doc.styles.tableBodyEven.alignment = 'center';
+                                    doc.styles.tableHeader.fillColor = '#005eff';
+                                    doc.styles.tableHeader.color = '#ffffff';
+                                    var tableBody = doc.content[1].table.body;
+                                    var visibleColumns = tableBody[0].length;
+
+                                    doc.content[1].table.widths = Array(visibleColumns).fill('*');
+                                    doc.content[1].alignment = 'center';
+                            
+                                    doc.content[1].table.body.forEach(function (row) {
+                                        row.forEach(function (cell) {
+                                            cell.border = [0.5, 0.5, 0.5, 0.5];
+                                        });
+                                    });
+                                    doc.content[1].layout = {
+                                        hLineWidth: function (i, node) {
+                                            return 0.5;
+                                        },
+                                        vLineWidth: function (i, node) {
+                                            return 0.5;
+                                        },
+                                        hLineColor: function (i, node) {
+                                            return '#000000';
+                                        },
+                                        vLineColor: function (i, node) {
+                                            return '#000000';
+                                        },
+                                        paddingLeft: function (i, node) {
+                                            return 5;
+                                        },
+                                        paddingRight: function (i, node) {
+                                            return 5;
+                                        }
+                                    };
                                 }
                             },
                             'colvis'
@@ -579,7 +653,7 @@ class Admin extends CI_Controller {
     
         foreach ($module as $row) {
             $data[] = [
-                'sub_mod_name' => $row['sub_mod_name'],
+                'sub_mod_name' => ucwords(strtolower($row['sub_mod_name'])),
                 'action' => '
                     <div class="hstack gap-1 d-flex justify-content-center">
                         <button class="btn btn-sm btn-info edit-btn" onclick="edit_submodule_modal('.$row['sub_mod_id'].')" data-bs-toggle="modal" data-bs-target="#edit_submodule">
@@ -773,9 +847,9 @@ class Admin extends CI_Controller {
                 }
 
                 $data[] = [
-                    'team_name' => $row['team_name'],
+                    'team_name' => ucwords(strtolower($row['team_name'])),
                     'file_name' => '<a href="' . $file_link . '" target="_blank">' . $row['file_name'] . '</a>',
-                    'mod_name' => $row['mod_name'],
+                    'mod_name'  => ucwords(strtolower($row['mod_name'])),
                     'uploaded_to' => $row['uploaded_to'],
                     'status' => $status_badge,
                     'action' => '
@@ -870,9 +944,9 @@ class Admin extends CI_Controller {
 
 
                 $data[] = [
-                    'team_name' => $row['team_name'],
-                   'file_name' => '<a href="' . $file_link . '" target="_blank">' . $row['file_name'] . '</a>',
-                   'mod_name' => $row['mod_name'],
+                    'team_name' => ucwords(strtolower($row['team_name'])),
+                    'file_name' => '<a href="' . $file_link . '" target="_blank">' . $row['file_name'] . '</a>',
+                    'mod_name'  => ucwords(strtolower($row['mod_name'])),
                     'uploaded_to' => $row['uploaded_to'],
                     'status' => $status_badge,
                     'action' => '
@@ -1033,11 +1107,11 @@ class Admin extends CI_Controller {
             }
         }
     
-        if($type == 'LIVE_TESTING'){
-            $this->db->set('implem_type', '1');
-            $this->db->where('mod_id', $mod_id);
-            $this->db->update('module');
-        }
+        // if($type == 'LIVE_TESTING'){
+        //     $this->db->set('implem_type', '1');
+        //     $this->db->where('mod_id', $mod_id);
+        //     $this->db->update('module');
+        // }
         $update_data = [
             $status_field => 'Approve'
         ];
@@ -1133,11 +1207,11 @@ class Admin extends CI_Controller {
             }
         }
     
-        if($type == 'LIVE_TESTING'){
-            $this->db->set('implem_type', '0');
-            $this->db->where('mod_id', $mod_id);
-            $this->db->update('module');
-        }
+        // if($type == 'LIVE_TESTING'){
+        //     $this->db->set('implem_type', '0');
+        //     $this->db->where('mod_id', $mod_id);
+        //     $this->db->update('module');
+        // }
 
         $update_data = [
             $status_field => 'Pending'
@@ -1156,7 +1230,68 @@ class Admin extends CI_Controller {
         $count = $this->admin->get_pending_notification_count();
         echo json_encode(['count' => $count]);
     }
-
+    
+    
+    
+    
+    public function generate_pdf()
+    {
+        $modules = $this->admin->get_print_module();
+        
+        // Initialize the PDF object
+        $pdf = new PDF('P', PDF_UNIT, 'LETTER', true, 'UTF-8', false);
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE . ' 001', PDF_HEADER_STRING, array(0, 64, 255), array(0, 64, 128));
+        $pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
+        $pdf->SetMargins(10, 30, 10);
+        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+        $pdf->AddPage();
+        $pdf->setPrintFooter(true);
+        $pdf->setFooterFont(Array('', '', 8));
+    
+        $pdf->SetFont('helvetica', '', 10);
+    
+        $html = '
+        <table border="1" cellpadding="5" cellspacing="0" width="100%">
+            <thead>
+                <tr nobr="true">
+                    <th style="text-align:center; width:33.4%;">MODULE</th>
+                    <th style="text-align:center; width:33.3%;">TYPE</th>
+                    <th style="text-align:center; width:33.3%;">SUBMODULE</th>
+                </tr>
+            </thead>
+            <tbody>';
+    
+        foreach ($modules as $module) {
+            $html .= '<tr nobr="true">';
+            $html .= '<td width:33%;>' . $module->mod_name . '</td>';
+            $html .= '<td width:34%;>' . $module->typeofsystem . '</td>';
+    
+            if (!empty($module->submodules)) {
+                $submodules = '';
+                foreach ($module->submodules as $submodule) {
+                    $submodules .= $submodule->sub_mod_name . '<br>'; // Concatenate submodule names with line break
+                }
+                $html .= '<td width:33%;>' . $submodules . '</td>';
+            } else {
+                $html .= '<td width:34%;></td>';
+            }
+    
+            $html .= '</tr>';
+        }
+    
+        $html .= '</tbody></table>';
+    
+        // Output HTML content to the PDF
+        $pdf->writeHTML($html, true, false, false, false, '');
+    
+        // Output the generated PDF
+        $pdf->Output('MODULE|SUBMODULE.pdf', 'I');
+    }
+    
+    
+    
+    
+    
 }
 
 

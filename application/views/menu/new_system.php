@@ -1,5 +1,5 @@
 <!-- Modal for viewing folder files -->
-<div class="modal fade" id="folderModal" tabindex="-1" aria-labelledby="folderModalLabel" aria-hidden="true"
+<div class="modal fade" id="folderModal" tabindex="-1" aria-labelledby="folderModalLabel" aria-hidden="false"
     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-xl">
         <div class="modal-content">
@@ -219,11 +219,7 @@
     </div>
 </div>
 
-
-
-
 <script>
-
 
     $(document).ready(function () {
         $('#team').select2({ placeholder: 'Select Team', allowClear: true });
@@ -454,6 +450,20 @@
     }
 
     function openFolderModal(folderName) {
+        let timerInterval;
+        const swalInstance = Swal.fire({
+            title: "Opening Folder " + folderName,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            icon: "info",
+            html: "Please wait...",
+            didOpen: () => {
+                Swal.showLoading();
+                const timer = Swal.getPopup().querySelector("b");
+            },
+        });
+
         var team = $('#team').val();
         var module = $('#module').val();
         var sub_module = $('#sub_module').val();
@@ -466,6 +476,7 @@
             type: 'GET',
             dataType: 'json',
             success: function (response) {
+                swalInstance.close();
                 var teamOptions = '<option value="">Select Team</option>';
                 var moduleOptions = '<option value="">Select Module</option>';
                 var buOptions = '<option value="">Select Business Unit</option>';
@@ -645,7 +656,7 @@
                     </div>`;
                     });
                 } else {
-                    modalContent = '<li class="list-group-item text-muted text-center">No files found in this directory.</li>';
+                    modalContent = '<li class="list-group-item text-muted text-center"><iconify-icon icon="marketeq:search-alt-3" width="50" height="50"></iconify-icon><h5 class="mt-2">Sorry! No Data Found </h5></li>';
                 }
                 $('#folderModalBody').html(modalContent);
                 $('#folder_name').text(folderName + ' ' + 'FOLDER FILES');

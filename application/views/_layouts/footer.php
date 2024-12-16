@@ -26,7 +26,7 @@
      <!--preloader-->
      <div id="preloader">
         <div id="status">
-            <img src="<?php echo base_url(); ?>assets/images/cube.gif" alt="Loading..." class="avatar-sm" lazy="loading" style="height: 70px; width: 70px">
+            <img src="<?php echo base_url(); ?>assets/images/Hourglass.gif" alt="Loading..." class="avatar-sm" lazy="loading" style="height: 70px; width: 70px">
         </div>
     </div>
 
@@ -40,11 +40,7 @@
      <script src="<?php echo base_url(); ?>assets/libs/simplebar/simplebar.min.js"></script>
      <script src="<?php echo base_url(); ?>assets/libs/node-waves/waves.min.js"></script>
      <script src="<?php echo base_url(); ?>assets/libs/feather-icons/feather.min.js"></script>
-     <script src="<?php echo base_url(); ?>assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
-     <!-- apexcharts -->
-     <!-- <script src="<?php echo base_url(); ?>assets/libs/apexcharts/apexcharts.min.js"></script> -->
-     <!-- <script type="text/javascript" src="<?php echo base_url(); ?>assets/libs/flatpickr/flatpickr.min.js"></script> -->
-
+     
      <!-- App js -->
      <script src="<?php echo base_url(); ?>assets/js/app.js"></script>
      <script src="<?php echo base_url(); ?>assets/js/select2.js"></script>
@@ -57,8 +53,20 @@
     <script src="<?php echo base_url(); ?>assets/js/filepond-plugin-file-validate-size.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/filepond-plugin-image-exif-orientation.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/filepond-plugin-file-encode.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/js/pages/password-addon.init.js"></script>
+    <!-- <script src="<?php echo base_url(); ?>assets/libs/apexcharts/apexcharts.min.js"></script> -->
 
+    <script>
+        Array.from(document.querySelectorAll("form .auth-pass-inputgroup")).forEach(
+            function (e) {
+                Array.from(e.querySelectorAll(".password-addon")).forEach(function (r) {
+                    r.addEventListener("click", function (r) {
+                        var o = e.querySelector(".password-input");
+                        "password" === o.type ? (o.type = "text") : (o.type = "password");
+                    });
+                });
+            }
+        );
+    </script>
     <script>
         var previewTemplate,
             dropzone,

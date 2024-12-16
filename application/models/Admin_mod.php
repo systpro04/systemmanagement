@@ -33,7 +33,7 @@ class Admin_mod extends CI_Model
         return $this->db->affected_rows();
     }
 
-    public function get_user_list($filter_team, $start, $length, $search_value, $order_by_column, $order_dir) {
+    public function get_user_list($filter_team, $start, $length, $search_value, $order_column, $order_dir) {
         $this->db->select('users.*, team.*');
         $this->db->from('users');
         $this->db->join('team', 'users.team_id = team.team_id');
@@ -52,7 +52,7 @@ class Admin_mod extends CI_Model
                      }
         }
 
-        $this->db->order_by($order_by_column, $order_dir);
+        $this->db->order_by($order_column, $order_dir);
     
         if ($length != -1) {
             $this->db->limit($length, $start);
@@ -70,6 +70,7 @@ class Admin_mod extends CI_Model
 		$this->db2->select('emp_id, name');
 		$this->db2->from('employee3');
 		$this->db2->like('name', $search_value);
+        $this->db2->limit(50);
 		$query = $this->db2->get();
 		
 		$emp_ids = [];
@@ -190,6 +191,26 @@ class Admin_mod extends CI_Model
         return $modules;
     }
     
+    public function get_print_module()
+    {
+        $this->db->select('m.mod_id, m.mod_name, sb.sub_mod_id, sb.sub_mod_name, m.typeofsystem');
+        $this->db->from('module m');
+        $this->db->join('sub_module sb', 'm.mod_id = sb.mod_id', 'left');
+        $this->db->group_by('m.mod_id');
+        $this->db->where('m.active !=', 'Inactive');
+        $modules = $this->db->get()->result();
+    
+        foreach ($modules as &$module) {
+            $this->db->select('sb.sub_mod_id, sb.sub_mod_name');
+            $this->db->from('sub_module sb');
+            $this->db->where('sb.status !=', 'Inactive');
+            $this->db->where('sb.mod_id', $module->mod_id);
+            $module->submodules = $this->db->get()->result();
+        }
+        return $modules;
+    }
+
+
     public function get_teams() {
         $this->db->select('*');
         $this->db->from('team');
@@ -259,35 +280,47 @@ class Admin_mod extends CI_Model
     }
 
 
-    public function getModule($typeofsystem, $start, $length, $order_column, $order_dir, $search_value)
+    public function getModule($team,$typeofsystem, $start, $length, $order_column, $order_dir, $search_value)
     {
-        $this->db->select('*');
-        $this->db->from('module');
-        $this->db->where('active !=', 'Inactive');
+        $this->db->select('m.*, t.*, m.belong_team');
+        $this->db->from('module m');
+        $this->db->join('team t', 't.team_id = m.belong_team', 'left');
+        $this->db->where('m.active !=', 'Inactive');
 
         if (!empty($search_value)) {
-            $this->db->like('mod_name', $search_value);
-            $this->db->or_like('mod_abbr', $search_value);
+            $this->db->like('m.mod_name', $search_value);
+            $this->db->or_like('m.mod_abbr', $search_value);
 
         }
         $this->db->order_by($order_column, $order_dir);
         $this->db->limit($length, $start);
-        $this->db->where('typeofsystem', $typeofsystem);
+        if (!empty($typeofsystem)) {
+            $this->db->where('m.typeofsystem', $typeofsystem);
+        }
+        if (!empty($team)) {
+            $this->db->where('m.belong_team', $team);
+        }
 
         return $this->db->get()->result_array();
     }
 
-    public function getTotalModule($typeofsystem, $search_value)
+    public function getTotalModule($team,$typeofsystem, $search_value)
     {
-        $this->db->select('*');
-        $this->db->from('module');
-        $this->db->where('active !=', 'Inactive');
+        $this->db->select('m.*, t.*, m.belong_team');
+        $this->db->from('module m');
+        $this->db->join('team t', 't.team_id = m.belong_team', 'left');
+        $this->db->where('m.active !=', 'Inactive');
         if (!empty($search_value)) {
-            $this->db->like('mod_name', $search_value);
-            $this->db->or_like('mod_abbr', $search_value);
+            $this->db->like('m.mod_name', $search_value);
+            $this->db->or_like('m.mod_abbr', $search_value);
 
         }
-        $this->db->where('typeofsystem', $typeofsystem);
+        if (!empty($typeofsystem)) {
+            $this->db->where('m.typeofsystem', $typeofsystem);
+        }
+        if (!empty($team)) {
+            $this->db->where('m.belong_team', $team);
+        }
         return $this->db->count_all_results();
     }
 
@@ -363,10 +396,11 @@ class Admin_mod extends CI_Model
 
     public function get_module_data($id)
     {
-        $this->db->select('*');
-        $this->db->from('module');
-        $this->db->where('active !=', 'Inactive');
-        $this->db->where('mod_id', $id);
+        $this->db->select('m.*, t.team_name, m.belong_team');
+        $this->db->from('module m');
+        $this->db->join('team t', 't.team_id = m.belong_team', 'left');
+        $this->db->where('m.active !=', 'Inactive');
+        $this->db->where('m.mod_id', $id);
         return $this->db->get()->row_array();
     }
 

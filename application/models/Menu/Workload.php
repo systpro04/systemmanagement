@@ -6,7 +6,7 @@ class Workload extends CI_Model
         $this->db2 = $this->load->database('pis', TRUE);
 	}
 
-    public function getWorkloads($status, $start, $length, $order_column, $order_dir, $search_value) {
+    public function getWorkloads($team, $module,$status, $start, $length, $order_column, $order_dir, $search_value) {
         $this->db->select('w.*, m.*, sb.*, t.*, w.status');
         $this->db->from('workload w');
         $this->db->join('module m', 'm.mod_id = w.module', 'LEFT');
@@ -16,46 +16,63 @@ class Workload extends CI_Model
         if (!empty($search_value)) {
             $this->db->group_start();
             $this->db->like('t.team_name', $search_value);
-            $this->db->or_like('w.emp_id', $search_value);
             $this->db->or_like('w.user_type', $search_value);
             $this->db->or_like('w.module', $search_value);
             $this->db->or_like('sb.sub_mod_name', $search_value);
-            $this->db->or_like('w.sub_mod_menu', $search_value);
-            $this->db->group_end();
-            $emp_ids = $this->get_emp_ids_by_name_search($search_value);  // Assuming this function fetches emp_ids based on name
+            $emp_ids = $this->get_emp_ids_by_name_search($search_value);
 			if (!empty($emp_ids)) {
-				$this->db->or_where_in('w.emp_id', $emp_ids); // Apply filter on emp_id
+				$this->db->or_where_in('w.emp_id', $emp_ids);
 			}
+            $this->db->group_end();
+
         }
         $this->db->where('m.active ', 'Active');
-        $this->db->where('w.status', $status);
+        // $this->db->where('w.status', $status);
+        if (!empty($status)) { // Only filter status if not empty
+            $this->db->where('w.status', $status);
+        }
+        if (!empty($team)) {
+            $this->db->where('t.team_id', $team);
+        }
+        if (!empty($module)) {
+            $this->db->where('w.module', $module);
+        }
+
         $this->db->order_by($order_column, $order_dir);
         $this->db->limit($length, $start);
 
         return $this->db->get()->result_array();
     }
 
-    public function getTotalWorkloads($status, $search_value) {
+    public function getTotalWorkloads($team, $module, $status, $search_value) {
         $this->db->select('w.*, m.*, sb.*, t.*, w.status');
         $this->db->from('workload w');
         $this->db->join('module m', 'm.mod_id = w.module', 'LEFT');
         $this->db->join('sub_module sb', 'w.sub_mod = sb.sub_mod_id AND w.module = sb.mod_id', 'LEFT');
         $this->db->join('team t', 't.team_id = w.team_id');
         if (!empty($search_value)) {
+            $this->db->group_start();
             $this->db->like('t.team_name', $search_value);
-            $this->db->or_like('w.emp_id', $search_value);
             $this->db->or_like('w.user_type', $search_value);
             $this->db->or_like('w.module', $search_value);
             $this->db->or_like('sb.sub_mod_name', $search_value);
-            $this->db->or_like('w.sub_mod_menu', $search_value);
-            $emp_ids = $this->get_emp_ids_by_name_search($search_value);  // Assuming this function fetches emp_ids based on name
+            $emp_ids = $this->get_emp_ids_by_name_search($search_value);
 			if (!empty($emp_ids)) {
-				$this->db->or_where_in('w.emp_id', $emp_ids); // Apply filter on emp_id
+				$this->db->or_where_in('w.emp_id', $emp_ids);
 			}
+            $this->db->group_end();
         }
         $this->db->where('m.active ', 'Active');
-
-        $this->db->where('w.status', $status);
+        // $this->db->where('w.status', $status);
+        if (!empty($status)) {
+            $this->db->where('w.status', $status);
+        }
+        if (!empty($team)) {
+            $this->db->where('t.team_id', $team);
+        }
+        if (!empty($module)) {
+            $this->db->where('w.module', $module);
+        }
         return $this->db->count_all_results();
     }
     public function get_emp_ids_by_name_search($search_value)
@@ -63,6 +80,7 @@ class Workload extends CI_Model
 		$this->db2->select('emp_id, name');
 		$this->db2->from('employee3');
 		$this->db2->like('name', $search_value);
+        $this->db2->limit(50);
 		$query = $this->db2->get();
 		
 		$emp_ids = [];

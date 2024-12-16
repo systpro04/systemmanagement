@@ -10,19 +10,21 @@ class Weekly_mod extends CI_Model
 		$this->db->from('weekly_report wr');
 		$this->db->join('team t', 't.team_id = wr.team_id');
 		$this->db->join('module m', 'm.mod_id = wr.mod_id');
-		$this->db->join('sub_module sb', 'wr.sub_mod_id = sb.sub_mod_id');
+		$this->db->join('sub_module sb', 'wr.sub_mod_id = sb.sub_mod_id', 'left');
 		$this->db->where('m.active !=', 'Inactive');
-        $this->db->where('sb.status !=', 'Inactive');
+        // $this->db->where('sb.status !=', 'Inactive');
 		if (!empty($search_value)) {
+			$this->db->group_start();
 			$this->db->like('t.team_name', $search_value);
 			$this->db->or_like('m.mod_name', $search_value);
 			$this->db->or_like('sb.sub_mod_name', $search_value);
 			$this->db->or_like('wr.task_workload', $search_value);
 			$this->db->or_like('wr.remarks', $search_value);
-			$emp_ids = $this->get_emp_ids_by_name_search($search_value);  // Assuming this function fetches emp_ids based on name
+			$emp_ids = $this->get_emp_ids_by_name_search($search_value); 
 			if (!empty($emp_ids)) {
-				$this->db->or_where_in('wr.emp_id', $emp_ids); // Apply filter on emp_id
+				$this->db->or_where_in('wr.emp_id', $emp_ids);
 			}
+			$this->db->group_end();
 		}
 	
 		if (!empty($date_range)) {
@@ -55,6 +57,7 @@ class Weekly_mod extends CI_Model
 		$this->db2->select('emp_id, name');
 		$this->db2->from('employee3');
 		$this->db2->like('name', $search_value);
+		$this->db2->limit(50);
 		$query = $this->db2->get();
 		
 		$emp_ids = [];
@@ -71,13 +74,21 @@ class Weekly_mod extends CI_Model
 		$this->db->from('weekly_report wr');
 		$this->db->join('team t', 't.team_id = wr.team_id');
 		$this->db->join('module m', 'm.mod_id = wr.mod_id');
-		$this->db->join('sub_module sb', 'wr.sub_mod_id = sb.sub_mod_id');
+		$this->db->join('sub_module sb', 'wr.sub_mod_id = sb.sub_mod_id', 'left');
 		$this->db->where('m.active !=', 'Inactive');
-        $this->db->where('sb.status !=', 'Inactive');
+        // $this->db->where('sb.status !=', 'Inactive');
 		if (!empty($search_value)) {
-			$this->db->like('wr.emp_id', $search_value);
+			$this->db->group_start();
+			$this->db->like('t.team_name', $search_value);
 			$this->db->or_like('m.mod_name', $search_value);
 			$this->db->or_like('sb.sub_mod_name', $search_value);
+			$this->db->or_like('wr.task_workload', $search_value);
+			$this->db->or_like('wr.remarks', $search_value);
+			$emp_ids = $this->get_emp_ids_by_name_search($search_value); 
+			if (!empty($emp_ids)) {
+				$this->db->or_where_in('wr.emp_id', $emp_ids);
+			}
+			$this->db->group_end();
 		}
 	
 		if (!empty($date_range)) {

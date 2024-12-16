@@ -65,7 +65,7 @@ class Dashboard_mod extends CI_Model
     // }
 
     public function get_birthday_list($positions, $month) {
-        $this->db2->select('a.birthdate, e.emp_id, a.firstname, a.lastname');
+        $this->db2->select('a.birthdate, e.emp_id, a.firstname, a.lastname, a.photo');
         $this->db2->from('employee3 e');
         $this->db2->join('applicant a', 'a.app_id = e.emp_id', 'inner');
         $this->db2->where([
@@ -94,6 +94,16 @@ class Dashboard_mod extends CI_Model
     public function update_password($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('users', $data);
+    }
+
+    public function getFileCountsByType($types, $typeofsystem) {
+        $this->db->select('uploaded_to, COUNT(*) as count');
+        $this->db->from('system_files');
+        $this->db->where_in('uploaded_to', $types);
+        $this->db->where('typeofsystem', $typeofsystem);
+        $this->db->group_by('uploaded_to');
+        $query = $this->db->get();
+        return $query->result_array();
     }
     
     

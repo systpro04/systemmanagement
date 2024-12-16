@@ -8,8 +8,7 @@ class Logs_ctrl extends CI_Controller {
         if ($this->session->username == "") {
             redirect('login');
         }
-        $this->load->model('Logs', 'logs');
-        $this->load->model('Menu/Workload', 'workload');
+        $this->load->model('Logs', 'logs_mod');
     }
     public function index(){
         $this->load->view('_layouts/header');
@@ -18,30 +17,25 @@ class Logs_ctrl extends CI_Controller {
     }
     public function logs_list() {
 
-        $type = $this->input->post('type');
-        $start = $this->input->post('start');
-        $length = $this->input->post('length');
-        $order = $this->input->post('order');
-        $search_value = $this->input->post('search')['value'];
-        $order_column = $order[0]['column'];
-        $order_dir = $order[0]['dir'];
+        $start          = $this->input->post('start');
+        $length         = $this->input->post('length');
+        $order          = $this->input->post('order');
+        $search_value   = $this->input->post('search')['value'];
+        $order_column   = $order[0]['column'];
+        $order_dir      = $order[0]['dir'];
 
-        $kpi = $this->logs->getLogs($type, $start, $length, $order_column, $order_dir, $search_value);
+        $logs = $this->logs_mod->getLogs($start, $length, $order_column, $order_dir, $search_value);
         $data = [];
     
-        foreach ($kpi as $row) {
-
-            $emp_data = $this->workload->get_emp($row['emp_id']);  
-
+        foreach ($logs as $row) {
 
             $data[] = [
-                // 'id'      =>  $row['id'],
                 'action'        => $row['action'],
                 'date_added'    => $row['date_added'],
                 'date_updated'  => $row['date_updated'],
             ];
         }
-        $total_records = $this->logs->getTotalLogs($type, $search_value);
+        $total_records = $this->logs_mod->getTotalLogs($search_value);
 
         $output = [
             "draw" => intval($this->input->post('draw')),

@@ -149,7 +149,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="update_location()">Submit</button>
-                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#module_list_implemented_modal">Back To List</button>
             </div>
         </div>
     </div>
@@ -167,9 +167,24 @@
                 </div>
             </div>
             <div class="modal-body">
+                <div class="dropdown">
+                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown" aria-expanded="false"> Column Visibility</button>
+                        <ul class="dropdown-menu" aria-labelledby="columnDropdown" id="columnSelectorDropdown" data-simplebar style="max-height: 300px;">
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> Company</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> Business Unit</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> Department</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="3" checked> Module</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="4" checked> Sub Module</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="5" checked> Date Parallel</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="6" checked> Date Online</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="7" checked> Remarks</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="8" checked> Action</label></li>
+                        </ul>
+                        <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
+                    </div>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover no-wrap" id="location_setup">
-                        <thead class="table-primary text-center">
+                        <thead class="table-info text-center text-uppercase">
                             <tr>
                                 <th>Company</th>
                                 <th>Business Unit</th>
@@ -218,11 +233,27 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <ul class="nav nav-pills arrow-navtabs nav-primary bg-light mb-4" role="tablist">
+                        <li class="nav-item">
+                            <a id="current" aria-expanded="false" class="nav-link active typeofsystem" data-bs-toggle="tab" >
+                                <span class="d-block d-sm-none"><iconify-icon icon="ri:list-settings-line" class="fs-25"></iconify-icon></span>
+                                <span class="d-none d-sm-block">Current Module | System</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="new" aria-expanded="true" class="nav-link  typeofsystem" data-bs-toggle="tab" >
+                                <span class="d-block d-sm-none"><iconify-icon icon="ri:chat-new-fill" class="fs-25"></iconify-icon></span>
+                                <span class="d-none d-sm-block">New Module | System</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <hr>
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover no-wrap table-bordered" id="module_list_implemented">
-                            <thead class="table-primary text-center">
+                        <table class="table table-striped table-hover no-wrap " id="module_list_implemented">
+                            <thead class="table-info text-center text-uppercase">
                                 <tr>
                                     <th>Module List</th>
+                                    <th>Type</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -237,28 +268,43 @@
 </div>
 <script>
     $(document).ready(function () {
-        var table = $('#module_list_implemented').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
-            "pageLength": 10,
-            "ajax": {
-                "url": "<?php echo base_url('module_list_implemented') ?>",
-                "type": "POST"
-            },
-            "columns": [
-                {
-                    "data": "module"
-                },
-                {
-                    "data": "action"
-                }
-            ],
-            "columnDefs": [
-                { "className": "text-center", "targets": ['_all'] }
-            ],
+
+        var typeofsystem = "current";
+        loadsystem(typeofsystem);
+
+        $("a.typeofsystem").click(function () {
+            $("a.btn-primary").removeClass('btn-primary').addClass('btn-secondary');
+            $(this).addClass('btn-primary');
+            let typeofsystem = this.id;
+            loadsystem(typeofsystem);
         });
+
+        function loadsystem(typeofsystem) {
+            var table = $('#module_list_implemented').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "destroy": true,
+                "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
+                "pageLength": 10,
+                "ajax": {
+                    "url": "<?php echo base_url('module_list_implemented') ?>",
+                    "type": "POST",
+                    "data": {
+                        "typeofsystem": typeofsystem
+                    }
+                },
+                "columns": [
+                    { "data": "module"},
+                    { "data": "type"},
+                    { "data": "action"}
+                ],
+                "columnDefs": [
+                    { "className": "text-center", "targets": ['_all'] }
+                ],
+            });
+        }
     });
+    printWindow.document.close();
 </script>
 
 
@@ -271,14 +317,18 @@
         $('#module, #edit_module').select2({ placeholder: 'Select Module Name', allowClear: true, minimumResultsForSearch: Infinity});
         $('#sub_module, #edit_sub_module').select2({ placeholder: 'Select Sub Module Name', allowClear: true, minimumResultsForSearch: Infinity});
     });
+    var table = null;
+    var printWindow = null; 
 
     function module_list_implemented_modal(mod_id) {
-        var table = $('#location_setup').DataTable();
-        table.destroy();
+        if (table) {
+            table.destroy();
+        }
 
-        $('#location_setup').DataTable({
+        table = $('#location_setup').DataTable({
             "processing": true,
             "serverSide": true,
+            "destroy": true,
             "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
             "pageLength": 10,
             "ajax": {
@@ -314,47 +364,87 @@
             "columnDefs": [
                 { "className": "text-center", "targets": ['_all'] }
             ],
-            "dom": 
-                "<'row mb-1'<'col-md-12 text-start'B>>" +
-                "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
-                "<'row'<'col-md-12'tr>>" +
-                "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
-            "buttons": [
-                {
-                    "extend": 'excelHtml5',
-                    "title": 'LOCATION SETUP IMPLEMENTED - Excel Export', 
-                    "exportOptions": {
-                        "columns": ':visible:not(:last-child)'
-                    }
-                },
-                {
-                    "extend": 'pdfHtml5',
-                    "title": 'LOCATION SETUP IMPLEMENTED - PDF Export',
-                    "text": 'Generate Report',
-                    "exportOptions": {
-                        "columns": ':visible:not(:last-child)'
-                    },
-                    "customize": function (doc) {
-                        doc.defaultStyle.fontSize = 8;
-                        doc.styles.title.fontSize = 12;
-                        doc.styles.tableHeader.fontSize = 10;
-                        if (!doc.styles.tableBodyOdd) {
-                            doc.styles.tableBodyOdd = {};
-                        }
-                        if (!doc.styles.tableBodyEven) {
-                            doc.styles.tableBodyEven = {};
-                        }
-                        doc.styles.tableBodyOdd.alignment = 'center';
-                        doc.styles.tableBodyEven.alignment = 'center';
-                    }
-                },
-                'colvis'
-            ],
+        });
+        $('#module_list_implemented_modal').modal('show');
+        $('#columnSelectorDropdown').on('click', function (e) {
+            e.stopPropagation();
+        });
+        $('#columnSelectorDropdown .column-toggle').each(function () {
+            let columnIdx = $(this).val();
+            $(this).prop('checked', table.column(columnIdx).visible());
         });
 
-        // Open the modal
-        $('#module_list_implemented_modal').modal('show');
+        $('#columnSelectorDropdown .column-toggle').on('change', function () {
+            let columnIdx = $(this).val();
+            let isChecked = $(this).prop('checked');
+            table.column(columnIdx).visible(isChecked);
+        });
+        $('#generate_report').on('click', function () {
+
+            if (printWindow && !printWindow.closed) {
+                return;
+            }
+
+            let visibleColumns = [];
+            let visibleHeaders = [];
+            let desc = -1;
+            table.columns().every(function (index) {
+                let headerText = this.header().textContent.trim();
+                if (this.visible() && headerText.toLowerCase() !== 'action') {
+                    visibleColumns.push(index);
+                    visibleHeaders.push(headerText);
+                    if (headerText.toLowerCase() === 'description') {
+                        desc = visibleColumns.length - 1;
+                    }
+                }
+            });
+
+            let rowData = table.rows({ filter: 'applied' }).data().toArray();
+            let reportData = rowData.map(row => visibleColumns.map(index => row[table.column(index).dataSrc()]));
+            let printContent = `
+            <style>
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }
+                th, td {
+                    padding: 10px;
+                    text-align: left;
+                    border: 1px solid #ddd;
+                    word-wrap: break-word;
+                    max-width: 200px;
+                    white-space: normal;
+                }
+                .description {
+                    width: 300px;
+                }
+            </style>
+            <div style="text-align: center; margin-bottom: 20px;"><h4>TASK REPORT</h4></div>
+            <table>
+                <thead>
+                    <tr>${visibleHeaders.map((header, index) => 
+                        `<th class="${index === desc ? 'description' : ''}">${header}</th>`
+                    ).join('')}</tr>
+                </thead>
+                <tbody>
+                    ${reportData.map((row, rowIndex) => 
+                        `<tr>${row.map((cell, cellIndex) => 
+                            `<td class="${cellIndex === desc ? 'description' : ''}">${cell}</td>`
+                        ).join('')}</tr>`
+                    ).join('')}
+                </tbody>
+            </table>`;
+    
+    
+            printWindow = window.open('', '', '');
+            printWindow.document.title = 'LOCATION SETUP | IMPLEMENTED - PDF Export';
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
+        });
     }
+
 
     $.ajax({
         url: '<?php echo base_url('setup_location') ?>',
@@ -512,7 +602,12 @@
                         }).showToast();
                         $('#create_location').modal('hide');
                         module_list_implemented_modal(module)
-                        table.ajax.reload();
+                        var table = $('#location_setup').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                     }
                 });
             }
@@ -597,7 +692,12 @@
                         }).showToast();
                         $('#edit_location').modal('hide');
                         module_list_implemented_modal(module)
-                        table.ajax.reload();
+                        var table = $('#location_setup').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                     }
                 });
             }
@@ -632,7 +732,12 @@
                                 background: "linear-gradient(to right, #ff5f6d, #ffc371)",
                             },
                         }).showToast();
-                        $('#location_setup').DataTable().ajax.reload();
+                        var table = $('#location_setup').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                     }
                 });
             }

@@ -18,6 +18,8 @@ class Location extends CI_Controller {
 
 
     public function module_list_implemented() {
+        
+        $typeofsystem = $this->input->post('typeofsystem');
         $start = $this->input->post('start');
         $length = $this->input->post('length');
         $order = $this->input->post('order');
@@ -26,12 +28,18 @@ class Location extends CI_Controller {
         $order_dir = $order[0]['dir'];
 
 
-        $location_setup = $this->location->module_list_implemented($start, $length, $order_column, $order_dir, $search_value);
+        $location_setup = $this->location->module_list_implemented($typeofsystem, $start, $length, $order_column, $order_dir, $search_value);
         $data = [];
     
         foreach ($location_setup as $row) {
+            if($row['typeofsystem'] == 'current') {
+                $type = '<span class="badge rounded-pill bg-success-subtle text-success">'.$row['typeofsystem'].'</span>';
+            }else{
+                $type = '<span class="badge rounded-pill bg-danger-info text-danger">'.$row['typeofsystem'].'</span>';
+            }
             $data[] = [
-                'module'           => $row['mod_name'],
+                'module'           => ucwords(strtolower($row['mod_name'])),
+                'type'             => $type,
                 'action'           => '
                     <div class="hstack gap-1 justify-content-center">
                         <button type="button" class="btn btn-soft-secondary btn-label waves-effect waves-light btn-sm" onclick="module_list_implemented_modal(' . $row['mod_id'] . ')" data-bs-toggle="modal" data-bs-target="#module_list_implemented_modal">
@@ -42,7 +50,7 @@ class Location extends CI_Controller {
             ];
         }
         
-        $total_records = $this->location->get_total_module_list_implemented($search_value);
+        $total_records = $this->location->get_total_module_list_implemented($typeofsystem, $search_value);
 
         $output = [
             "draw" => intval($this->input->post('draw')),
@@ -108,14 +116,20 @@ class Location extends CI_Controller {
             $department     = $this->location->department($row['department']);
 
 
-            $sub_mod_name        = !empty($row['sub_mod_name']) ? $row['sub_mod_name'] : '<span class="badge bg-secondary">N/A</span>'; 
-            $remarks        = !empty($row['remarks']) ? $row['remarks'] : '<span class="badge bg-secondary">N/A</span>'; 
+            $sub_mod_name = !empty($row['sub_mod_name']) 
+            ? ucwords(strtolower($row['sub_mod_name'])) 
+            : '<span class="badge bg-secondary">N/A</span>';
+        
+            $remarks = !empty($row['remarks']) 
+                ? ucwords(strtolower($row['remarks'])) 
+                : '<span class="badge bg-secondary">N/A</span>';
+        
             
             $data[] = [
-                'company'          => $company['company'],
-                'business_unit'    => $business_unit['business_unit'],
-                'department'       => $department['dept_name'],
-                'module'           => $row['mod_name'],
+                'company'          => ucwords(strtolower( $company['company'])),
+                'business_unit'    => ucwords(strtolower( $business_unit['business_unit'])),
+                'department'       => ucwords(strtolower( $department['dept_name'])),
+                'module'           => ucwords(strtolower($row['mod_name'])),
                 'sub_module'       => $sub_mod_name,
                 'date_parallel'    => $row['date_parallel'],
                 'date_online'      => $row['date_online'],

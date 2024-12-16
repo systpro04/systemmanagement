@@ -26,13 +26,13 @@
                     <div class="tab-content">
                         <div class="mt-2 tab-pane active" role="tabpanel">
                             <div class="table-responsive">
-                            <table class="table table-striped table-hover" id="logs">
-                                <thead class="table-primary text-center">
+                            <table class="table table-striped table-hover table-bordered" id="logs">
+                                <thead class="table-info text-center text-uppercase">
                                     <tr>
                                         <!-- <th>Emp ID</th> -->
-                                        <th>Action</th>
-                                        <th>Date Added</th>
-                                        <th>Date Updated</th>
+                                        <th>Activity Logs</th>
+                                        <th width="20%">Date Added</th>
+                                        <th width="20%">Date Updated</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -50,7 +50,7 @@
     $('#logs').DataTable({
             processing: true,
             serverSide: true,
-            stateSave: true,
+            // stateSave: true,
             destroy: true,
             lengthMenu: [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
             pageLength: 10,
@@ -59,31 +59,48 @@
                 type: 'POST',
             },
             columns: [
-                // { data: 'id' },
-                { data: 'action' },
-                { "data": 'date_added',
-                    "render": function(data, type, row) {
-                        if (data) {
-                            var date = new Date(data);
-                            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
-                            });
-                        }else{
-                            return '';
-                        }
+            // { data: 'id' },
+            { data: 'action' },
+            { 
+                "data": 'date_added',
+                "render": function(data, type, row) {
+                    if (data) {
+                        var date = new Date(data);
+                        return date.toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        }) + ' ' + date.toLocaleTimeString('en-US', { 
+                            hour: 'numeric', 
+                            minute: 'numeric', 
+                            hour12: true 
+                        });
+                    } else {
+                        return '';
                     }
-                },
-                { "data": 'date_updated',
-                    "render": function(data, type, row) {
-                        if (data) {
-                            var date = new Date(data);
-                            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
-                            });
-                        }else{
-                            return '';
-                        }
+                }
+            },
+            { 
+                "data": 'date_updated',
+                "render": function(data, type, row) {
+                    if (data) {
+                        var date = new Date(data);
+                        return date.toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        }) + ' ' + date.toLocaleTimeString('en-US', { 
+                            hour: 'numeric', 
+                            minute: 'numeric', 
+                            hour12: true 
+                        });
+                    } else {
+                        return '';
                     }
-                },
-            ],
+                }
+            },
+        ],
+
             paging: true,
             searching: true,
             ordering: true,

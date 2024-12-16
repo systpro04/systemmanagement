@@ -115,11 +115,23 @@
                 </div>
 
                 <div class="card-body">
+                    <div class="dropdown">
+                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown" aria-expanded="false"> Column Visibility</button>
+                        <ul class="dropdown-menu" aria-labelledby="columnDropdown" id="columnSelectorDropdown" data-simplebar style="max-height: 300px;">
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> Team</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> Emp ID</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> Employee Name</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="3" checked> Position</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="4" checked> Type</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="5" checked> Action</label></li>
+                        </ul>
+                        <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-striped dt-responsive nowrap table-hover" id="user_list">
-                            <thead class="table-primary text-center">
+                            <thead class="table-info text-center text-uppercase">
                                 <tr>
-                                    <th>Team Name</th>
+                                    <th>Team</th>
                                     <th>Emp ID</th>
                                     <th>Employee Name</th>
                                     <th>Position</th>
@@ -168,17 +180,23 @@
             });
         }
     });
-
+    var table = null;
+    var printWindow = null; 
     $(document).ready(function () {
-        let table = $('#user_list').DataTable({
+        if (table) {
+            table.destroy();
+        }
+        table = $('#user_list').DataTable({
             "processing": true,
             "serverSide": true,
             "stateSave": true,
             "destroy": true,
+            "scrollY": "400px",
+            "scrollX": true,
             "scrollCollapse": true,
             "lengthmenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
             "pageLength": 10,
-            "stateSave": true,
+            // "stateSave": true,
             "ajax": {
                 "url": '<?php echo base_url('user_list'); ?>',
                 "type": 'POST',
@@ -199,44 +217,88 @@
             "ordering": true,
             "columnDefs": [
                 { "className": "text-center", "targets": ['_all'] }
-            ],
-            "dom": 
-                "<'row mb-1'<'col-md-12 text-start'B>>" +
-                "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
-                "<'row'<'col-md-12'tr>>" +
-                "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
-            "buttons": [
-                {
-                    "extend": 'excelHtml5',
-                    "title": 'PROGRAMMER | ANALYSTS | RMS - Excel Export', 
-                    "exportOptions": {
-                        "columns": ':visible:not(:last-child)'
-                    }
-                },
-                {
-                    "extend": 'pdfHtml5',
-                    "title": 'PROGRAMMER | ANALYSTS | RMS - PDF Export',
-                    "text": 'Generate Report',
-                    "exportOptions": {
-                        "columns": ':visible:not(:last-child)'
-                    },
-                    "customize": function (doc) {
-                        doc.defaultStyle.fontSize = 8;
-                        doc.styles.title.fontSize = 12;
-                        doc.styles.tableHeader.fontSize = 10;
-                        if (!doc.styles.tableBodyOdd) {
-                            doc.styles.tableBodyOdd = {};
-                        }
-                        if (!doc.styles.tableBodyEven) {
-                            doc.styles.tableBodyEven = {};
-                        }
-                        doc.styles.tableBodyOdd.alignment = 'center';
-                        doc.styles.tableBodyEven.alignment = 'center';
-                    }
-                },
-                'colvis'
-            ],
+            ]
         });
+
+        
+        
+        $('#columnSelectorDropdown').on('click', function (e) {
+            e.stopPropagation();
+        });
+        $('#columnSelectorDropdown .column-toggle').each(function () {
+            let columnIdx = $(this).val();
+            $(this).prop('checked', table.column(columnIdx).visible());
+        });
+
+        $('#columnSelectorDropdown .column-toggle').on('change', function () {
+            let columnIdx = $(this).val();
+            let isChecked = $(this).prop('checked');
+            table.column(columnIdx).visible(isChecked);
+        });
+        $('#generate_report').on('click', function () {
+
+            if (printWindow && !printWindow.closed) {
+                return;
+            }
+
+            let visibleColumns = [];
+            let visibleHeaders = [];
+            let desc = -1;
+            table.columns().every(function (index) {
+                let headerText = this.header().textContent.trim();
+                if (this.visible() && headerText.toLowerCase() !== 'action') {
+                    visibleColumns.push(index);
+                    visibleHeaders.push(headerText);
+                    if (headerText.toLowerCase() === 'position') {
+                        desc = visibleColumns.length - 1;
+                    }
+                }
+            });
+
+            let rowData = table.rows({ filter: 'applied' }).data().toArray();
+            let reportData = rowData.map(row => visibleColumns.map(index => row[table.column(index).dataSrc()]));
+            let printContent = `
+            <style>
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }
+                th, td {
+                    padding: 10px;
+                    text-align: left;
+                    border: 1px solid #ddd;
+                    word-wrap: break-word;
+                    max-width: 200px;
+                    white-space: normal;
+                }
+                .description {
+                    width: 300px;
+                }
+            </style>
+            <div style="text-align: center; margin-bottom: 20px;"><h4>LIST OF USERS</h4></div>
+            <table>
+                <thead>
+                    <tr>${visibleHeaders.map((header, index) => 
+                        `<th class="${index === desc ? 'description' : ''}">${header}</th>`
+                    ).join('')}</tr>
+                </thead>
+                <tbody>
+                    ${reportData.map((row, rowIndex) => 
+                        `<tr>${row.map((cell, cellIndex) => 
+                            `<td class="${cellIndex === desc ? 'description' : ''}">${cell}</td>`
+                        ).join('')}</tr>`
+                    ).join('')}
+                </tbody>
+            </table>`;
+            printWindow = window.open('', '', '');
+            printWindow.document.title = 'USERS LIST - PDF Export';
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
+        });
+
+
         $('#filter_team').change(function () {
             table.ajax.reload();
         });
@@ -322,7 +384,12 @@
                             },
                         }).showToast();
                         $('#addUser').modal('hide');
-                        $('#user_list').DataTable().ajax.reload();
+                        var table = $('#user_list').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                     }
                 });
             }
@@ -380,7 +447,12 @@
                                 background: "linear-gradient(to right, #ff5f6d, #ffc371)",
                             },
                         }).showToast();
-                        $('#user_list').DataTable().ajax.reload();
+                        var table = $('#user_list').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                         $('#updateUser').modal('hide');
                     }
                 });
@@ -416,7 +488,12 @@
                                 background: "linear-gradient(to right, #ff5f6d, #ffc371)",
                             },
                         }).showToast();
-                        $('#user_list').DataTable().ajax.reload();
+                        var table = $('#user_list').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                     }
                 });
             }

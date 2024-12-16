@@ -5,15 +5,16 @@ class Task_mod extends CI_Model
 		parent::__construct();
         $this->db2 = $this->load->database('pis', TRUE);
 	}
-	public function gettasks($type, $start, $length, $order_column, $order_dir, $search_value) {
-        $this->db->select('dt.*, m.*, sb.*, t.*, dt.task_status');
+	public function gettasks($module, $team, $start, $length, $order_column, $order_dir, $search_value) {
+        $this->db->select('dt.*, m.*, sb.*, t.*, dt.task_status, dt.sub_mod_id');
         $this->db->from('daily_task dt');
 		$this->db->join('team t', 't.team_id = dt.team_id');
         $this->db->join('module m', 'm.mod_id = dt.mod_id');
-        $this->db->join('sub_module sb', 'dt.sub_mod_id = sb.sub_mod_id');
+        $this->db->join('sub_module sb', 'dt.sub_mod_id = sb.sub_mod_id', 'left');
         $this->db->where('m.active !=', 'Inactive');
         // $this->db->where('sb.status !=', 'Inactive');
         if (!empty($search_value)) {
+            $this->db->group_start();
             $this->db->like('dt.emp_id', $search_value);
             $this->db->or_like('m.mod_name', $search_value);
             $this->db->or_like('sb.sub_mod_name', $search_value);
@@ -21,25 +22,30 @@ class Task_mod extends CI_Model
 			if (!empty($emp_ids)) {
 				$this->db->or_where_in('dt.emp_id', $emp_ids); 
 			}
+            $this->db->group_end();
         }
 
         $this->db->order_by($order_column, $order_dir);
         $this->db->limit($length, $start);
-		if (!empty($type)) {
-            $this->db->where('dt.team_id', $type);
+		if (!empty($team)) {
+            $this->db->where('dt.team_id', $team);
         }
+        if (!empty($module)) {
+            $this->db->where('dt.mod_id', $module);
+		}
         return $this->db->get()->result_array();
     }
 
-    public function getTotaltasks($type, $search_value) {
-        $this->db->select('dt.*, m.*, sb.*, t.*, dt.task_status');
+    public function getTotaltasks($module, $team, $search_value) {
+        $this->db->select('dt.*, m.*, sb.*, t.*, dt.task_status, dt.sub_mod_id');
         $this->db->from('daily_task dt');
 		$this->db->join('team t', 't.team_id = dt.team_id');
         $this->db->join('module m', 'm.mod_id = dt.mod_id');
-        $this->db->join('sub_module sb', 'dt.sub_mod_id = sb.sub_mod_id');
+        $this->db->join('sub_module sb', 'dt.sub_mod_id = sb.sub_mod_id', 'left');
         $this->db->where('m.active !=', 'Inactive');
         // $this->db->where('sb.status !=', 'Inactive');
         if (!empty($search_value)) {
+            $this->db->group_start();
             $this->db->like('dt.emp_id', $search_value);
             $this->db->or_like('m.mod_name', $search_value);
             $this->db->or_like('sb.sub_mod_name', $search_value);
@@ -47,10 +53,14 @@ class Task_mod extends CI_Model
 			if (!empty($emp_ids)) {
 				$this->db->or_where_in('dt.emp_id', $emp_ids); 
             }
+            $this->db->group_end();
         }
 
-		if (!empty($type)) {
-            $this->db->where('dt.team_id', $type);
+		if (!empty($team)) {
+            $this->db->where('dt.team_id', $team);
+		}
+        if (!empty($module)) {
+            $this->db->where('dt.mod_id', $module);
 		}
         return $this->db->count_all_results();
     }
@@ -59,6 +69,7 @@ class Task_mod extends CI_Model
 		$this->db2->select('emp_id, name');
 		$this->db2->from('employee3');
 		$this->db2->like('name', $search_value);
+        $this->db2->limit(50);
 		$query = $this->db2->get();
 		
 		$emp_ids = [];

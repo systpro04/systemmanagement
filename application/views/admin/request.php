@@ -24,12 +24,12 @@
                 <div class="card-body">
                     <ul class="nav nav-pills animation-nav nav-justified gap-2 mb-3" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link waves-effect waves-light active typeofsystem fw-bold" data-bs-toggle="tab" id="current" role="tab">
+                            <a class="nav-link waves-effect waves-light typeofsystem fw-bold" data-bs-toggle="tab" id="current" role="tab">
                                 CURRENT SYSTEM | MODULE 
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect waves-light typeofsystem fw-bold" data-bs-toggle="tab" id="new" role="tab">
+                            <a class="nav-link waves-effect waves-light active typeofsystem fw-bold" data-bs-toggle="tab" id="new" role="tab">
                                 NEW SYSTEM | MODULE  
                             </a>
                         </li>
@@ -37,7 +37,7 @@
                     <hr>
                     <div class="col-xxl-12">
                         <div class="row">
-                            <div class="col-lg-2" data-simplebar style="max-height: 550px">
+                            <div class="col-lg-2" data-simplebar style="max-height: 550px;">
                                 <div class="nav nav-pills flex-column nav-pills-tab custom-verti-nav-pills text-center" role="tablist" aria-orientation="vertical">
                                     <a href="#!" id="ISR" class="fw-bold nav-link active type" data-bs-toggle="pill" role="tab">ISR <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_ISR"></span></a>
                                     <a href="#!" id="ATTENDANCE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">ATTENDANCE <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_ATTENDANCE"></span></a>
@@ -56,31 +56,43 @@
                                 </div>
                             </div>
                             <div class="col-lg-10">
-                                <div class="d-flex gap-2 mb-2">
-                                    <select class="form-select" id="team" name="team">
-                                        <option value=""></option>
-                                    </select>
-                                    <select class="form-select" id="module" name="module">
-                                        <option value="">Module</option>
-                                    </select>
-                                    <select class="form-select" id="sub_module" name="sub_module">
-                                        <option value="">Sub Module</option>
-                                    </select>
-                                </div>
                                 <div class="card">
                                     <div class="card-body">
-                                        <div class="tab-content mt-3">
+                                        <div class="d-flex gap-2 mb-2">
+                                            <select class="form-select" id="team" name="team">
+                                                <option value=""></option>
+                                            </select>
+                                            <select class="form-select" id="module" name="module">
+                                                <option value="">Module</option>
+                                            </select>
+                                            <select class="form-select" id="sub_module" name="sub_module">
+                                                <option value="">Sub Module</option>
+                                            </select>
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown" aria-expanded="false"> Column Visibility</button>
+                                            <ul class="dropdown-menu" aria-labelledby="columnDropdown" id="columnSelectorDropdown" data-simplebar style="max-height: 300px;">
+                                                <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> TEAM</label></li>
+                                                <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> FILENAME</label></li>
+                                                <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> MODULE</label></li>
+                                                <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="3" checked> UPLOADED TO</label></li>
+                                                <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="4" checked> STATUS</label></li>
+                                                <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="5" checked> ACTION</label></li>
+                                            </ul>
+                                            <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
+                                        </div>
+                                        <div class="tab-content mt-1">
                                             <div class="tab-pane fade active show" id="current" role="tabpanel">
                                                 <div class="d-flex mb-4">
                                                     <div class="flex-grow-1 ms-3 ratio ratio-16x9">
                                                         <div class="table-responsive">
                                                             <table class="table table-striped table-hover" id="typeofsystem_table" style="max-width: 100%;">
-                                                                <thead class="table-primary text-center">
+                                                                <thead class="table-info text-center text-uppercase">
                                                                     <tr>
-                                                                        <th>TEAM</th>
+                                                                        <th width="15%">TEAM</th>
                                                                         <th>FILENAME</th>
                                                                         <th>MODULE</th>
-                                                                        <th>UPLOADED TO</th>
+                                                                        <th>UPLOADED</th>
                                                                         <th>STATUS</th>
                                                                         <th>ACTION</th>
                                                                     </tr>
@@ -162,12 +174,13 @@
 
     });
 
-    var typeofsystem = "current";
+    var typeofsystem = "new";
     var type = "ISR";
-    var table;
+    var table = null;
+    var printWindow = null; 
     $('#SYSTEM_PROPOSED').closest('a').show();
     $('#GANTT_CHART').closest('a').show();
-
+    updateVisibility();
     load_system_content(typeofsystem, type);
     load_module(typeofsystem);
     fetchDirectoryCounts();
@@ -176,26 +189,26 @@
         $(this).addClass('btn-primary');
         typeofsystem = this.id;
 
-        if (typeofsystem == 'new') {
+        updateVisibility();
+        load_module(typeofsystem);
+        load_system_content(typeofsystem, type);
+        fetchDirectoryCounts();
+    });
+    function updateVisibility() {
+        if (typeofsystem === 'new') {
             $('#SYSTEM_PROPOSED').closest('a').show();
             $('#GANTT_CHART').closest('a').hide();
             $('#USER_GUIDE').closest('a').hide();
             $('#MEMO').closest('a').hide();
             $('#BUSINESS_ACCEPTANCE').closest('a').hide();
-        }
-
-        if (typeofsystem == 'current') {
+        } else if (typeofsystem === 'current') {
             $('#SYSTEM_PROPOSED').closest('a').hide();
             $('#GANTT_CHART').closest('a').show();
             $('#USER_GUIDE').closest('a').show();
             $('#MEMO').closest('a').show();
             $('#BUSINESS_ACCEPTANCE').closest('a').show();
         }
-        load_module(typeofsystem);
-        load_system_content(typeofsystem, type);
-        fetchDirectoryCounts();
-    });
-
+    }
     
     $("a.type").click(function () {
         $("a.type").removeClass('btn-primary');
@@ -204,10 +217,14 @@
         load_system_content(typeofsystem, type);
     });
     function load_system_content(typeofsystem, type) {
+        if (table) {
+            table.destroy();
+        }
+
         table = $('#typeofsystem_table').DataTable({
             processing: true,
             serverSide: true,
-            stateSave: true,
+            // stateSave: true,
             destroy: true,
             responsive: true,
             lengthMenu: [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
@@ -233,43 +250,83 @@
             ],
             columnDefs: [
                 { "className": "text-center", "targets": ['_all'] }
-            ],
-            "dom": 
-                "<'row mb-1'<'col-md-12 text-start'B>>" +
-                "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
-                "<'row'<'col-md-12'tr>>" +
-                "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
-            "buttons": [
-                {
-                    "extend": 'excelHtml5',
-                    "title": 'REQUESTS - Excel Export', 
-                    "exportOptions": {
-                        "columns": ':visible:not(:last-child)'
+            ]
+        });
+
+        $('#columnSelectorDropdown').on('click', function (e) {
+            e.stopPropagation();
+        });
+        $('#columnSelectorDropdown .column-toggle').each(function () {
+            let columnIdx = $(this).val();
+            $(this).prop('checked', table.column(columnIdx).visible());
+        });
+
+        $('#columnSelectorDropdown .column-toggle').on('change', function () {
+            let columnIdx = $(this).val();
+            let isChecked = $(this).prop('checked');
+            table.column(columnIdx).visible(isChecked);
+        });
+        $('#generate_report').on('click', function () {
+
+            if (printWindow && !printWindow.closed) {
+                return;
+            }
+
+            let visibleColumns = [];
+            let visibleHeaders = [];
+            let desc = -1;
+            table.columns().every(function (index) {
+                let headerText = this.header().textContent.trim();
+                if (this.visible() && headerText.toLowerCase() !== 'action') {
+                    visibleColumns.push(index);
+                    visibleHeaders.push(headerText);
+                    if (headerText.toLowerCase() === 'description') {
+                        desc = visibleColumns.length - 1;
                     }
-                },
-                {
-                    "extend": 'pdfHtml5',
-                    "title": 'REQUESTS - PDF Export',
-                    "text": 'Generate Report',
-                    "exportOptions": {
-                        "columns": ':visible:not(:last-child)'
-                    },
-                    "customize": function (doc) {
-                        doc.defaultStyle.fontSize = 8;
-                        doc.styles.title.fontSize = 12;
-                        doc.styles.tableHeader.fontSize = 10;
-                        if (!doc.styles.tableBodyOdd) {
-                            doc.styles.tableBodyOdd = {};
-                        }
-                        if (!doc.styles.tableBodyEven) {
-                            doc.styles.tableBodyEven = {};
-                        }
-                        doc.styles.tableBodyOdd.alignment = 'center';
-                        doc.styles.tableBodyEven.alignment = 'center';
-                    }
-                },
-                'colvis'
-            ],
+                }
+            });
+
+            let rowData = table.rows({ filter: 'applied' }).data().toArray();
+            let reportData = rowData.map(row => visibleColumns.map(index => row[table.column(index).dataSrc()]));
+            let printContent = `
+            <style>
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }
+                th, td {
+                    padding: 10px;
+                    text-align: left;
+                    border: 1px solid #ddd;
+                    word-wrap: break-word;
+                    max-width: 200px;
+                    white-space: normal;
+                }
+                .description {
+                    width: 300px;
+                }
+            </style>
+            <div style="text-align: center; margin-bottom: 20px;"><h4>LIST OF REQUESTS</h4></div>
+            <table>
+                <thead>
+                    <tr>${visibleHeaders.map((header, index) => 
+                        `<th class="${index === desc ? 'description' : ''}">${header}</th>`
+                    ).join('')}</tr>
+                </thead>
+                <tbody>
+                    ${reportData.map((row, rowIndex) => 
+                        `<tr>${row.map((cell, cellIndex) => 
+                            `<td class="${cellIndex === desc ? 'description' : ''}">${cell}</td>`
+                        ).join('')}</tr>`
+                    ).join('')}
+                </tbody>
+            </table>`;
+            printWindow = window.open('', '', '');
+            printWindow.document.title = 'LIST OF FILES FOR REQUEST - PDF Export';
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
         });
     }
 

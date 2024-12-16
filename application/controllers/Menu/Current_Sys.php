@@ -169,15 +169,11 @@ class Current_Sys extends CI_Controller {
         if($module != ''){
             if (file_exists($file_path)) {
                 if (unlink($file_path)) {
-
-                    
                     if($folder_name == 'LIVE_TESTING'){
                         $this->db->set('date_implem', '');
                         $this->db->where('mod_id', $module);
                         $this->db->update('module');
                     }
-
-
                     $this->file_mod->delete_file_record($file_name);
 
                     $action = '<b>' . $this->session->name. '</b> deleted a file from <b>'.$folder_name .' | '.$file_name.' | current</b>';
@@ -272,20 +268,20 @@ class Current_Sys extends CI_Controller {
                 $uploaded_data = $this->upload->data();
     
                 $status_fields = [
-                    'ISR' => 'isr_status',
-                    'ATTENDANCE' => 'att_status',
-                    'MINUTES' => 'minute_status',
-                    'WALKTHROUGH' => 'wt_status',
-                    'FLOWCHART' => 'flowchart_status',
-                    'DFD' => 'dfd_status',
-                    'SYSTEM_PROPOSED' => 'proposed_status',
-                    'GANTT_CHART' => 'gantt_status',
-                    'LOCAL_TESTING' => 'local_status',
-                    'UAT' => 'uat_status',
-                    'LIVE_TESTING' => 'live_status',
-                    'USER_GUIDE' => 'guide_status',
-                    'MEMO' => 'memo_status',
-                    'BUSINESS_ACCEPTANCE' => 'acceptance_status'
+                    'ISR'                   => 'isr_status',
+                    'ATTENDANCE'            => 'att_status',
+                    'MINUTES'               => 'minute_status',
+                    'WALKTHROUGH'           => 'wt_status',
+                    'FLOWCHART'             => 'flowchart_status',
+                    'DFD'                   => 'dfd_status',
+                    'SYSTEM_PROPOSED'       => 'proposed_status',
+                    'GANTT_CHART'           => 'gantt_status',
+                    'LOCAL_TESTING'         => 'local_status',
+                    'UAT'                   => 'uat_status',
+                    'LIVE_TESTING'          => 'live_status',
+                    'USER_GUIDE'            => 'guide_status',
+                    'MEMO'                  => 'memo_status',
+                    'BUSINESS_ACCEPTANCE'   => 'acceptance_status'
                 ];
     
                 $statuses = array_fill_keys(array_values($status_fields), null);
@@ -301,8 +297,8 @@ class Current_Sys extends CI_Controller {
                     $statuses[$status_fields[$path]] = 'Approve';
                 }
 
-                if ($selected_directory == 'LIVE_TESTING'){
-                    $this->db->set('implem_type', '1');
+                if ($path == 'LIVE_TESTING'){
+                    // $this->db->set('implem_type', '1');
                     $this->db->set('date_implem', $date_implem);
                     $this->db->where('mod_id', $module);
                     $this->db->update('module');

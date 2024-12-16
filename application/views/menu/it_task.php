@@ -172,8 +172,15 @@
                     <div class="d-flex align-items-center justify-content-between">
                         <h5 class="card-title mb-0 flex-grow-1 fw-bold">List of Task | Position</h5>
                         <div class="col-md-3">
-                            <div class="d-flex align-items-center flex-shrink-0">
+                            <div class="d-flex align-items-center flex-shrink-0 mx-1">
                                 <select class="form-select" id="filter_team" style="width: 150px; height: auto;">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex align-items-center flex-shrink-0 mx-1">
+                                <select class="form-select" id="filter_module" style="width: 150px; height: auto;">
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -185,20 +192,32 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <div class="dropdown">
+                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown" aria-expanded="false"> Column Visibility</button>
+                        <ul class="dropdown-menu" aria-labelledby="columnDropdown" id="columnSelectorDropdown" data-simplebar style="max-height: 300px;">
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> Name</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> Module</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> Sub Module</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="3" checked> Description</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="4" checked> Concern</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="5" checked> Remarks</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="6" checked> Status</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="7" checked> Action</label></li>
+                        </ul>
+                        <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-striped table-hover no-wrap" id="it_task_list">
-                            <thead class="table-primary text-center">
+                            <thead class="table-info text-center text-uppercase">
                                 <tr>
-                                    <th>Employee Name</th>
+                                    <th>Name</th>
                                     <th>Module</th>
                                     <th>Sub Module</th>
                                     <th>Description</th>
                                     <th>Concern</th>
                                     <th>Remarks</th>
                                     <th>Status</th>
-                                    <?php if ($this->session->userdata('position') != 'Programmer'){ ?>
-                                        <th>Action</th>
-                                    <?php } ?>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -214,7 +233,7 @@
     $(document).ready(function () {
         $('#team, #edit_team, #filter_team').select2({ placeholder: 'Select Team', allowClear: true, minimumResultsForSearch: Infinity});
         $('#name, #edit_name').select2({ placeholder: 'Select Name', allowClear: true, minimumResultsForSearch: Infinity});
-        $('#module, #edit_module').select2({ placeholder: 'Select Module Name', allowClear: true, minimumResultsForSearch: Infinity});
+        $('#filter_module, #module, #edit_module').select2({ placeholder: 'Select Module Name', allowClear: true, minimumResultsForSearch: Infinity});
         $('#sub_module, #sub_module').select2({ placeholder: 'Select Sub Module Name', allowClear: true, minimumResultsForSearch: Infinity});
         $('#task_status').select2({ placeholder: 'Select Status', allowClear: true, minimumResultsForSearch: Infinity});
     });
@@ -224,6 +243,9 @@
         "serverSide": true,
         "destroy": true,
         "stateSave": true,
+        "scrollY": "400px",
+        "scrollX": true,
+        "scrollCollapse": true,
         "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
         "pageLength": 10,
         "ajax": {
@@ -231,6 +253,7 @@
             "type": "POST",
             "data": function (d) {
                 d.team = $('#filter_team').val();
+                d.module = $('#filter_module').val();
             }
         },
         "columns": [
@@ -240,51 +263,127 @@
             { "data": "desc" },
             { "data": "concerns" },
             { "data": "remarks" },
-            { "data": "task_status" },
+            { "data": "task_status",
+                "render": function (data, type, row) {
+                    return `
+                        <select class="form-control form-select form-select-sm task-status-dropdown" data-id="${row.task_id}" data-emp="${row.emp_name}" style="width: 110px;">
+                            <option value="Pending" ${data === 'Pending' ? 'selected' : ''}>PENDING</option>
+                            <option value="Ongoing" ${data === 'Ongoing' ? 'selected' : ''}>ONGOING</option>
+                            <option value="Done" ${data === 'Done' ? 'selected' : ''}>DONE</option>
+                        </select>
+                    `;
+                }
+            },
             { "data": "action" }
         ],
         "columnDefs": [
             { "className": "text-center", "targets": ['_all'] }
-        ],
-        "dom": 
-            "<'row mb-1'<'col-md-12 text-start'B>>" +
-            "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
-            "<'row'<'col-md-12'tr>>" +
-            "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
-        "buttons": [
-            {
-                "extend": 'excelHtml5',
-                "title": 'IT DAILY TASK - Excel Export', 
-                "exportOptions": {
-                    "columns": ':visible:not(:last-child)'
-                }
-            },
-            {
-                "extend": 'pdfHtml5',
-                "title": 'IT DAILY TASK - PDF Export',
-                "text": 'Generate Report',
-                "exportOptions": {
-                    "columns": ':visible:not(:last-child)'
-                },
-                "customize": function (doc) {
-                    doc.defaultStyle.fontSize = 8;
-                    doc.styles.title.fontSize = 12;
-                    doc.styles.tableHeader.fontSize = 10;
-                    if (!doc.styles.tableBodyOdd) {
-                        doc.styles.tableBodyOdd = {};
-                    }
-                    if (!doc.styles.tableBodyEven) {
-                        doc.styles.tableBodyEven = {};
-                    }
-                    doc.styles.tableBodyOdd.alignment = 'center';
-                    doc.styles.tableBodyEven.alignment = 'center';
-                }
-            },
-            'colvis'
-        ],
+        ]
+    });
+    $('#columnSelectorDropdown').on('click', function (e) {
+        e.stopPropagation();
+    });
+    $('#columnSelectorDropdown .column-toggle').each(function () {
+        let columnIdx = $(this).val();
+        $(this).prop('checked', table.column(columnIdx).visible());
     });
 
-    $('#filter_team').change(function () {
+    $('#columnSelectorDropdown .column-toggle').on('change', function () {
+        let columnIdx = $(this).val();
+        let isChecked = $(this).prop('checked');
+        table.column(columnIdx).visible(isChecked);
+    });
+    $('#generate_report').on('click', function () {
+        let visibleColumns = [];
+        let visibleHeaders = [];
+        let desc = -1;
+        table.columns().every(function (index) {
+            let headerText = this.header().textContent.trim();
+            if (this.visible() && headerText.toLowerCase() !== 'action') {
+                visibleColumns.push(index);
+                visibleHeaders.push(headerText);
+                if (headerText.toLowerCase() === 'description') {
+                    desc = visibleColumns.length - 1;
+                }
+            }
+        });
+
+        let rowData = table.rows({ filter: 'applied' }).data().toArray();
+        let reportData = rowData.map(row => visibleColumns.map(index => row[table.column(index).dataSrc()]));
+        let printContent = `
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            th, td {
+                padding: 10px;
+                text-align: left;
+                border: 1px solid #ddd;
+                word-wrap: break-word;
+                max-width: 200px;
+                white-space: normal;
+            }
+            .description {
+                width: 300px;
+            }
+        </style>
+        <div style="text-align: center; margin-bottom: 20px;"><h4>TASK REPORT</h4></div>
+        <table>
+            <thead>
+                <tr>${visibleHeaders.map((header, index) => 
+                    `<th class="${index === desc ? 'description' : ''}">${header}</th>`
+                ).join('')}</tr>
+            </thead>
+            <tbody>
+                ${reportData.map((row, rowIndex) => 
+                    `<tr>${row.map((cell, cellIndex) => 
+                        `<td class="${cellIndex === desc ? 'description' : ''}">${cell}</td>`
+                    ).join('')}</tr>`
+                ).join('')}
+            </tbody>
+        </table>`;
+        let printWindow = window.open('', '', '');
+        printWindow.document.title = 'TASK Report - PDF Export';
+        printWindow.document.write(printContent);
+        printWindow.document.close();
+        printWindow.print();
+    });
+
+    $('#it_task_list').on('change', '.task-status-dropdown', function () {
+        var task_status = $(this).val();
+        var rowId = $(this).data('id');
+        var emp_name = $(this).data('emp');
+        $.ajax({
+            url: "<?php echo base_url('update_task_status'); ?>",
+            type: "POST",
+            data: {
+                id: rowId,
+                task_status: task_status,
+                emp_name: emp_name
+            },
+            success: function () {
+                Toastify({
+                    text: "Task Status updated successfully!",
+                    duration: 5000,
+                    gravity: "top",
+                    position: "left",
+                    className: "birthday-toast primary",
+                    stopOnFocus: true,
+                    close: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    },
+                }).showToast();
+                $('#it_task_list').DataTable().ajax.reload(null, false);
+
+            },
+        });
+    });
+
+
+    $('#filter_team, #filter_module').change(function () {
         table.ajax.reload();
     });
     
@@ -347,7 +446,7 @@
             $('#sub_module, #edit_sub_module').prop('disabled', true);
 
             moduleData.forEach(function (module) {
-                $('#module, #edit_module').append('<option value="' + module.mod_id + '">' + module.mod_name + '</option>');
+                $('#filter_module, #module, #edit_module').append('<option value="' + module.mod_id + '">' + module.mod_name + '</option>');
             });
         }
     });
@@ -447,7 +546,12 @@
                             },
                         }).showToast();
                         $('#create_task').modal('hide');
-                        $('#it_task_list').DataTable().ajax.reload();
+                        var table = $('#it_task_list').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                     }
                 });
             }
@@ -529,7 +633,12 @@
                             },
                         }).showToast();
                         $('#edit_task').modal('hide');
-                        table.ajax.reload();
+                        var table = $('#it_task_list').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                     }
                 });
             }
@@ -563,7 +672,12 @@
                                 background: "linear-gradient(to right, #ff5f6d, #ffc371)",
                             },
                         }).showToast();
-                        table.ajax.reload();
+                        var table = $('#it_task_list').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                     }
                 });
             }

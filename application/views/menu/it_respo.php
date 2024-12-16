@@ -194,6 +194,20 @@
                 <div class="card-header border-1">
                     <div class="d-flex align-items-center">
                         <h5 class="card-title mb-0 flex-grow-1">List of Workload</h5>
+                        <div class="col-md-3">
+                            <div class="d-flex align-items-center flex-shrink-0 mx-2">
+                                <select class="form-select" id="team" style="width: 150px; height: auto;">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex align-items-center flex-shrink-0 mx-2">
+                                <select class="form-select" id="module" style="width: 150px; height: auto;">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="flex-shrink-0">
                             <div class="d-flex flex-wrap gap-2">
                                 <button class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal"
@@ -207,7 +221,13 @@
                 <div class="card-body">
                     <ul class="nav nav-pills arrow-navtabs nav-primary bg-light " role="tablist">
                         <li class="nav-item">
-                            <a id="Pending" aria-expanded="false" class="nav-link active status" data-bs-toggle="tab" >
+                            <a id="All" aria-expanded="false" class="nav-link active status" data-bs-toggle="tab" >
+                                <span class="d-block d-sm-none"><iconify-icon icon="solar:danger-square-bold-duotone" class="fs-25"></iconify-icon></span>
+                                <span class="d-none d-sm-block">All</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="Pending" aria-expanded="false" class="nav-link status" data-bs-toggle="tab" >
                                 <span class="d-block d-sm-none"><iconify-icon icon="solar:danger-square-bold-duotone" class="fs-25"></iconify-icon></span>
                                 <span class="d-none d-sm-block">Pending</span>
                             </a>
@@ -227,17 +247,33 @@
                     </ul>
                     <hr>
                     <div class="tab-content">
+                    <div class="dropdown">
+                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown" aria-expanded="false"> Column Visibility</button>
+                        <ul class="dropdown-menu" aria-labelledby="columnDropdown" id="columnSelectorDropdown" data-simplebar style="max-height: 300px;">
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> Team</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> Name</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> Position</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="3" checked> Module</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="4" checked> Sub Module</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="5" checked> Sub Menu</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="6" checked> Description</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="7" checked> Remarks</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="8" checked> Status</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="9" checked> Action</label></li>
+                        </ul>
+                        <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
+                    </div>
                         <div class="mt-2 tab-pane active" id="System Analyst" role="tabpanel">
                             <div class="table-responsive">
                             <table class="table table-striped table-hover" id="workload">
-                                <thead class="table-primary text-center">
+                                <thead class="table-info text-center text-uppercase">
                                     <tr>
                                         <th>Team</th>
                                         <th>Name</th>
                                         <th>Position</th>
                                         <th>Module</th>
-                                        <th>Sub Module</th>
-                                        <th>Sub Menu</th>
+                                        <th>SubModule</th>
+                                        <th>SubMenu</th>
                                         <th>Description</th>
                                         <th>Remarks</th>
                                         <th>Status</th>
@@ -258,7 +294,7 @@
 <script>
 
     $(document).ready(function () {
-        $('#team_id, #edit_team_id').select2({
+        $('#team, #team_id, #edit_team_id').select2({
             placeholder: 'Select Team',
             allowClear: true,
             minimumResultsForSearch: Infinity
@@ -268,7 +304,7 @@
             allowClear: true,
             minimumResultsForSearch: Infinity
         });
-        $('#module_id, #edit_module_id').select2({
+        $('#module, #module_id, #edit_module_id').select2({
             placeholder: 'Select Module Name',
             allowClear: true,
             minimumResultsForSearch: Infinity
@@ -285,29 +321,47 @@
         });
     });
 
-    var status = "Pending";
+    var status = "All";
+    var table = null;
+    var printWindow = null; 
+
     load_workload(status);
 
     $("a.status").click(function () {
         $("a.btn-primary").removeClass('btn-primary').addClass('btn-secondary');
         $(this).addClass('btn-primary');
-        var status = this.id;
+        status = this.id;
         load_workload(status);
     });
 
-    function load_workload(status){
-        $('#workload').DataTable({
+    $('#team, #module').change(function () {
+        if (table) {
+            table.ajax.reload();
+        }
+    });
+
+    function load_workload(status) {
+        if (table) {
+            table.destroy();
+        }
+
+        table = $('#workload').DataTable({
             "processing": true,
             "serverSide": true,
             "destroy": true,
-            "stateSave": true,
+            // "stateSave": true,
+            "scrollY": "400px",
+            "scrollX": true,
+            "scrollCollapse": true,
             "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
             "pageLength": 10,
             "ajax": {
                 "url": "<?php echo base_url('workload_list'); ?>",
                 "type": "POST",
-                "data": {
-                    "status": status
+                "data": function (d) {
+                    d.team   = $('#team').val();
+                    d.module = $('#module').val();
+                    d.status = status !== "All" ? status : null;
                 }
             },
             "columns": [
@@ -319,8 +373,18 @@
                 { "data": "sub_mod_menu" },
                 { "data": "description" },
                 { "data": "remarks" },
-                { "data": "status" },
-                { "data": "action" }
+                { "data": "status",
+                    "render": function (data, type, row) {
+                        return `
+                            <select class="form-control form-select form-select-sm workload-status-dropdown" data-id="${row.id}" data-emp="${row.emp_id}" style="width: 110px;">
+                                <option value="Pending" ${data === 'Pending' ? 'selected' : ''}>PENDING</option>
+                                <option value="Ongoing" ${data === 'Ongoing' ? 'selected' : ''}>ONGOING</option>
+                                <option value="Done" ${data === 'Done' ? 'selected' : ''}>DONE</option>
+                            </select>
+                        `;
+                    }
+                },
+                { "data": 'action'}
             ],
             "paging": true,
             "searching": true,
@@ -328,53 +392,129 @@
             "columnDefs": [
                 { "className": "text-center", "targets": ['_all'] }
             ],
-            "dom": 
-                "<'row mb-1'<'col-md-12 text-start'B>>" +
-                "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
-                "<'row'<'col-md-12'tr>>" +
-                "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
-            "buttons": [
-                {
-                    "extend": 'excelHtml5',
-                    "title": 'IT RESPONSIBILITIES | WORKLOAD - Excel Export', 
-                    "exportOptions": {
-                        "columns": ':visible:not(:last-child)'
+        });
+
+        $('#columnSelectorDropdown').on('click', function (e) {
+            e.stopPropagation();
+        });
+        $('#columnSelectorDropdown .column-toggle').each(function () {
+            let columnIdx = $(this).val();
+            $(this).prop('checked', table.column(columnIdx).visible());
+        });
+
+        $('#columnSelectorDropdown .column-toggle').on('change', function () {
+            let columnIdx = $(this).val();
+            let isChecked = $(this).prop('checked');
+            table.column(columnIdx).visible(isChecked);
+        });
+        
+        $('#generate_report').on('click', function () {
+            if (printWindow && !printWindow.closed) {
+                return;
+            }
+
+            let visibleColumns = [];
+            let visibleHeaders = [];
+            let taskColumnIndex = -1;
+
+            table.columns().every(function (index) {
+                let headerText = this.header().textContent.trim();
+                if (this.visible() && headerText.toLowerCase() !== 'action') {
+                    visibleColumns.push(index);
+                    visibleHeaders.push(headerText);
+                    if (headerText.toLowerCase() === 'description') {
+                        taskColumnIndex = visibleColumns.length - 1;
                     }
-                },
-                {
-                    "extend": 'pdfHtml5',
-                    "title": 'IT RESPONSIBILITIES | WORKLOAD - PDF Export',
-                    "text": 'Generate Report',
-                    "exportOptions": {
-                        "columns": ':visible:not(:last-child)'
-                    },
-                    "customize": function (doc) {
-                        doc.defaultStyle.fontSize = 8;
-                        doc.styles.title.fontSize = 12;
-                        doc.styles.tableHeader.fontSize = 10;
-                        if (!doc.styles.tableBodyOdd) {
-                            doc.styles.tableBodyOdd = {};
-                        }
-                        if (!doc.styles.tableBodyEven) {
-                            doc.styles.tableBodyEven = {};
-                        }
-                        doc.styles.tableBodyOdd.alignment = 'center';
-                        doc.styles.tableBodyEven.alignment = 'center';
-                    }
-                },
-                'colvis'
-            ],
+                }
+            });
+
+            let rowData = table.rows({ filter: 'applied' }).data().toArray();
+            let reportData = rowData.map(row => visibleColumns.map(index => row[table.column(index).dataSrc()]));
+            let printContent = `
+            <style>
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }
+                th, td {
+                    padding: 10px;
+                    text-align: left;
+                    border: 1px solid #ddd;
+                    word-wrap: break-word;
+                    max-width: 200px;
+                    white-space: normal;
+                }
+                .task-column {
+                    width: 300px;
+                }
+            </style>
+            <div style="text-align: center; margin-bottom: 20px;"><h4>WORKLOAD REPORT | RESPONSIBILITIES</h4></div>
+            <table>
+                <thead>
+                    <tr>${visibleHeaders.map((header, index) => 
+                        `<th class="${index === taskColumnIndex ? 'task-column' : ''}">${header}</th>`
+                    ).join('')}</tr>
+                </thead>
+                <tbody>
+                    ${reportData.map((row, rowIndex) => 
+                        `<tr>${row.map((cell, cellIndex) => 
+                            `<td class="${cellIndex === taskColumnIndex ? 'task-column' : ''}">${cell}</td>`
+                        ).join('')}</tr>`
+                    ).join('')}
+                </tbody>
+            </table>`;
+            
+            // Open the print window
+            printWindow = window.open('', '', '');
+            printWindow.document.title = 'Workload Report - PDF Export';
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
         });
     }
+
+
+    $('#workload').on('change', '.workload-status-dropdown', function () {
+        var status = $(this).val();
+        var rowId = $(this).data('id');
+        var emp_name = $(this).data('emp');
+        $.ajax({
+            url: "<?php echo base_url('update_workload_status'); ?>",
+            type: "POST",
+            data: {
+                id: rowId,
+                status: status,
+                emp_name: emp_name
+            },
+            success: function () {
+                Toastify({
+                    text: "Workload Status updated successfully!",
+                    duration: 5000,
+                    gravity: "top",
+                    position: "left",
+                    className: "birthday-toast primary",
+                    stopOnFocus: true,
+                    close: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    },
+                }).showToast();
+                $('#workload').DataTable().ajax.reload(null, false);
+            },
+        });
+    });
+
+
 
     $.ajax({
         url: '<?php echo base_url('get_team') ?>',
         type: 'POST',
         success: function (response) {
             teamData = JSON.parse(response);
-            $('#team_id').empty().append('<option value="">Select Team Name</option>');
+            $('#team, #team_id').empty().append('<option value="">Select Team Name</option>');
             teamData.forEach(function (team) {
-                $('#team_id').append('<option value="' + team.team_id + '">' + team.team_name + '</option>');
+                $('#team, #team_id').append('<option value="' + team.team_id + '">' + team.team_name + '</option>');
             });
         }
     });
@@ -432,7 +572,7 @@
                 $('#sub_module, #edit_sub_module').prop('disabled', true);
 
                 moduleData.forEach(function (module) {
-                    $('#module_id, #edit_module_id').append('<option value="' + module.mod_id + '">' + module.mod_name + '</option>');
+                    $('#module, #module_id, #edit_module_id').append('<option value="' + module.mod_id + '">' + module.mod_name + '</option>');
                 });
             }
         });
@@ -536,7 +676,12 @@
                             },
                         }).showToast();
                         $('#create_workload').modal('hide');
-                        $('#workload').DataTable().ajax.reload();
+                        var table = $('#workload').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                     }
                 });
             }
@@ -664,7 +809,12 @@
                             },
                         }).showToast();
                         $('#edit_workload').modal('hide');
-                        $('#workload').DataTable().ajax.reload();
+                        var table = $('#workload').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                     }
                 });
             }
@@ -691,7 +841,12 @@
                         id: id
                     },
                     success: function() {
-                        $('#workload').DataTable().ajax.reload();
+                        var table = $('#workload').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                         Toastify({
                             text: `Workload deleted successfully.`,
                             duration: 5000,

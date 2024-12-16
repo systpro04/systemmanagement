@@ -97,18 +97,48 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <ul class="nav nav-pills arrow-navtabs nav-primary bg-light mb-4" role="tablist">
+                        <li class="nav-item">
+                            <a id="current" aria-expanded="false" class="nav-link  typeofsystem" data-bs-toggle="tab" >
+                                <span class="d-block d-sm-none"><iconify-icon icon="ri:list-settings-line" class="fs-25"></iconify-icon></span>
+                                <span class="d-none d-sm-block">Current Module | System</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="new" aria-expanded="true" class="nav-link active typeofsystem" data-bs-toggle="tab" >
+                                <span class="d-block d-sm-none"><iconify-icon icon="ri:chat-new-fill" class="fs-25"></iconify-icon></span>
+                                <span class="d-none d-sm-block">New Module | System</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <hr>
+                    <div class="dropdown">
+                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown" aria-expanded="false"> Column Visibility</button>
+                        <ul class="dropdown-menu" aria-labelledby="columnDropdown" id="columnSelectorDropdown" data-simplebar style="max-height: 300px;">
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> Team</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> Module</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> Requested</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="3" checked> Business Unit</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="4" checked> Status</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="5" checked> Date of Implementation</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="6" checked> Type</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="7" checked> Uploaded Directories</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="8" checked> Action</label></li>
+                        </ul>
+                        <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-striped table-hover no-wrap" id="for_implementation">
-                            <thead class="table-primary text-center">
+                            <thead class="table-info text-center text-uppercase">
                                 <tr>
                                     <th>Team</th>
                                     <th>Module</th>
                                     <th>Requested</th>
                                     <th>Business Unit</th>
                                     <th>Status</th>
-                                    <th>Implemented</th>
+                                    <th>Date of Implementation</th>
                                     <th>Type</th>
-                                    <th>Already Uploaded Directories</th>
+                                    <th>Uploaded Directories</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -122,68 +152,153 @@
     </div>
 </div>
 <script>
-    var table = $('#for_implementation').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "destroy": true,
-        "stateSave": true,
-        "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
-        "pageLength": 10,
-        "ajax": {
-            "url": "<?php echo base_url('for_implementation_list'); ?>",
-            "type": "POST",
-        },
-        "columns": [
-            { "data": "team_name" },
-            { "data": "module" },
-            { "data": "date_request" },
-            { "data": "bu_name" },
-            { "data": "implem_type" },
-            { "data": "date_implem" },
-            { "data": "typeofsystem" },
-            { "data": "uploaded_to" },
-            { "data": "action" }
-        ],
-        "columnDefs": [
-            { "className": "text-center", "targets": ['_all'] }
-        ],
-        "dom": 
-            "<'row mb-1'<'col-md-12 text-start'B>>" +
-            "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
-            "<'row'<'col-md-12'tr>>" +
-            "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
-        "buttons": [
-            {
-                "extend": 'excelHtml5',
-                "title": 'FOR IMPLEMENTATION - Excel Export', 
-                "exportOptions": {
-                    "columns": ':visible:not(:last-child)'
-                }
-            },
-            {
-                "extend": 'pdfHtml5',
-                "title": 'FOR IMPLEMENTATION - PDF Export',
-                "text": 'Generate Report',
-                "exportOptions": {
-                    "columns": ':visible:not(:last-child)'
-                },
-                "customize": function (doc) {
-                    doc.defaultStyle.fontSize = 8;
-                    doc.styles.title.fontSize = 12;
-                    doc.styles.tableHeader.fontSize = 10;
-                    if (!doc.styles.tableBodyOdd) {
-                        doc.styles.tableBodyOdd = {};
-                    }
-                    if (!doc.styles.tableBodyEven) {
-                        doc.styles.tableBodyEven = {};
-                    }
-                    doc.styles.tableBodyOdd.alignment = 'center';
-                    doc.styles.tableBodyEven.alignment = 'center';
-                }
-            },
-            'colvis'
-        ],
+
+    var typeofsystem = "new";
+    var table = null;
+    var printWindow = null; 
+
+    loadsystem(typeofsystem);
+
+    $("a.typeofsystem").click(function () {
+        $("a.btn-primary").removeClass('btn-primary').addClass('btn-secondary');
+        $(this).addClass('btn-primary');
+        let typeofsystem = this.id;
+        loadsystem(typeofsystem);
     });
+    function loadsystem(typeofsystem) {
+        if (table) {
+            table.destroy();
+        }
+
+        table = $('#for_implementation').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "destroy": true,
+            // "stateSave": true,
+            "scrollY": "400px",
+            "scrollX": true,
+            "scrollCollapse": true,
+            "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
+            "pageLength": 10,
+            "ajax": {
+                "url": "<?php echo base_url('for_implementation_list'); ?>",
+                "type": "POST",
+                "data": {
+                    "typeofsystem": typeofsystem
+                }
+            },
+            "columns": [
+                { "data": "team_name" },
+                { "data": "module" },
+                { "data": 'date_request',
+                    "render": function(data, type, row) {
+                        if (data) {
+                            var date = new Date(data);
+                            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
+                            });
+                        }else {
+                            return '<span class="badge bg-info"> N/A </span>';
+                        }
+                    }
+                },
+                { "data": "bu_name" },
+                { "data": "implem_type" },
+                { "data": 'date_implem',
+                    "render": function(data, type, row) {
+                        if (data) {
+                            var date = new Date(data);
+                            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
+                            });
+                        }else {
+                            return '<span class="badge bg-info"> N/A </span>';
+                        }
+                    }
+                },
+                { "data": "typeofsystem" },
+                { "data": "uploaded_to" },
+                { "data": "action" }
+            ],
+            "columnDefs": [
+                { "className": "text-center", "targets": ['_all'] }
+            ],
+        });
+
+        $('#columnSelectorDropdown').on('click', function (e) {
+            e.stopPropagation();
+        });
+        $('#columnSelectorDropdown .column-toggle').each(function () {
+            let columnIdx = $(this).val();
+            $(this).prop('checked', table.column(columnIdx).visible());
+        });
+
+        $('#columnSelectorDropdown .column-toggle').on('change', function () {
+            let columnIdx = $(this).val();
+            let isChecked = $(this).prop('checked');
+            table.column(columnIdx).visible(isChecked);
+        });
+        $('#generate_report').on('click', function () {
+
+            if (printWindow && !printWindow.closed) {
+                return;
+            }
+
+            let visibleColumns = [];
+            let visibleHeaders = [];
+            let desc = -1;
+            table.columns().every(function (index) {
+                let headerText = this.header().textContent.trim();
+                if (this.visible() && headerText.toLowerCase() !== 'action') {
+                    visibleColumns.push(index);
+                    visibleHeaders.push(headerText);
+                    if (headerText.toLowerCase() === 'description') {
+                        desc = visibleColumns.length - 1;
+                    }
+                }
+            });
+
+            let rowData = table.rows({ filter: 'applied' }).data().toArray();
+            let reportData = rowData.map(row => visibleColumns.map(index => row[table.column(index).dataSrc()]));
+            let printContent = `
+            <style>
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }
+                th, td {
+                    padding: 10px;
+                    text-align: left;
+                    border: 1px solid #ddd;
+                    word-wrap: break-word;
+                    max-width: 200px;
+                    white-space: normal;
+                }
+                .description {
+                    width: 300px;
+                }
+            </style>
+            <div style="text-align: center; margin-bottom: 20px;"><h4>LIST OF SYSTEM FOR DEPLOYMENT</h4></div>
+            <table>
+                <thead>
+                    <tr>${visibleHeaders.map((header, index) => 
+                        `<th class="${index === desc ? 'description' : ''}">${header}</th>`
+                    ).join('')}</tr>
+                </thead>
+                <tbody>
+                    ${reportData.map((row, rowIndex) => 
+                        `<tr>${row.map((cell, cellIndex) => 
+                            `<td class="${cellIndex === desc ? 'description' : ''}">${cell}</td>`
+                        ).join('')}</tr>`
+                    ).join('')}
+                </tbody>
+            </table>`;
+            printWindow = window.open('', '', '');
+            printWindow.document.title = 'LIST OF SYSTEM FOR DEPLOYMENT - PDF Export';
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
+        });
+    }
     function upload_remaining_files(mod_id, mod_name) {
         $('#remaining_files_table').DataTable({
             "processing": true,

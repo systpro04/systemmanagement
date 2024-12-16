@@ -52,7 +52,7 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/libs/glightbox/css/glightbox.min.css" />
     <script src="<?php echo base_url(); ?>assets/libs/glightbox/js/glightbox.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/libs/isotope-layout/isotope.pkgd.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/js/pages/gallery.init.js"></script>
+    
  </head>
  <body>
      <!-- Begin page -->
@@ -94,6 +94,7 @@
                                 <i class='bx bx-fullscreen fs-22'></i>
                             </button>
                         </div>
+                        <?php if ($this->session->userdata('emp_id') == '21114-2013' || $this->session->userdata('emp_id') == '01022-2014') { ?>
                         <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
                             <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
                             <iconify-icon icon="line-md:bell-filled-loop" class="fs-22"></iconify-icon><span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger">0</span>
@@ -133,7 +134,7 @@
                                 </div>
                             </div>
                         </div>
-
+                        <?php } ?>
                         <div class="dropdown ms-sm-3 header-item topbar-user">
                             <button type="button" class="btn shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="d-flex align-items-center">
@@ -181,34 +182,31 @@
                              </a>
                          </li>
 
-                         <?php if ($this->session->userdata('position') == 'System Analyst' || $this->session->userdata('emp_id') == '01022-2014') { ?>
-                            <li class="nav-item">
+                        <li class="nav-item">
 
-                                <a class="nav-link menu-link <?php echo in_array($page, ['kpi_view', 'module_view', 'add_user_view']) ? 'active' : ''; ?>"  href="#sidebarLayouts"  data-bs-toggle="collapse"  role="button"  aria-expanded="<?php echo in_array($page, ['profile']) ? 'true' : 'false'; ?>"  aria-controls="sidebarLayouts">
-                                    <iconify-icon icon="solar:shield-bold-duotone" class="fs-25"></iconify-icon >&nbsp;&nbsp;&nbsp;&nbsp;  <span class="fs-12">Admin Setup </span>
-                                </a>
+                            <a class="nav-link menu-link <?php echo in_array($page, ['kpi_view', 'module_view', 'add_user_view']) ? 'active' : ''; ?>"  href="#sidebarLayouts"  data-bs-toggle="collapse"  role="button"  aria-expanded="<?php echo in_array($page, ['profile']) ? 'true' : 'false'; ?>"  aria-controls="sidebarLayouts">
+                                <iconify-icon icon="solar:shield-bold-duotone" class="fs-25"></iconify-icon >&nbsp;&nbsp;&nbsp;&nbsp;  <span class="fs-12">Admin Setup </span>
+                            </a>
 
-                                <div class="collapse menu-dropdown <?php echo in_array($page, ['kpi_view', 'module_view', 'add_user_view']) ? 'show' : ''; ?>" id="sidebarLayouts">
-                                    <ul class="nav nav-sm flex-column">
-                                        <li class="nav-item">
-                                            <a href="<?php echo base_url('kpi_view'); ?>" class="nav-link fs-11 <?php echo ($page == 'kpi_view') ? 'active' : ''; ?>  "> &nbsp;&nbsp;&nbsp;&nbsp;Create KPI</a>
-                                            <a href="<?php echo base_url('module_view'); ?>" class="nav-link fs-11 <?php echo ($page == 'module_view') ? 'active' : ''; ?>  "> &nbsp;&nbsp;&nbsp;&nbsp;Add Module | System</a>
-                                            <a href="<?php echo base_url('add_user_view'); ?>" class="nav-link fs-11 <?php echo ($page == 'add_user_view') ? 'active' : ''; ?>  "> &nbsp;&nbsp;&nbsp;&nbsp;Add Team Member</a>
-                                            <!-- <a href="#!" class="nav-link fs-11"> &nbsp;&nbsp;&nbsp;&nbsp;Create Rules | Regulations</a> -->
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                        <?php } ?>
+                            <div class="collapse menu-dropdown <?php echo in_array($page, ['kpi_view', 'module_view', 'add_user_view']) ? 'show' : ''; ?>" id="sidebarLayouts">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="<?php echo base_url('kpi_view'); ?>" class="nav-link fs-11 <?php echo ($page == 'kpi_view') ? 'active' : ''; ?>  "> &nbsp;&nbsp;&nbsp;&nbsp;Create KPI</a>
+                                        <a href="<?php echo base_url('module_view'); ?>" class="nav-link fs-11 <?php echo ($page == 'module_view') ? 'active' : ''; ?>  "> &nbsp;&nbsp;&nbsp;&nbsp;Add Module | System</a>
+                                        <a href="<?php echo base_url('add_user_view'); ?>" class="nav-link fs-11 <?php echo ($page == 'add_user_view') ? 'active' : ''; ?>  "> &nbsp;&nbsp;&nbsp;&nbsp;Add Team Member</a>
+                                        <!-- <a href="#!" class="nav-link fs-11"> &nbsp;&nbsp;&nbsp;&nbsp;Create Rules | Regulations</a> -->
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
 
 
-                        <?php if ($this->session->userdata('emp_id') == '21114-2013' || $this->session->userdata('emp_id') == '01022-2014') { ?>
-                            <li class="nav-item">
-                                <a class="nav-link menu-link <?php echo ($page == 'request') ? 'active' : ''; ?> " href="<?php echo base_url('request'); ?>">
-                                    <iconify-icon icon="solar:shield-check-bold-duotone" class="fs-25"></iconify-icon >&nbsp;&nbsp;&nbsp;&nbsp;  <span class="fs-12">Request </span>
-                                </a>
-                            </li>
-                         <?php } ?>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link <?php echo ($page == 'request') ? 'active' : ''; ?> " href="<?php echo base_url('request'); ?>">
+                                <iconify-icon icon="solar:shield-check-bold-duotone" class="fs-25"></iconify-icon >&nbsp;&nbsp;&nbsp;&nbsp;  <span class="fs-12">Request </span>
+                            </a>
+                        </li>
 
 
                          <li class="nav-item">
@@ -244,7 +242,6 @@
                              </a>
                          </li>
 
-                         <?php if ($this->session->userdata('position') == 'System Analyst' || $this->session->userdata('emp_id') == '21114-2013') { ?>
                         <li class="nav-item">
 
                             <a class="nav-link menu-link <?php echo in_array($page, ['current_system', 'new_system']) ? 'active' : ''; ?>"  href="#sidebarLayouts2"  data-bs-toggle="collapse"  role="button"  aria-expanded="<?php echo in_array($page, ['current_system']) ? 'true' : 'false'; ?>"  aria-controls="sidebarLayouts">
@@ -260,8 +257,6 @@
                                 </ul>
                             </div>
                         </li>
-                        <?php } ?>
-
                          <li class="nav-item">
                              <a class="nav-link menu-link <?php echo ($page == 'gantt_view') ? 'active' : ''; ?>" href="<?php echo base_url('gantt_view'); ?>">
                                 <iconify-icon icon="solar:align-bottom-bold-duotone" class="fs-25"></iconify-icon >&nbsp;&nbsp;&nbsp;&nbsp;  <span class="fs-12">Gantt Chart </span>

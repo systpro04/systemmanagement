@@ -99,6 +99,35 @@ class Dashboard extends CI_Controller {
 		$this->session->set_userdata('username', $username);
 		$this->session->set_userdata('password', $password);
 	}
-	
-	
+
+
+	public function getChartData() {
+        $type = $this->input->post('type'); // "new" or "current"
+        $typeofsystem = $this->input->post('typeofsystem'); // e.g., 'new' or 'current'
+
+        $types = $type === 'new' 
+            ? ['ISR', 'ATTENDANCE', 'MINUTES', 'WALKTHROUGH', 'FLOWCHART', 'DFD', 'SYSTEM_PROPOSED', 'LOCAL_TESTING', 'UAT', 'LIVE_TESTING'] 
+            : ['ISR', 'ATTENDANCE', 'MINUTES', 'WALKTHROUGH', 'FLOWCHART', 'DFD', 'SYSTEM_PROPOSED', 'GANTT_CHART', 'LOCAL_TESTING', 'UAT', 'LIVE_TESTING', 'USER_GUIDE', 'MEMO', 'BUSINESS_ACCEPTANCE'];
+
+        $data = $this->dashboard->getFileCountsByType($types, $typeofsystem);
+
+        $chartData = [];
+        $labels = [];
+		$colors = [
+			'#fe6a00', '#fff700', '#00f7b5', '#FF33A1', '#FFC133',
+			'#8D33FF', '#1b9b97', '#ff3333', '#57FF33', '#5733FF',
+			'#FF338D', '#FFC733', '#FF8D33', '#33C7FF'
+		];
+
+        foreach ($data as $key => $item) {
+            $chartData[] = $item['count'];
+            $labels[] = $item['uploaded_to'];
+        }
+
+        echo json_encode([
+            'chartData' => $chartData,
+            'labels' => $labels,
+            'colors' => $colors
+        ]);
+    }
 }

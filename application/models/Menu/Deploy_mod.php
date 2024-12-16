@@ -5,18 +5,19 @@ class Deploy_mod extends CI_Model
 		parent::__construct();
 	}
 
-    public function get_implementation_data($start, $length, $order_column, $order_dir, $search_value) {
+    public function get_implementation_data( $typeofsystem, $start, $length, $order_column, $order_dir, $search_value) {
         $this->db->select('m.*, t.team_name, GROUP_CONCAT(DISTINCT s.uploaded_to SEPARATOR ", ") as uploaded_to');
         $this->db->from('module m');
-        $this->db->join('system_files s', 's.mod_id = m.mod_id');
+        $this->db->join('system_files s', 's.mod_id = m.mod_id', 'left');
         $this->db->join('team t', 's.team_id = t.team_id');
-        // $this->db->where('m.implem_type', '0');
-        $this->db->group_by('m.mod_id');
         $this->db->where('m.active !=', 'Inactive');
-        $this->db->where('m.typeofsystem', 'new');
+        $this->db->where('m.typeofsystem', $typeofsystem);
+        $this->db->group_by('m.mod_id');
+
         if (!empty($search_value)) {
             $this->db->group_start(); 
             $this->db->like('m.mod_name', $search_value);
+            $this->db->or_like('t.team_name', $search_value);
             $this->db->or_like('m.date_request', $search_value);
             $this->db->or_like('m.bu_name', $search_value);
             $this->db->or_like('s.uploaded_to', $search_value);
@@ -28,20 +29,19 @@ class Deploy_mod extends CI_Model
         return $this->db->get()->result_array();
     }
     
-
-    public function get_total_implementation_data($search_value) {
-        $this->db->select('m.*, t.team_name, GROUP_CONCAT(s.uploaded_to SEPARATOR ", ") as uploaded_to');
+    public function get_total_implementation_data($typeofsystem, $search_value) {
+        $this->db->select('m.*, t.team_name, GROUP_CONCAT(DISTINCT s.uploaded_to SEPARATOR ", ") as uploaded_to');
         $this->db->from('module m');
-        $this->db->join('system_files s', 's.mod_id = m.mod_id');
+        $this->db->join('system_files s', 's.mod_id = m.mod_id', 'left');
         $this->db->join('team t', 's.team_id = t.team_id');
-        // $this->db->where('m.implem_type', '0');
-        $this->db->group_by('m.mod_id');
         $this->db->where('m.active !=', 'Inactive');
-        $this->db->where('m.typeofsystem', 'new');
+        $this->db->where('m.typeofsystem', $typeofsystem);
+        $this->db->group_by('m.mod_id');
 
         if (!empty($search_value)) {
             $this->db->group_start(); 
             $this->db->like('m.mod_name', $search_value);
+            $this->db->or_like('t.team_name', $search_value);
             $this->db->or_like('m.date_request', $search_value);
             $this->db->or_like('m.bu_name', $search_value);
             $this->db->or_like('s.uploaded_to', $search_value);

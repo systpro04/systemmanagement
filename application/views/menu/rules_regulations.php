@@ -37,64 +37,66 @@
                         <div class="col-xxl-9">
                             <div class="tab-content mt-3">
                                 <div class="tab-pane fade show active" id="ALGORITHM_ASSASSINS" role="tabpanel">
-                                    <div class="d-flex mb-2 ratio ratio-16x9">
-                                        <div class="flex-grow-1 ms-3 responsive-iframe" data-simplebar="">
+                                    <div class="d-flex mb-4">
+                                        <div class="flex-grow-1 ms-3 ratio ratio-16x9">
                                             <iframe src="<?php echo base_url(); ?>assets/pdf/Algorithm Assasins.pdf" width="100%" height="500"></iframe>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="tab-pane fade" id="CODE_CONQUERORS" role="tabpanel">
-                                    <div class="d-flex mb-2 ratio ratio-16x9">
-                                        <div class="flex-grow-1 ms-3 responsive-iframe" data-simplebar="">
+                                    <div class="d-flex mb-4">
+                                        <div class="flex-grow-1 ms-3 ratio ratio-16x9">
                                             <iframe src="<?php echo base_url(); ?>assets/pdf/Code Conquerors.pdf" width="100%" height="500"></iframe>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="tab-pane fade" id="CTRL_ALT_ELITE" role="tabpanel">
-                                    <div class="d-flex mb-2 ratio ratio-16x9">
-                                        <div class="flex-grow-1 ms-3 responsive-iframe" data-simplebar="">
+                                    <div class="d-flex mb-4">
+                                        <div class="flex-grow-1 ms-3 ratio ratio-16x9">
                                             <iframe src="<?php echo base_url(); ?>assets/pdf/ctrlaltelite.pdf" width="100%" height="500"></iframe>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="CYBER_SINTENELS" role="tabpanel">
-                                    <div class="d-flex mb-2 ratio ratio-16x9">
-                                        <div class="flex-grow-1 ms-3 responsive-iframe" data-simplebar="">
+                                    <div class="d-flex mb-4">
+                                        <div class="flex-grow-1 ms-3 ratio ratio-16x9">
                                             <iframe src="<?php echo base_url(); ?>assets/pdf/cybersintenels.pdf" width="100%" height="500"></iframe>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="LOGIC_LEGENDS" role="tabpanel">
-                                    <div class="d-flex mb-2 ratio ratio-16x9">
-                                        <div class="flex-grow-1 ms-3 responsive-iframe" data-simplebar="">
+                                    <div class="d-flex mb-4">
+                                        <div class="flex-grow-1 ms-3 ratio ratio-16x9">
                                             <iframe src="<?php echo base_url(); ?>assets/pdf/Logiclegends.pdf" width="100%" height="500"></iframe>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="QUANTUM_QUANTS" role="tabpanel">
-                                    <div class="d-flex mb-2 ratio ratio-16x9">
-                                        <div class="flex-grow-1 ms-3 responsive-iframe" data-simplebar="">
+                                    <div class="d-flex mb-4">
+                                        <div class="flex-grow-1 ms-3 ratio ratio-16x9">
                                             <iframe src="<?php echo base_url(); ?>assets/pdf/quantumquants.pdf" width="100%" height="500"></iframe>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="SERVER_SAMURAI" role="tabpanel">
-                                    <div class="d-flex mb-2 ratio ratio-16x9">
-                                        <div class="flex-grow-1 ms-3 responsive-iframe" data-simplebar="">
+                                    <div class="d-flex mb-4">
+                                        <div class="flex-grow-1 ms-3 ratio ratio-16x9">
                                             <iframe src="<?php echo base_url(); ?>assets/pdf/serversamurai.pdf" width="100%" height="500"></iframe>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="SYNTAX_SOLDIERS" role="tabpanel">
-                                    <div class="d-flex mb-2 ratio ratio-16x9">
-                                        <div class="flex-grow-1 ms-3 responsive-iframe" data-simplebar="">
+                                    <div class="d-flex mb-4">
+                                        <div class="flex-grow-1 ms-3 ratio ratio-16x9">
                                             <iframe src="<?php echo base_url(); ?>assets/pdf/syntaxsoldiers.pdf" width="100%" height="500"></iframe>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="TECH_TACTICIANS" role="tabpanel">
-                                    <div class="d-flex mb-2 ratio ratio-16x9">
-                                        <div class="flex-grow-1 ms-3 responsive-iframe" data-simplebar="">
+                                    <div class="d-flex mb-4">
+                                        <div class="flex-grow-1 ms-3 ratio ratio-16x9">
                                             <iframe src="<?php echo base_url(); ?>assets/pdf/techtacticians.pdf" width="100%" height="500"></iframe>
                                         </div>
                                     </div>

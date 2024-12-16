@@ -234,6 +234,13 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="d-flex align-items-center flex-shrink-0 mx-2">
+                                <select class="form-select" id="module_filter" style="width: 150px; height: auto;">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="d-flex align-items-center flex-shrink-0 ms-2">
                             <button class="btn btn-primary waves-effect waves-light add-btn" data-bs-toggle="modal"
                                 data-bs-target="#add_system_gantt">
@@ -244,12 +251,30 @@
                 </div>
 
                 <div class="card-body">
+                    <div class="dropdown">
+                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown" aria-expanded="false"> Column Visibility</button>
+                        <ul class="dropdown-menu" aria-labelledby="columnDropdown" id="columnSelectorDropdown" data-simplebar style="max-height: 300px;">
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> Team</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> Incharge</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> Module</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="3" checked> Sub Module</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="4" checked> Description</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="5" checked> Date Requested</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="6" checked> Date Parallel</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="7" checked> Date Implementation</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="8" checked> Date Start</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="9" checked> Date End</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="10" checked> Action</label></li>
+                        </ul>
+                        <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
+                    </div>
                     <div class="tab-content">
                         <div class="mt-2 tab-pane active" id="System Analyst" role="tabpanel">
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover" id="gantt_list">
-                                    <thead class="table-primary text-center">
+                                    <thead class="table-info text-center text-uppercase">
                                         <tr>
+                                            <th>Team</th>
                                             <th>Incharge</th>
                                             <th>Module</th>
                                             <th>Sub Module</th>
@@ -257,8 +282,8 @@
                                             <th>Date Requested</th>
                                             <th>Date Parallel</th>
                                             <th>Date Implementation</th>
-                                            <th>Date Start</th>
-                                            <th>Date End</th>
+                                            <th>Date Start Coding</th>
+                                            <th>Date End Coding</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -275,15 +300,18 @@
 </div>
 
 <script>
-    $('#team_filter').change(function () {
+    $('#team_filter, #module_filter').change(function () {
         $('#gantt_list').DataTable().ajax.reload();
     });
 
-    $('#gantt_list').DataTable({
+   var table = $('#gantt_list').DataTable({
         "processing": true,
         "serverSide": true,
         "destroy": true,
         "stateSave": true,
+        "scrollY": "400px",
+        "scrollX": true,
+        "scrollCollapse": true,
         "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
         "pageLength": 10,
         "ajax": {
@@ -291,116 +319,102 @@
             "type": "POST",
             "data": function(d) {
                 d.team_id = $('#team_filter').val();
+                d.module  = $('#module_filter').val();
             }
         },
         "columns": [
+            { "data": "team_name" },
             { "data": "emp_name" },
             { "data": "mod_name" },
             { "data": "sub_mod_name" },
             { "data": "desc" },
-            { "data": 'date_req',
-                "render": function(data, type, row) {
-                    if (data) {
-                        var date = new Date(data);
-                        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
-                        });
-                    }else {
-                        return '<span class="badge bg-info">N/A</span>';
-                    }
-                }
-            },
-            { "data": 'date_parallel',
-                "render": function(data, type, row) {
-                    if (data) {
-                        var date = new Date(data);
-                        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
-                        });
-                    }else {
-                        return '<span class="badge bg-info">N/A</span>';
-                    }
-                }
-            },
-            { "data": 'date_implem',
-                "render": function(data, type, row) {
-                    if (data) {
-                        var date = new Date(data);
-                        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
-                        });
-                    }else {
-                        return '<span class="badge bg-info">N/A</span>';
-                    }
-                }
-            },
-            { "data": 'date_start',
-                "render": function(data, type, row) {
-                    if (data) {
-                        var date = new Date(data);
-                        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
-                        });
-                    }else {
-                        return '<span class="badge bg-info">N/A</span>';
-                    }
-                }
-            },
-            { "data": 'date_end',
-                "render": function(data, type, row) {
-                    if (data) {
-                        var date = new Date(data);
-                        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
-                        });
-                    }else {
-                        return '<span class="badge bg-info">N/A</span>';
-                    }
-                }
-            },
+            { "data": 'date_req'},
+            { "data": 'date_parallel'},
+            { "data": 'date_implem'},
+            { "data": 'date_start'},
+            { "data": 'date_end'},
             { "data": "action" }
         ],
         "columnDefs": [
             { "className": "text-center", "targets": '_all' }
         ],
-        "dom": 
-            "<'row mb-1'<'col-md-12 text-start'B>>" +
-            "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
-            "<'row'<'col-md-12'tr>>" +
-            "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
-        "buttons": [
-            {
-                "extend": 'excelHtml5',
-                "title": 'GANTT Report - Excel Export', 
-                "exportOptions": {
-                    "columns": ':visible:not(:last-child)'
+    });
+    $('#columnSelectorDropdown').on('click', function (e) {
+        e.stopPropagation();
+    });
+    $('#columnSelectorDropdown .column-toggle').each(function () {
+        let columnIdx = $(this).val();
+        $(this).prop('checked', table.column(columnIdx).visible());
+    });
+
+    $('#columnSelectorDropdown .column-toggle').on('change', function () {
+        let columnIdx = $(this).val();
+        let isChecked = $(this).prop('checked');
+        table.column(columnIdx).visible(isChecked);
+    });
+    $('#generate_report').on('click', function () {
+        let visibleColumns = [];
+        let visibleHeaders = [];
+        let desc = -1;
+        table.columns().every(function (index) {
+            let headerText = this.header().textContent.trim();
+            if (this.visible() && headerText.toLowerCase() !== 'action') {
+                visibleColumns.push(index);
+                visibleHeaders.push(headerText);
+                if (headerText.toLowerCase() === 'description') {
+                    desc = visibleColumns.length - 1;
                 }
-            },
-            {
-                "extend": 'pdfHtml5',
-                "title": 'GANTT Report - PDF Export',
-                "text": 'Generate Report',
-                "exportOptions": {
-                    "columns": ':visible:not(:last-child)'
-                },
-                "customize": function (doc) {
-                    doc.defaultStyle.fontSize = 8;
-                    doc.styles.title.fontSize = 12;
-                    doc.styles.tableHeader.fontSize = 10;
-                    if (!doc.styles.tableBodyOdd) {
-                        doc.styles.tableBodyOdd = {};
-                    }
-                    if (!doc.styles.tableBodyEven) {
-                        doc.styles.tableBodyEven = {};
-                    }
-                    doc.styles.tableBodyOdd.alignment = 'center';
-                    doc.styles.tableBodyEven.alignment = 'center';
-                }
-            },
-            'colvis'
-        ],
+            }
+        });
+
+        let rowData = table.rows({ filter: 'applied' }).data().toArray();
+        let reportData = rowData.map(row => visibleColumns.map(index => row[table.column(index).dataSrc()]));
+        let printContent = `
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            th, td {
+                padding: 10px;
+                text-align: left;
+                border: 1px solid #ddd;
+                word-wrap: break-word;
+                max-width: 200px;
+                white-space: normal;
+            }
+            .description {
+                width: 300px;
+            }
+        </style>
+        <div style="text-align: center; margin-bottom: 20px;"><h4>GANTT REPORT</h4></div>
+        <table>
+            <thead>
+                <tr>${visibleHeaders.map((header, index) => 
+                    `<th class="${index === desc ? 'description' : ''}">${header}</th>`
+                ).join('')}</tr>
+            </thead>
+            <tbody>
+                ${reportData.map((row, rowIndex) => 
+                    `<tr>${row.map((cell, cellIndex) => 
+                        `<td class="${cellIndex === desc ? 'description' : ''}">${cell}</td>`
+                    ).join('')}</tr>`
+                ).join('')}
+            </tbody>
+        </table>`;
+        let printWindow = window.open('', '', '');
+        printWindow.document.title = 'Gantt Report - PDF Export';
+        printWindow.document.write(printContent);
+        printWindow.document.close();
+        printWindow.print();
     });
 
 
     $(document).ready(function () {
         $('#team, #team_filter, #edit_team').select2({ placeholder: 'Select Team', allowClear: true, minimumResultsForSearch: Infinity });
         $('#incharge, #edit_incharge').select2({ placeholder: 'Select Incharge', allowClear: true, minimumResultsForSearch: Infinity });
-        $('#module, #edit_module').select2({ placeholder: 'Module Name | System', allowClear: true, minimumResultsForSearch: Infinity });
+        $('#module_filter, #module, #edit_module').select2({ placeholder: 'Module Name | System', allowClear: true, minimumResultsForSearch: Infinity });
         $('#sub_module, #edit_sub_module').select2({ placeholder: 'Sub Module Name', allowClear: true, minimumResultsForSearch: Infinity });
     });
 
@@ -462,7 +476,7 @@
                 $('#sub_module, #edit_sub_module').prop('disabled', true);
 
                 moduleData.forEach(function (module) {
-                    $('#module, #edit_module').append('<option value="' + module.mod_id + '">' + module.mod_name + '</option>');
+                    $('#module_filter, #module, #edit_module').append('<option value="' + module.mod_id + '">' + module.mod_name + '</option>');
                 });
             }
         });
@@ -586,7 +600,12 @@
                             },
                         }).showToast();
                         $('#add_system_gantt').modal('hide');
-                        $('#gantt_list').DataTable().ajax.reload();
+                        var table = $('#gantt_list').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                     }
                 });
             }
@@ -678,7 +697,12 @@
                             },
                         }).showToast();
                         $('#edit_system_gantt').modal('hide');
-                        $('#gantt_list').DataTable().ajax.reload();
+                        var table = $('#gantt_list').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                     }
                 });
             }
@@ -712,7 +736,12 @@
                                 background: "linear-gradient(to right, #ff5f6d, #ffc371)",
                             },
                         }).showToast();
-                        $('#gantt_list').DataTable().ajax.reload();
+                        var table = $('#gantt_list').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                     },
                 });
             }

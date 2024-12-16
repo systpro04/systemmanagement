@@ -124,6 +124,7 @@ $route['workload_list']                     = 'Menu/It_Respo/workload_list';
 $route['submit_workload']                   = 'Menu/It_Respo/submit_workload';
 $route['submit_updated_workload']           = 'Menu/It_Respo/submit_updated_workload';
 $route['edit_workload_content']             = 'Menu/It_Respo/edit_workload_content';
+$route['update_workload_status']            = 'Menu/It_Respo/update_workload_status';
 $route['delete_workload']                   = 'Menu/It_Respo/delete_workload';
 
 //IT TASK
@@ -132,6 +133,7 @@ $route['it_task_list']                      = 'Menu/It_Task/it_task_list';
 $route['submit_task']                       = 'Menu/It_Task/submit_task';
 $route['edit_task_content']                 = 'Menu/It_Task/edit_task_content';
 $route['update_task_content']               = 'Menu/It_Task/update_task_content';
+$route['update_task_status']                = 'Menu/It_Task/update_task_status';
 $route['delete_task']                       = 'Menu/It_Task/delete_task';
 
 //Weekly report
@@ -140,6 +142,7 @@ $route['weekly_list']                       = 'Menu/Weekly/weekly_list';
 $route['submit_weeklyreport']               = 'Menu/Weekly/submit_weeklyreport';
 $route['edit_weekly_report_content']        = 'Menu/Weekly/edit_weekly_report_content';
 $route['update_weeklyreport']               = 'Menu/Weekly/update_weeklyreport';
+$route['update_weekly_status']              = 'Menu/Weekly/update_weekly_status';
 $route['delete_weekly']                     = 'Menu/Weekly/delete_weekly';
 
 // Setup Location

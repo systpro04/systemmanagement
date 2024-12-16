@@ -361,13 +361,37 @@
 
             },
             dateClick: function (info) {
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                var clickedDate = new Date(info.date);
+                clickedDate.setHours(0, 0, 0, 0);
+
+                if (clickedDate < today) {
+                    Toastify({
+                        text: `Meetings cannot be scheduled for past dates. Please choose today or a future date.`,
+                        duration: 5000,
+                        gravity: "top",
+                        position: "left",
+                        
+                        stopOnFocus: true,
+                        close: true,
+                        style: {
+                            background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                        },
+                    }).showToast();
+                    return;
+                }
+
                 var dayOfWeek = info.date.getDay();
                 if (dayOfWeek === 6 || dayOfWeek === 0) {
                     return;
                 }
+
                 $('#meeting_date').val(info.dateStr);
                 $('#meeting_modal').modal('show');
-            },
+            }
+
         });
         calendar.render();
         $('#edit-event-btn').click(function () {
@@ -398,6 +422,23 @@
             var location    = $(this).find('#location').val();
             var reasons     = $(this).find('#reasons').val();
             
+            var selected_time = new Date(date + ' ' + time);
+            var currentDateTime = new Date();
+            if (selected_time < currentDateTime) {
+                Toastify({
+                    text: `Please select a time | date that is not before the current time | date.`,
+                    duration: 5000,
+                    gravity: "top",
+                    position: "left",
+                    stopOnFocus: true,
+                    close: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    },
+                }).showToast();
+                return;
+            }
+
             var eventData = {
                 team_id:        team_id,
                 team_name:      team_name,
@@ -493,6 +534,7 @@
                             }).showToast();
                             calendar.addEvent(deleteData);
                             calendar.refetchEvents();
+                            loadUpcomingEvents();
                             $('#edit_meeting_modal').modal('hide');
                         }
                     });
@@ -510,6 +552,25 @@
             var location    = $('#edit_location').val();
             var reasons     = $('#edit_reasons').val();
             
+
+            var selected_time = new Date(date + ' ' + time);
+            var currentDateTime = new Date();
+            if (selected_time < currentDateTime) {
+                Toastify({
+                    text: `Please select a time that is not before the current time.`,
+                    duration: 5000,
+                    gravity: "top",
+                    position: "left",
+                    stopOnFocus: true,
+                    close: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    },
+                }).showToast();
+                return;
+            }
+
+
             var updateData = {
                 id:             id,
                 team_id:        team_id,
@@ -551,6 +612,7 @@
                             calendar.addEvent(updateData);
                             calendar.refetchEvents();
                             $('#edit_meeting_modal').modal('hide');
+                            loadUpcomingEvents();
                         },
                     });
                 }

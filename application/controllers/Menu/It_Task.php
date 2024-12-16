@@ -22,6 +22,7 @@ class It_Task extends CI_Controller {
     public function it_task_list() {
 
         $team = $this->input->post('team');
+        $module = $this->input->post('module');
         $start = $this->input->post('start');
         $length = $this->input->post('length');
         $order = $this->input->post('order');
@@ -30,44 +31,41 @@ class It_Task extends CI_Controller {
         $order_dir = $order[0]['dir'];
 
 
-        $task = $this->task->gettasks($team, $start, $length, $order_column, $order_dir, $search_value);
+        $task = $this->task->gettasks($module, $team, $start, $length, $order_column, $order_dir, $search_value);
         $data = [];
     
         foreach ($task as $row) {
+            if($row['sub_mod_id'] == 0){
+                $sub_mod_name = '<span class="badge bg-info">NA</span>';
+            }else{
+                $sub_mod_name = ucwords(strtolower( $row['sub_mod_name']));
 
-            $status_badge = '';
-            if ($row['task_status'] === 'Pending') {
-                $status_badge = '<span class="badge rounded-pill bg-warning-subtle text-warning">' . $row['task_status'] . '</span>';
-            } elseif ($row['task_status'] === 'Ongoing') {
-                $status_badge = '<span class="badge rounded-pill bg-info-subtle text-info">' . $row['task_status'] . '</span>';
-            } elseif ($row['task_status'] === 'Done') {
-                $status_badge = '<span class="badge rounded-pill bg-success-subtle text-success">' . $row['task_status'] . '</span>';
             }
-
             $emp_data = $this->workload->get_emp($row['emp_id']);
 
             $data[] = [
-                'emp_name'          => $emp_data['name'],
-                'module'            => $row['mod_name'],
-                'sub_mod_name'      => $row['sub_mod_name'],
-                'desc'              => $row['desc'],
-                'concerns'          => $row['concerns'],
-                'remarks'           => $row['remarks'],
-                'task_status'       => $status_badge,
+                'task_id'           => $row['task_id'],
+                'emp_name'          => ucwords(strtolower( $emp_data['name'])),
+                'module'            => ucwords(strtolower( $row['mod_name'])),
+                'sub_mod_name'      => $sub_mod_name,
+                'desc'              => ucwords(strtolower( $row['desc'])),
+                'concerns'          => ucwords(strtolower( $row['concerns'])),
+                'remarks'           => ucwords(strtolower( $row['remarks'])),
+                'task_status'       => $row['task_status'],
                 'action' => '
                     <div class="hstack gap-1">
-                        <button type="button" class="btn btn-soft-secondary btn-label waves-effect waves-light btn-sm" onclick="edit_task_content(' . $row['task_id'] . ')" data-bs-toggle="modal" data-bs-target="#edit_task">
-                            <iconify-icon icon="solar:pen-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Edit
+                        <button type="button" class="btn btn-soft-secondary waves-effect waves-light btn-sm" onclick="edit_task_content(' . $row['task_id'] . ')" data-bs-toggle="modal" data-bs-target="#edit_task">
+                            <iconify-icon icon="solar:pen-bold-duotone" class="label-icon align-bottom fs-16"></iconify-icon>
                         </button>
-                        <button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="delete_task(' . $row['task_id'] . ')">
-                            <iconify-icon icon="solar:trash-bin-minimalistic-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Delete
+                        <button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onclick="delete_task(' . $row['task_id'] . ')">
+                            <iconify-icon icon="solar:trash-bin-minimalistic-bold-duotone" class="label-icon align-bottom fs-16"></iconify-icon>
                         </button>
                     </div>
                 '
             ];
         }
         
-        $total_records = $this->task->getTotaltasks($team, $search_value);
+        $total_records = $this->task->getTotaltasks($module, $team, $search_value);
 
         $output = [
             "draw" => intval($this->input->post('draw')),
@@ -151,6 +149,29 @@ class It_Task extends CI_Controller {
         $this->load->model('Logs', 'logs');
         $this->logs->addLogs($data1);
     }
+
+    public function update_task_status(){
+        $id             = $this->input->post('id');
+        $task_status    = $this->input->post('task_status');
+        $emp_name       = $this->input->post('emp_name');
+
+        $this->db->where('task_id', $id);
+        $this->db->set('task_status', $task_status);
+        $this->db->update('daily_task');
+
+        $action = '<b>' . $this->session->name. '</b> updated a daily task report status of <b>'.$emp_name.'</b> to <b>'.$task_status.'</b>';
+
+        $data1 = array(
+            'emp_id' => $this->session->emp_id,
+            'action' => $action,
+            'date_added' => date('Y-m-d H:i:s'),
+        );
+        $this->load->model('Logs', 'logs');
+        $this->logs->addLogs($data1);
+
+
+    }
+
     public function delete_task(){
         $id = $this->input->post('task_id');
         $this->task->delete_task($id);

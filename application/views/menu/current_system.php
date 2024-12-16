@@ -77,7 +77,6 @@
                             </div>
                         </div>
 
-
                         <div class="col-lg-12">
                             <label for="title" class="col-form-label">Business Unit <span class="text-danger"><small>( Optional for no business_unit file directory )*</small></span></label>
                             <select id="business_unitFilter" class="form-select" aria-label="Team">
@@ -123,7 +122,7 @@
                 <div>
                     <div class="row justify-content-between">
                         <div class="col">
-                            <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center"> 
                                 <div class="flex-grow-1">
                                     <h5 class="fs-16 fw-bold">CURRENT SYSTEM | MODULE </h5>
                                 </div>
@@ -144,8 +143,7 @@
                         </div>
                         <div class="col-auto mt-1">
                             <div class="d-flex gap-2">
-                                <button class="btn btn-primary w-sm create-folder-modal flex-shrink-0"
-                                    data-bs-toggle="modal" data-bs-target="#file_upload">
+                                <button class="btn btn-primary w-sm create-folder-modal flex-shrink-0" data-bs-toggle="modal" data-bs-target="#file_upload">
                                     <i class="ri-add-line align-bottom me-1"></i> Upload Document
                                 </button>
                             </div>
@@ -154,7 +152,6 @@
                     <hr>
                     <div class="row" id="folderlist-data">
                     </div>
-
                 </div>
             </div>
         </div>
@@ -389,6 +386,22 @@
         });
     }
     function openFolderModal(folderName) {
+
+        let timerInterval;
+        const swalInstance = Swal.fire({
+            title: "Opening Folder " + folderName,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            icon: "info",
+            html: "Please wait...",
+            didOpen: () => {
+                Swal.showLoading();
+                const timer = Swal.getPopup().querySelector("b");
+            },
+        });
+
+
         var team = $('#team').val();
         var module = $('#module').val();
         var sub_module = $('#sub_module').val();
@@ -401,6 +414,7 @@
             type: 'GET',
             dataType: 'json',
             success: function (response) {
+                swalInstance.close();
                 var teamOptions = '<option value="">Select Team</option>';
                 var moduleOptions = '<option value="">Select Module</option>';
                 var buOptions = '<option value="">Select Business Unit</option>';
@@ -578,7 +592,7 @@
                     </div>`;
                     });
                 } else {
-                    modalContent = '<li class="list-group-item text-muted text-center">No files found in this directory.</li>';
+                    modalContent = '<li class="list-group-item text-muted text-center"><iconify-icon icon="marketeq:search-alt-3" width="50" height="50"></iconify-icon><h5 class="mt-2">Sorry! No Data Found </h5></li>';
                 }
                 $('#folderModalBody').html(modalContent);
                 $('#folder_name').text(folderName + ' ' + 'FOLDER FILES');

@@ -256,21 +256,21 @@ class New_Sys extends CI_Controller {
 
 
     public function upload_new_files() {
-        $response = ['success' => false, 'message' => ''];
+        $response        = ['success' => false, 'message' => ''];
         $directory_order = [
             "ISR", "ATTENDANCE", "MINUTES", "WALKTHROUGH", "FLOWCHART", "DFD", "SYSTEM_PROPOSED", "LOCAL_TESTING", "UAT", "LIVE_TESTING"
         ];
 
-        $selected_directory = $this->input->post('directory');
-        $team = $this->input->post('file_team');
-        $module = $this->input->post('file_module');
-        $moduleName = $this->input->post('file_module_name');
-        $sub_module = $this->input->post('file_sub_module');
-        $business_unit = $this->input->post('business_unit');
-        $department = $this->input->post('department');
-        $isr                = $this->input->post('isr');
-        $manager_key = $this->input->post('manager_key');
-        $date_implem = $this->input->post('date_implem');
+        $selected_directory     = $this->input->post('directory');
+        $team                   = $this->input->post('file_team');
+        $module                 = $this->input->post('file_module');
+        $moduleName             = $this->input->post('file_module_name');
+        $sub_module             = $this->input->post('file_sub_module');
+        $business_unit          = $this->input->post('business_unit');
+        $department             = $this->input->post('department');
+        $isr                    = $this->input->post('isr');
+        $manager_key            = $this->input->post('manager_key');
+        $date_implem            = $this->input->post('date_implem');
     
         if ($manager_key) {
             if (!$this->validate_manager_key($manager_key)) {

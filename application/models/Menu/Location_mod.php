@@ -6,12 +6,13 @@ class Location_mod extends CI_Model
         $this->db2 = $this->load->database('pis', TRUE);
 	}
 
-    public function module_list_implemented($start, $length, $order_column, $order_dir, $search_value) {
-        $this->db->select('sl.*, m.*, sb.*, sl.mod_id')
+    public function module_list_implemented($typeofsystem, $start, $length, $order_column, $order_dir, $search_value) {
+        $this->db->select('sl.id AS location_id, m.mod_id, m.mod_name, sb.sub_mod_id, sb.sub_mod_name, m.typeofsystem')
                  ->from('location_setup sl')
                  ->join('module m', 'm.mod_id = sl.mod_id')
                  ->join('sub_module sb', 'sl.sub_mod_id = sb.sub_mod_id', 'Left')
                  ->where('m.active !=', 'Inactive')
+                 ->where('m.typeofsystem', $typeofsystem)
                  ->group_by('sl.mod_id');
         
         if (!empty($search_value)) {
@@ -24,13 +25,14 @@ class Location_mod extends CI_Model
         return $this->db->get()->result_array();
     }
     
-    public function get_total_module_list_implemented($search_value) {
+    public function get_total_module_list_implemented($typeofsystem, $search_value) {
         // Select fields from location_setup, module, and sub_module tables
-        $this->db->select('sl.id AS location_id, m.mod_id, m.mod_name, sb.sub_mod_id, sb.sub_mod_name')
+        $this->db->select('sl.id AS location_id, m.mod_id, m.mod_name, sb.sub_mod_id, sb.sub_mod_name, m.typeofsystem')
                  ->from('location_setup sl')
                  ->join('module m', 'm.mod_id = sl.mod_id')
-                 ->join('sub_module sb', 'sl.sub_mod_id = sb.sub_mod_id')
+                 ->join('sub_module sb', 'sl.sub_mod_id = sb.sub_mod_id', 'left')
                  ->where('m.active !=', 'Inactive')
+                 ->where('m.typeofsystem', $typeofsystem)
                  ->group_by('sl.mod_id');
 
         if (!empty($search_value)) {

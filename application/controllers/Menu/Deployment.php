@@ -28,44 +28,53 @@ class Deployment extends CI_Controller
         $search_value = $this->input->post('search')['value'];
         $order_column = $order[0]['column'];
         $order_dir = $order[0]['dir'];
+        $typeofsystem = $this->input->post('typeofsystem');
 
-        $for_implementation = $this->deploy->get_implementation_data($start, $length, $order_column, $order_dir, $search_value);
+        $for_implementation = $this->deploy->get_implementation_data($typeofsystem, $start, $length, $order_column, $order_dir, $search_value);
 
         $data = [];
         foreach ($for_implementation as $row) {
-            $type = ($row['implem_type'] == 0) ? '<span class="badge rounded-pill bg-warning-subtle text-warning">For Implementation</span>' : '<span class="badge rounded-pill bg-success-subtle text-success">Implemented</span>';
-            $typeofsystem = ($row['typeofsystem'] == 'current') ? '<span class="badge rounded-pill bg-success-subtle text-success">'.$row['typeofsystem'].'</span>' : '<span class="badge rounded-pill bg-info-subtle text-info">'.$row['typeofsystem'].'</span>';
-            $uploaded_to = $row['uploaded_to'];
+            $typeofsystems = ($row['typeofsystem'] == 'current') ? '<span class="badge rounded-pill bg-success-subtle text-success">'.$row['typeofsystem'].'</span>' : '<span class="badge rounded-pill bg-info-subtle text-info">'.$row['typeofsystem'].'</span>';
+            $uploaded_to = ucwords(strtolower($row['uploaded_to']));
 
-            if ($row['implem_type'] == 0) {
-                $action = '
-                    <div class="justify-content-center">
-                        <button type="button" class="btn btn-soft-secondary btn-label waves-effect waves-light btn-sm" onclick="upload_remaining_files(' . $row['mod_id'] . ', \'' . $row['mod_name'] . '\')" data-bs-toggle="modal" data-bs-target="#upload_remaining_files">
-                            <iconify-icon icon="fluent-emoji-flat:file-folder" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Remaining
-                        </button>
-                    </div>';
+            if(date('Y-m-d') >= $row['date_implem'] && $row['date_implem'] != '') {
+                $date_implem = '<span class="badge bg-success">Implemented | Done</span>';
             }else{
-                $action = '<span class="badge bg-success">DONE</span>';
+                $date_implem = '<span class="badge bg-warning">For Implementation</span>';
             }
-            if($row['date_implem'] == ''){
-                $date_implem = '<span class="badge bg-warning">NA</span>';
+
+            if((!$this->has_remaining_files($row))){
+                $action = '<span class="badge bg-success">UPLOAD DONE</span>';
             }else{
-                $date_implem = $date_implem = date('F j, Y', strtotime($row['date_implem']));
+
+                $action = '<div class="justify-content-center">
+                <button type="button" class="btn btn-soft-secondary btn-label waves-effect waves-light btn-sm" onclick="upload_remaining_files(' . $row['mod_id'] . ', \'' . $row['mod_name'] . '\')" data-bs-toggle="modal" data-bs-target="#upload_remaining_files">
+                    <iconify-icon icon="fluent-emoji-flat:file-folder" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Remaining
+                </button>
+            </div>';
             }
+
+            if($row['bu_name'] == ''){
+                $bu_name = '<span class="badge bg-info">NA</span>';
+            }else{
+                $bu_name = ucwords(strtolower($row['bu_name']));
+            }
+
             $data[] = [
-                'team_name'     => $row['team_name'],
-                'module'        => $row['mod_name'],
+                'team_name'     => ucwords(strtolower($row['team_name'])),
+                'module'        => ucwords(strtolower($row['mod_name'])),
                 'date_request'  => $row['date_request'],
-                'bu_name'       => $row['bu_name'],
-                'implem_type'   => $type,
-                'date_implem'   => $date_implem,
-                'typeofsystem'  => $typeofsystem,
+                'bu_name'       => $bu_name,
+                'implem_type'   => $date_implem,
+                'date_implem'   => $row['date_implem'],
+                'typeofsystem'  => $typeofsystems,
                 'uploaded_to'   => $uploaded_to,
                 'action'        => $action
+                            
             ];
         }
 
-        $total_records = $this->deploy->get_total_implementation_data($search_value);
+        $total_records = $this->deploy->get_total_implementation_data($typeofsystem, $search_value);
 
         $output = [
             "draw" => intval($this->input->post('draw')),
@@ -75,6 +84,21 @@ class Deployment extends CI_Controller
         ];
 
         echo json_encode($output);
+    }
+
+    private function has_remaining_files($row)
+    {
+        $directory_current = ['ISR', 'ATTENDANCE', 'MINUTES', 'WALKTHROUGH', 'FLOWCHART', 'DFD', 'SYSTEM_PROPOSED', 'GANTT_CHART', 'LOCAL_TESTING', 'UAT', 'LIVE_TESTING', 'USER_GUIDE', 'MEMO', 'BUSINESS_ACCEPTANCE'];
+        $directory_new = ['ISR', 'ATTENDANCE', 'MINUTES', 'WALKTHROUGH', 'FLOWCHART', 'DFD', 'SYSTEM_PROPOSED', 'LOCAL_TESTING', 'UAT', 'LIVE_TESTING'];
+
+        $directories = ($row['typeofsystem'] === 'current') ? $directory_current : $directory_new;
+        $uploaded_to_list = !empty($row['uploaded_to']) ? array_map('trim', explode(',', $row['uploaded_to'])) : [];
+
+        $remaining_directories = array_filter($directories, function ($dir) use ($uploaded_to_list) {
+            return !in_array($dir, $uploaded_to_list, true);
+        });
+
+        return count($remaining_directories) > 0;
     }
 
     public function remaining_files_list()
@@ -342,20 +366,20 @@ class Deployment extends CI_Controller
                 $uploaded_data = $this->upload->data();
     
                 $status_fields = [
-                    'ISR' => 'isr_status',
-                    'ATTENDANCE' => 'att_status',
-                    'MINUTES' => 'minute_status',
-                    'WALKTHROUGH' => 'wt_status',
-                    'FLOWCHART' => 'flowchart_status',
-                    'DFD' => 'dfd_status',
-                    'SYSTEM_PROPOSED' => 'proposed_status',
-                    'GANTT_CHART' => 'gantt_status',
-                    'LOCAL_TESTING' => 'local_status',
-                    'UAT' => 'uat_status',
-                    'LIVE_TESTING' => 'live_status',
-                    'USER_GUIDE' => 'guide_status',
-                    'MEMO' => 'memo_status',
-                    'BUSINESS_ACCEPTANCE' => 'acceptance_status'
+                    'ISR'                   => 'isr_status',
+                    'ATTENDANCE'            => 'att_status',
+                    'MINUTES'               => 'minute_status',
+                    'WALKTHROUGH'           => 'wt_status',
+                    'FLOWCHART'             => 'flowchart_status',
+                    'DFD'                   => 'dfd_status',
+                    'SYSTEM_PROPOSED'       => 'proposed_status',
+                    'GANTT_CHART'           => 'gantt_status',
+                    'LOCAL_TESTING'         => 'local_status',
+                    'UAT'                   => 'uat_status',
+                    'LIVE_TESTING'          => 'live_status',
+                    'USER_GUIDE'            => 'guide_status',
+                    'MEMO'                  => 'memo_status',
+                    'BUSINESS_ACCEPTANCE'   => 'acceptance_status'
                 ];
     
                 $statuses = array_fill_keys(array_values($status_fields), null);
@@ -372,7 +396,7 @@ class Deployment extends CI_Controller
                 }
     
                 if ($selected_directory == 'LIVE_TESTING'){
-                    $this->db->set('implem_type', '1');
+                    // $this->db->set('implem_type', '1');
                     $this->db->set('date_implem', $date_implem);
                     $this->db->where('mod_id', $module);
                     $this->db->update('module');

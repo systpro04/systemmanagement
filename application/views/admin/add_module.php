@@ -8,6 +8,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div>
+                    <label for="team_name" class="col-sm-3 col-form-label">Team:</label>
+                    <select class="form-select mb-3" id="team">
+                        <option></option>
+                    </select>
+                </div>
+
                 <div class="mb-2">
                     <label for="title" class="col-form-label">Module | System Name:</label>
                     <input type="text" class="form-control" id="mod_name">
@@ -148,19 +155,34 @@
                 <div class="card-header border-1">
                     <div class="d-flex align-items-center">
                         <h5 class="card-title mb-0 flex-grow-1">Module Setup</h5>
+                        <div class="col-md-3">
+                            <div class="d-flex align-items-center mx-2">
+                                <select class="form-select" id="team_filter" style="width: 150px; height: auto;">
+                                    <option value="">Select Team</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="flex-shrink-0">
                             <div class="d-flex flex-wrap gap-2">
-                                <button class="btn btn-primary waves-effect waves-light add-btn" data-bs-toggle="modal"
-                                    data-bs-target="#create_module"><i class="ri-add-line align-bottom me-1"></i> Add
-                                    Module </button>
+                                <button class="btn btn-primary waves-effect waves-light add-btn" data-bs-toggle="modal" data-bs-target="#create_module"><i class="ri-add-line align-bottom me-1"></i> Add Module </button>
+                                <button class="btn btn-danger waves-effect waves-light generate" target="_blank"><iconify-icon icon="fluent:document-pdf-32-filled" class="align-bottom mb-1 fs-15"></iconify-icon> Generate Module | Submodule </button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                <ul class="nav nav-pills arrow-navtabs nav-primary bg-light mb-4" role="tablist">
+                    <ul class="nav nav-pills arrow-navtabs nav-primary bg-light mb-4" role="tablist">
+
                         <li class="nav-item">
-                            <a id="current" aria-expanded="false" class="nav-link active typeofsystem" data-bs-toggle="tab" >
+                            <a id="all" aria-expanded="false" class="nav-link active typeofsystem" data-bs-toggle="tab" >
+                                <span class="d-block d-sm-none"><iconify-icon icon="ri:list-settings-line" class="fs-25"></iconify-icon></span>
+                                <span class="d-none d-sm-block">All Module | System</span>
+                            </a>
+                        </li>
+
+
+                        <li class="nav-item">
+                            <a id="current" aria-expanded="false" class="nav-link typeofsystem" data-bs-toggle="tab" >
                                 <span class="d-block d-sm-none"><iconify-icon icon="ri:list-settings-line" class="fs-25"></iconify-icon></span>
                                 <span class="d-none d-sm-block">Current Module | System</span>
                             </a>
@@ -173,14 +195,27 @@
                         </li>
                     </ul>
                     <hr>
+                    <div class="dropdown">
+                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown" aria-expanded="false"> Column Visibility</button>
+                        <ul class="dropdown-menu" aria-labelledby="columnDropdown" id="columnSelectorDropdown" data-simplebar style="max-height: 300px;">
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> Module Name</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> Status</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> Business Unit</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="3" checked> Date Requested</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="4" checked> Date Implem</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="5" checked> Action</label></li>
+                        </ul>
+                        <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-striped dt-responsive nowrap table-hover" id="module_list">
-                            <thead class="table-primary text-center">
+                            <thead class="table-info text-center text-uppercase">
                                 <tr>
                                     <th>Module Name</th>
                                     <th>Status</th>
                                     <th>Business Unit</th>
                                     <th>Date Requested</th>
+                                    <th>Date Implem</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -197,10 +232,29 @@
     $(document).ready(function () {
         $('#typeofsystem').select2({ placeholder: 'Select Type of System', allowClear: true, minimumResultsForSearch: Infinity });
         $('#business_unit').select2({ placeholder: "Select Business Unit", allowClear: true, minimumResultsForSearch: Infinity});
+        $('#team, #team_filter').select2({ placeholder: 'Select Team', allowClear: true, minimumResultsForSearch: Infinity });
+    });
+
+    $.ajax({
+        url: '<?php echo base_url('get_team') ?>',
+        type: 'POST',
+        success: function (response) {
+            teamData = JSON.parse(response);
+            $('#team, #team_filter').empty().append('<option value="">Select Team Name</option>');
+            teamData.forEach(function (team) {
+                $('#team, #team_filter').append('<option value="' + team.team_id + '">' + team.team_name + '</option>');
+            });
+        }
     });
 
 
-    var typeofsystem = "current";
+    $('#team_filter').change(function () {
+        $('#module_list').DataTable().ajax.reload();
+    });
+
+    var typeofsystem = "all";
+    var table = null;
+    var printWindow = null; 
     loadsystem(typeofsystem);
 
     $("a.typeofsystem").click(function () {
@@ -211,82 +265,119 @@
     });
 
     function loadsystem(typeofsystem){
-        $('#module_list').DataTable({
+        if (table) {
+            table.destroy();
+        }
+        table = $('#module_list').DataTable({
             "processing": true,
             "serverSide": true,
             "destroy": true,
             'scrollCollapse': true,
+            "scrollY": "400px",
+            "scrollX": true,
             'lengthMenu': [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
             'pageLength': 10,
-            'stateSave': true,
+            // 'stateSave': true,
             "ajax": {
                 "url": "<?= base_url('module_list') ?>",
                 "dataType": "json",
                 "type": "POST",
-                "data": {
-                    "typeofsystem": typeofsystem
+                "data": function (d) {
+                    d.typeofsystem = typeofsystem !== "all" ? typeofsystem : null;
+                    d.team = $('#team_filter').val();
                 }
             },
             "columns": [
                 { "data": 'mod_name' },
                 { "data": 'status' },
                 { "data": 'bu_name' },
-                { "data": 'date_request',
-                    "render": function(data, type, row) {
-                        if (data) {
-                            var date = new Date(data);
-                            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
-                            });
-                        }else {
-                            return '<span class="badge bg-info"> Implemented </span>';
-                        }
-                    }
-                },
-                { "data": 'action' }
+                { "data": 'date_request'},
+                { "data": 'date_implem'},
+                { "data": 'action'}
             ],
             "paging": true,
             "searching": true,
             "ordering": true,
             "columnDefs": [
                 { "className": "text-center", "targets": ['_all'] }
-            ],
-            "dom": 
-                "<'row mb-1'<'col-md-12 text-start'B>>" +
-                "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
-                "<'row'<'col-md-12'tr>>" +
-                "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
-            "buttons": [
-                {
-                    "extend": 'excelHtml5',
-                    "title": 'MODULE LIST - Excel Export', 
-                    "exportOptions": {
-                        "columns": ':visible:not(:last-child)'
+            ]
+        });
+        
+        
+        $('#columnSelectorDropdown').on('click', function (e) {
+            e.stopPropagation();
+        });
+        $('#columnSelectorDropdown .column-toggle').each(function () {
+            let columnIdx = $(this).val();
+            $(this).prop('checked', table.column(columnIdx).visible());
+        });
+
+        $('#columnSelectorDropdown .column-toggle').on('change', function () {
+            let columnIdx = $(this).val();
+            let isChecked = $(this).prop('checked');
+            table.column(columnIdx).visible(isChecked);
+        });
+        $('#generate_report').on('click', function () {
+
+            if (printWindow && !printWindow.closed) {
+                return;
+            }
+
+            let visibleColumns = [];
+            let visibleHeaders = [];
+            let desc = -1;
+            table.columns().every(function (index) {
+                let headerText = this.header().textContent.trim();
+                if (this.visible() && headerText.toLowerCase() !== 'action') {
+                    visibleColumns.push(index);
+                    visibleHeaders.push(headerText);
+                    if (headerText.toLowerCase() === 'description') {
+                        desc = visibleColumns.length - 1;
                     }
-                },
-                {
-                    "extend": 'pdfHtml5',
-                    "title": 'MODULE LIST - PDF Export',
-                    "text": 'Generate Report',
-                    "exportOptions": {
-                        "columns": ':visible:not(:last-child)'
-                    },
-                    "customize": function (doc) {
-                        doc.defaultStyle.fontSize = 8;
-                        doc.styles.title.fontSize = 12;
-                        doc.styles.tableHeader.fontSize = 10;
-                        if (!doc.styles.tableBodyOdd) {
-                            doc.styles.tableBodyOdd = {};
-                        }
-                        if (!doc.styles.tableBodyEven) {
-                            doc.styles.tableBodyEven = {};
-                        }
-                        doc.styles.tableBodyOdd.alignment = 'center';
-                        doc.styles.tableBodyEven.alignment = 'center';
-                    }
-                },
-                'colvis'
-            ],
-            
+                }
+            });
+
+            let rowData = table.rows({ filter: 'applied' }).data().toArray();
+            let reportData = rowData.map(row => visibleColumns.map(index => row[table.column(index).dataSrc()]));
+            let printContent = `
+            <style>
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }
+                th, td {
+                    padding: 10px;
+                    text-align: left;
+                    border: 1px solid #ddd;
+                    word-wrap: break-word;
+                    max-width: 200px;
+                    white-space: normal;
+                }
+                .description {
+                    width: 300px;
+                }
+            </style>
+            <div style="text-align: center; margin-bottom: 20px;"><h4>LIST OF MODULES</h4></div>
+            <table>
+                <thead>
+                    <tr>${visibleHeaders.map((header, index) => 
+                        `<th class="${index === desc ? 'description' : ''}">${header}</th>`
+                    ).join('')}</tr>
+                </thead>
+                <tbody>
+                    ${reportData.map((row, rowIndex) => 
+                        `<tr>${row.map((cell, cellIndex) => 
+                            `<td class="${cellIndex === desc ? 'description' : ''}">${cell}</td>`
+                        ).join('')}</tr>`
+                    ).join('')}
+                </tbody>
+            </table>`;
+            printWindow = window.open('', '', '');
+            printWindow.document.title = 'MODULES LIST - PDF Export';
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
         });
     }
 
@@ -314,9 +405,16 @@
         var mod_name        = $('#mod_name').val();
         var mod_abbr        = $('#mod_abbr').val();
         var typeofsystem    = $('#typeofsystem').val();
-        var bcode           = $('#business_unit').val();
-        var business_unit   = $('#business_unit option:selected').text();
+        var bcode           = $('#business_unit').val() || '';
+        var business_unit   = $('#business_unit option:selected').text().trim();
         var date_request    = $('#date_request').val();
+        var team            = $('#team').val();
+
+
+        if (bcode === "") {
+            business_unit = '';
+        }
+
 
         if (mod_name === "" || mod_abbr === "" || typeofsystem === "") {
             Toastify({
@@ -347,6 +445,7 @@
             bcode: bcode,
             business_unit: business_unit,
             date_request: date_request,
+            team: team
         };
 
         $.ajax({
@@ -355,7 +454,12 @@
             data: data,
             success: function () {
                 $('#create_module').modal('hide');
-                $('#module_list').DataTable().ajax.reload();
+                var table = $('#module_list').DataTable();
+                var currentPage = table.page();
+
+                table.ajax.reload(function () {
+                    table.page(currentPage).draw(false);
+                }, false);
                 Toastify({
                     text: `Module added successfully.`,
                     duration: 5000,
@@ -475,7 +579,12 @@
                                 background: "linear-gradient(to right, #ff5f6d, #ffc371)",
                             },
                         }).showToast();
-                        $('#submodule_list').DataTable().ajax.reload();
+                        var table = $('#submodule_list').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                         view_submodule(mod_id);
                         $('#submodule').modal('show');
                         $('#add_submodule').modal('hide');
@@ -485,7 +594,7 @@
             }
         });
     }
-    function edit_module(mod_id, requested_to, bu_name, date_request) {
+    function edit_module(mod_id, requested_to, bu_name, date_request, belong_team) {
 
         $.ajax({
             url: '<?= base_url('edit_module') ?>',
@@ -494,7 +603,8 @@
                 mod_id: mod_id,
                 bcode: requested_to,
                 business_unit: bu_name,
-                date_request: date_request
+                date_request: date_request,
+                team: belong_team
              },
             error: function () {
                 Toastify({
@@ -519,9 +629,16 @@
         var mod_id          = $('#edit_mod_id').val();
         var mod_name        = $('#edit_mod_name').val();
         var mod_abbr        = $('#edit_mod_abbr').val();
-        var bcode           = $('#edit_business_unit').val();
+        var bcode           = $('#edit_business_unit').val() || '';
         var business_unit   = $('#edit_business_unit option:selected').text();
         var date_request    = $('#edit_date_request').val();
+        var date_implem     = $('#edit_date_implem').val();
+        var team            = $('#edit_team_').val();
+
+
+        if (bcode === "") {
+            business_unit = '';
+        }
 
         Swal.fire({
             title: 'Are you sure?',
@@ -543,7 +660,9 @@
                         mod_abbr: mod_abbr,
                         bcode: bcode,
                         business_unit: business_unit,
-                        date_request: date_request
+                        date_request: date_request,
+                        date_implem: date_implem,
+                        team: team
                     },
                     error: function () {
                         Swal.fire({
@@ -566,7 +685,13 @@
                             },
                         }).showToast();
                         $('#edit_module').modal('hide');
-                        $('#module_list').DataTable().ajax.reload();
+
+                        var table = $('#module_list').DataTable();
+                        var currentPage = table.page();
+
+                        table.ajax.reload(function () {
+                            table.page(currentPage).draw(false);
+                        }, false);
                     }
                 });
             }
@@ -782,4 +907,12 @@
         });
     }
 
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('.generate').click(function() {
+            window.open('<?php echo site_url("admin/generate_pdf"); ?>', '_blank');
+        });
+    });
 </script>
