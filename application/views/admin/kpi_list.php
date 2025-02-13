@@ -270,27 +270,27 @@
         let description     = $('#desc').val();
 
         if (title === "" || type === "" || description === "") {
-            Toastify({
-                text: `Please fill up required fields.`,
-                duration: 5000,
-                gravity: "top",
-                position: "left",
-                className: "birthday-toast primary",
-                stopOnFocus: true,
-                close: true,
-                style: {
-                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                },
-            }).showToast();
-            if (title === "") {
-                $('#title').addClass('is-invalid');
-            }
-            if (type === "") {
-                $('#type').addClass('is-invalid');
-            }
-            if (description === "") {
-                $('#desc').addClass('is-invalid');
-            }
+            toastr.options = {
+                progressBar: true,
+                positionClass: "toast-top-left",
+                timeOut: 5000,
+                extendedTimeOut: 2000,
+                preventDuplicates: true,
+            };
+
+            toastr.info(
+                `Please fill up required fields.`,
+            );
+
+            $('#title, #type, #desc').each(function () {
+                if ($(this).val() === '') {
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+
 
             return;
         }
@@ -313,18 +313,17 @@
                 table.ajax.reload(function () {
                     table.page(currentPage).draw(false);
                 }, false);
-                Toastify({
-                    text: `Kpi added successfully.`,
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    className: "birthday-toast primary",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
+                toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.success(
+                    `Kpi was successfully added`,
+                );
                 
             },
         });
@@ -336,18 +335,18 @@
             type: 'POST',
             data: {id: id},
             error: function () {
-                Toastify({
-                    text: `Opps!!! Something went wrong.`,
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    className: "birthday-toast primary",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
+                toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.success(
+                    `Oops! Something went wrong. Please try again`,
+                );
+                
             },
             success: function (data) {
                 $("#edit_kpi_content").html(data);
@@ -387,18 +386,17 @@
                         table.ajax.reload(function () {
                             table.page(currentPage).draw(false);
                         }, false);
-                        Toastify({
-                            text: `Kpi updated successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Kpi was successfully updated`,
+                        );
                         
                     },
                 });
@@ -429,18 +427,17 @@
                         table.ajax.reload(function () {
                             table.page(currentPage).draw(false);
                         }, false);
-                        Toastify({
-                            text: `Kpi deleted successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Kpi was successfully deleted`,
+                        );
                     },
                 });
             }

@@ -303,17 +303,17 @@
 
         toggleUploadButton();
 
-        Toastify({
-            text: `Successfully selected : ${teamName || ''} | ${moduleName || ''} | ${submoduleName || ''}`,
-            duration: 5000,
-            gravity: "top",
-            position: "left",
-            stopOnFocus: true,
-            close: true,
-            style: {
-                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-            },
-        }).showToast();
+        toastr.options = {
+            progressBar: true,
+            positionClass: "toast-top-left",
+            timeOut: 5000,
+            extendedTimeOut: 2000,
+            preventDuplicates: true,
+        };
+
+        toastr.success(
+            `${teamName || ''} | ${moduleName || ''} | ${submoduleName || ''}`,
+        );
     });
 
 </script>
@@ -327,6 +327,7 @@
     });
 
     function filter() {
+        $('#folderlist-data').html('<div class="text-center text-primary" style="margin-top: 100px;"><iconify-icon icon="svg-spinners:bars-rotate-fade" width="40" height="40"></iconify-icon></div>');
         var team = $('#team').val();
         var module = $('#module').val();
         var sub_module = $('#sub_module').val();
@@ -357,7 +358,7 @@
                                         <iconify-icon icon="material-symbols:folder-open"
                                             class="align-bottom text-warning fs-60"></iconify-icon>
                                     </div>
-                                    <h6 class="fs-12 folder-name fw-bold">` + folder.name + `</h6>
+                                    <h6 class="fs-11 folder-name fw-bold">` + folder.name + `</h6>
                                 </div>
                                 <div class="hstack mt-3 text-muted">
                                     <span class="me-auto fs-6 ribbon-three ribbon-three-primary">
@@ -469,6 +470,7 @@
         });
     }
     function updateFolderModalContent(folderName, team, module, sub_module, business_unit, department) {
+        $('#folderModalBody').html('<div class="text-center text-primary "><iconify-icon icon="svg-spinners:bars-rotate-fade" width="40" height="40"></iconify-icon></div>');
         $.ajax({
             url: '<?php echo base_url('view_folder_modal'); ?>',
             type: 'GET',
@@ -592,7 +594,7 @@
                     </div>`;
                     });
                 } else {
-                    modalContent = '<li class="list-group-item text-muted text-center"><iconify-icon icon="marketeq:search-alt-3" width="50" height="50"></iconify-icon><h5 class="mt-2">Sorry! No Data Found </h5></li>';
+                    modalContent = '<li class="list-group-item text-primary text-center"><iconify-icon icon="fluent:box-multiple-search-24-filled" width="80" height="80"></iconify-icon><h5 class="mt-2">No file available | Not yet uploaded</h5></li>';
                 }
                 $('#folderModalBody').html(modalContent);
                 $('#folder_name').text(folderName + ' ' + 'FOLDER FILES');
@@ -680,17 +682,17 @@
                     const files = pond.getFiles();
 
                     if (files.length === 0) {
-                        Toastify({
-                            text: `No files were selected`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.error(
+                            `No files were selected`,
+                        );
                         return;
                     }
 
@@ -719,17 +721,17 @@
                             response = JSON.parse(response);
 
                             if (response.success) {
-                                Toastify({
-                                    text: response.message,
-                                    duration: 5000,
-                                    gravity: "top",
-                                    position: "left",
-                                    stopOnFocus: true,
-                                    close: true,
-                                    style: {
-                                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                                    },
-                                }).showToast();
+                                toastr.options = {
+                                    progressBar: true,
+                                    positionClass: "toast-top-left",
+                                    timeOut: 5000,
+                                    extendedTimeOut: 2000,
+                                    preventDuplicates: true,
+                                };
+
+                                toastr.success(
+                                    `${response.message}`,
+                                );
                                 $('#file_upload').modal('hide');
                                 const pond = FilePond.find(document.querySelector(".filepond-input-multiple"));
                                     if (pond) {
@@ -741,17 +743,17 @@
                                     $('#departmentFilter').val('').trigger('change');
                                 filter();
                             } else {
-                                Toastify({
-                                    text: response.message,
-                                    duration: 5000,
-                                    gravity: "top",
-                                    position: "left",
-                                    stopOnFocus: true,
-                                    close: true,
-                                    style: {
-                                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                                    },
-                                }).showToast();
+                                toastr.options = {
+                                    progressBar: true,
+                                    positionClass: "toast-top-left",
+                                    timeOut: 5000,
+                                    extendedTimeOut: 2000,
+                                    preventDuplicates: true,
+                                };
+
+                                toastr.error(
+                                    `${response.message}`,
+                                );
                             }
 
                             uploadButton.innerHTML = 'Upload Files';
@@ -790,31 +792,31 @@
                     dataType: 'json',
                     success: function (response) {
                         if (response.success) {
-                            Toastify({
-                                text: `Successfully deleted`,
-                                duration: 5000,
-                                gravity: "top",
-                                position: "left",
-                                stopOnFocus: true,
-                                close: true,
-                                style: {
-                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                                },
-                            }).showToast();
+                            toastr.options = {
+                                progressBar: true,
+                                positionClass: "toast-top-left",
+                                timeOut: 5000,
+                                extendedTimeOut: 2000,
+                                preventDuplicates: true,
+                            };
+
+                            toastr.success(
+                                `Successfully deleted`,
+                            );
                             openFolderModal(folderName);
                             filter();
                         } else {
-                            Toastify({
-                                text: response.error,
-                                duration: 5000,
-                                gravity: "top",
-                                position: "left",
-                                stopOnFocus: true,
-                                close: true,
-                                style: {
-                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                                },
-                            }).showToast();
+                            toastr.options = {
+                                progressBar: true,
+                                positionClass: "toast-top-left",
+                                timeOut: 5000,
+                                extendedTimeOut: 2000,
+                                preventDuplicates: true,
+                            };
+
+                            toastr.error(
+                                `${response.message}`,
+                            );
                         }
                     }
                 });
@@ -843,21 +845,35 @@
 
         $('#searchISR').click(function () {
             let requestNumber = $('#isrSearch').val();
-            if (!requestNumber) {
-                Toastify({
-                    text:'Please enter ISR Request Number.',
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
-                $('#isrSearch').addClass('is-invalid');
-                return;
-            }
+            // if (!requestNumber) {
+            //     Toastify({
+            //         text:'Please enter ISR Request Number.',
+            //         duration: 5000,
+            //         gravity: "top", 
+            //         position: "left",
+            //         stopOnFocus: true,
+            //         close: true,
+            //         style: {
+            //             background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+            //         },
+            //     }).showToast();
+            //     $('#isrSearch').addClass('is-invalid');
+            //     return;
+            // }
+
+            const isrfound = Swal.fire({
+                title: "Searching ISR #" + requestNumber,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                icon: "info",
+                html: "Please wait...",
+                didOpen: () => {
+                    Swal.showLoading();
+                    const timer = Swal.getPopup().querySelector("b");
+                },
+            });
+
             $.ajax({
                 url: '<?php echo base_url('get_isr_request'); ?>',
                 type: 'POST',
@@ -865,30 +881,36 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.length > 0) {
-                        Toastify({
-                            text:'ISR Request Number found.',
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        setTimeout(() => {
+                            toastr.options = {
+                                progressBar: true,
+                                positionClass: "toast-top-left",
+                                timeOut: 5000,
+                                extendedTimeOut: 2000,
+                                preventDuplicates: true,
+                            };
+
+                            toastr.success(
+                                `ISR Number Found`,
+                            );
+                            isrfound.close();
+                        }, 1000);
                         $('#business_unitFilter, #departmentFilter, #fileUpload, #uploadBtn').prop('disabled', false);
                     } else {
-                        Toastify({
-                            text:'ISR Request Number not found | Not yet approved.',
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        setTimeout(() => {
+                            toastr.options = {
+                                progressBar: true,
+                                positionClass: "toast-top-left",
+                                timeOut: 5000,
+                                extendedTimeOut: 2000,
+                                preventDuplicates: true,
+                            };
+
+                            toastr.error(
+                                `ISR Number not found | Not yet approved.`
+                            );
+                            isrfound.close();
+                        }, 1000);
                     }
                 },
             });

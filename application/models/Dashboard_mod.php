@@ -38,6 +38,16 @@ class Dashboard_mod extends CI_Model
         $result = $query->row_array();
         return $result['total'];
     }
+
+    public function my_workloads() {
+        $this->db->select('COUNT(*) as total');
+        $this->db->from('workload');
+        $this->db->where('emp_id', $this->session->emp_id);
+        $query = $this->db->get();
+    
+        $result = $query->row_array();
+        return $result['total'];
+    }
     
 
     // public function get_employees_count_by_positions($positions) {

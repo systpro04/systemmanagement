@@ -5,9 +5,11 @@ class Dashboard extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
-		if ($this->session->username == "") {
-            redirect('login');
-        }
+		if (!$this->session->userdata('id')) {
+			redirect('session_expire');
+		}
+
+
 		$this->load->model('Dashboard_mod', 'dashboard');
 	}
 	public function index(){
@@ -15,11 +17,14 @@ class Dashboard extends CI_Controller {
 
 		$programmers_count = $this->dashboard->programmers();
 		$analysts_count = $this->dashboard->analysts();
-		$others_count = $this->dashboard->rms();    
+		$others_count = $this->dashboard->rms();   
+
+		$my_workloads = $this->dashboard->my_workloads(); 
 
 		$data['programmers_count'] = $programmers_count;
 		$data['analysts_count'] = $analysts_count;
 		$data['others_count'] = $others_count;
+		$data['my_workloads'] = $my_workloads;
 
 		$this->load->view('_layouts/header');
 		$this->load->view('dashboard', $data);
@@ -114,11 +119,21 @@ class Dashboard extends CI_Controller {
         $chartData = [];
         $labels = [];
 		$colors = [
-			'#fe6a00', '#fff700', '#00f7b5', '#FF33A1', '#FFC133',
-			'#8D33FF', '#1b9b97', '#ff3333', '#57FF33', '#5733FF',
-			'#FF338D', '#FFC733', '#FF8D33', '#33C7FF'
+			'rgba(254, 106, 0, 0.7)',
+			'rgba(255, 247, 0, 0.7)',
+			'rgba(0, 247, 181, 0.7)',
+			'rgba(255, 51, 161, 0.7)',
+			'rgba(255, 193, 51, 0.7)',
+			'rgba(141, 51, 255, 0.7)',
+			'rgba(27, 155, 151, 0.7)',
+			'rgba(255, 51, 51, 0.7)', 
+			'rgba(87, 255, 51, 0.7)', 
+			'rgba(87, 51, 255, 0.7)', 
+			'rgba(255, 51, 141, 0.7)',
+			'rgba(255, 199, 51, 0.7)',
+			'rgba(255, 141, 51, 0.7)',
+			'rgba(51, 199, 255, 0.7)' 
 		];
-
         foreach ($data as $key => $item) {
             $chartData[] = $item['count'];
             $labels[] = $item['uploaded_to'];

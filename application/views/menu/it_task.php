@@ -266,10 +266,10 @@
             { "data": "task_status",
                 "render": function (data, type, row) {
                     return `
-                        <select class="form-control form-select form-select-sm task-status-dropdown" data-id="${row.task_id}" data-emp="${row.emp_name}" style="width: 110px;">
-                            <option value="Pending" ${data === 'Pending' ? 'selected' : ''}>PENDING</option>
-                            <option value="Ongoing" ${data === 'Ongoing' ? 'selected' : ''}>ONGOING</option>
-                            <option value="Done" ${data === 'Done' ? 'selected' : ''}>DONE</option>
+                        <select class="form-control form-select form-select-sm task-status-dropdown" data-id="${row.task_id}" data-emp="${row.emp_name}" style="width: 95px;">
+                            <option value="Pending" ${data === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Ongoing" ${data === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
+                            <option value="Done" ${data === 'Done' ? 'selected' : ''}>Done</option>
                         </select>
                     `;
                 }
@@ -364,18 +364,17 @@
                 emp_name: emp_name
             },
             success: function () {
-                Toastify({
-                    text: "Task Status updated successfully!",
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    className: "birthday-toast primary",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
+                toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.success(
+                    `Task status was successfully updated`,
+                );
                 $('#it_task_list').DataTable().ajax.reload(null, false);
 
             },
@@ -491,19 +490,25 @@
         var status          = $('#task_status').val();
 
         if (team === "" || module === "" || desc === "" || concern === "" || remarks === "" || status === "") {
-            Toastify({
-                text: `Please fill up the required fields.`,
-                duration: 5000,
-                gravity: "top",
-                position: "left",
-                stopOnFocus: true,
-                close: true,
-                style: {
-                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                },
-            }).showToast();
+            toastr.options = {
+                progressBar: true,
+                positionClass: "toast-top-left",
+                timeOut: 5000,
+                extendedTimeOut: 2000,
+                preventDuplicates: true,
+            };
+
+            toastr.info(
+                `Please fill up the required fields`,
+            );
             if (desc === "" || concern === "" || remarks === "" || status === "") {
-                $('#desc, #concern, #remarks, #task_status').addClass('is-invalid');
+                $('#desc, #concern, #remarks, #task_status').each(function () {
+                    if ($(this).val() === '') {
+                        $(this).addClass('is-invalid');
+                    } else {
+                        $(this).removeClass('is-invalid');
+                    }
+                });
             }
             return;
         }
@@ -534,17 +539,17 @@
                         task_status: status
                     },
                     success: function (response) {
-                        Toastify({
-                            text: `Task added successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Task was successfully added`,
+                        );
                         $('#create_task').modal('hide');
                         var table = $('#it_task_list').DataTable();
                         var currentPage = table.page();
@@ -621,17 +626,17 @@
                         task_status: task_status
                     },
                     success: function (response) {
-                        Toastify({
-                            text: `Task updated successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Task was successfully updated`,
+                        );
                         $('#edit_task').modal('hide');
                         var table = $('#it_task_list').DataTable();
                         var currentPage = table.page();
@@ -661,17 +666,17 @@
                     type: 'POST',
                     data: { task_id: task_id },
                     success: function (response) {
-                        Toastify({
-                            text: `Task deleted successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Task was successfully deleted`,
+                        );
                         var table = $('#it_task_list').DataTable();
                         var currentPage = table.page();
 

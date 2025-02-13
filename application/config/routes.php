@@ -57,6 +57,9 @@ $route['login']                             = 'Auth/Login_ctrl/index';
 $route['login_data']                        = 'Auth/Login_ctrl/login_data';
 $route['logout']                            = 'Auth/Login_ctrl/logout_data'; 
 
+$route['session_expire']                    = 'Auth/Login_ctrl/session_expire';
+
+
 $route['dashboard']                         = 'Dashboard/index';
 $route['get_birthdays']                     = 'Dashboard/get_birthdays';
 $route['profile']                           = 'Dashboard/profile';
@@ -235,6 +238,14 @@ $route['get_images_directory']                  = 'TeamEvents/get_images_directo
 
 
 
+
+$route['my_workloads']                      = 'MyWorkloads/index';
+$route['fetch_workloads']                   = 'MyWorkloads/fetch_workloads';
+
+
+
+$route['chat']                              = 'Chat/index';
+$route['get_users']                         = 'Chat/get_users';
 
 
 

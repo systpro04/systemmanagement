@@ -5,9 +5,9 @@ class It_Respo extends CI_Controller {
 
     function __construct() {
 		parent::__construct();
-        if ($this->session->username == "") {
-            redirect('login');
-        }
+		if (!$this->session->userdata('id')) {
+			redirect('session_expire');
+		}
         $this->load->model('Menu/Workload', 'workload');
         $this->load->model('Menu/File_mod_current', 'file_mod');
         $this->load->model('Menu/Deploy_mod', 'deploy');
@@ -53,12 +53,15 @@ class It_Respo extends CI_Controller {
             $remarks = !empty($row['remarks']) 
                 ? ucwords(strtolower($row['remarks'])) 
                 : '<span class="badge bg-secondary">N/A</span>';
-            
+            $add_pos = !empty($row['add_pos']) 
+                ? ucwords(strtolower($row['add_pos'])) 
+                : '------';
             $data[] = [
                 'id'            => $row['id'],
                 'team_name'     => ucwords(strtolower($row['team_name'])),
                 'emp_id'        => ucwords(strtolower($emp_data['name'])),
-                'user_type'     => $row['user_type'],
+                'user_type'     => '<span class="badge bg-primary">'.$emp_data['position'].'</span>',
+                'add_pos'       => $add_pos,
                 'module'        => ucwords(strtolower($row['mod_name'])),
                 'sub_mod_name'  => $sub_mod_name,
                 'sub_mod_menu'  => $sub_mod_menu,
@@ -97,7 +100,7 @@ class It_Respo extends CI_Controller {
             $emp_data = $this->workload->get_employees($member->emp_id); 
             if (!empty($emp_data) && isset($emp_data[0]->name)) {
                 $member->emp_name = $emp_data[0]->name;
-                // $member->position = $emp_data[0]->position;
+                $member->position = $emp_data[0]->position;
             }
         }
         echo json_encode($members);
@@ -113,6 +116,7 @@ class It_Respo extends CI_Controller {
         $emp_id             = $this->input->post('emp_id');
         $emp_name           = $this->input->post('emp_name');
         $position           = $this->input->post('position');
+        $add_pos            = $this->input->post('add_pos');
         $module_id          = $this->input->post('module_id');
         $sub_module         = $this->input->post('sub_module');
         $sub_module_menu    = $this->input->post('sub_module_menu');
@@ -123,6 +127,7 @@ class It_Respo extends CI_Controller {
             'team_id'           => $team_id,
             'emp_id'            => $emp_id,
             'user_type'         => $position,
+            'add_pos'           => $add_pos,
             'module'            => $module_id,
             'sub_mod'           => $sub_module,
             'sub_mod_menu'      => $sub_module_menu,
@@ -157,6 +162,7 @@ class It_Respo extends CI_Controller {
         $emp_id             = $this->input->post('emp_id');
         $emp_name           = $this->input->post('emp_name');
         $position           = $this->input->post('position');
+        $add_pos            = $this->input->post('add_pos');
         $module_id          = $this->input->post('module_id');
         $sub_module         = $this->input->post('sub_module');
         $sub_module_menu    = $this->input->post('sub_module_menu');
@@ -167,6 +173,7 @@ class It_Respo extends CI_Controller {
             'team_id'           => $team_id,
             'emp_id'            => $emp_id,
             'user_type'         => $position,
+            'add_pos'           => $add_pos,
             'module'            => $module_id,
             'sub_mod'           => $sub_module,
             'sub_mod_menu'      => $sub_module_menu,

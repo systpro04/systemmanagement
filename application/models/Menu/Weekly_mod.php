@@ -37,12 +37,12 @@ class Weekly_mod extends CI_Model
 			}
 		}
 	
-		$this->db->order_by($order_column, $order_dir);
+		$this->db->order_by($order_column, $order_dir); 
 		$this->db->limit($length, $start);
 	
 		if (!empty($team)) {
 			$this->db->where('wr.team_id', $team);
-		}
+		} 
 		if (!empty($module)) {
 			$this->db->where('wr.mod_id', $module);
 		}

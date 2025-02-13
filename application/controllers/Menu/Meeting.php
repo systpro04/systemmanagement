@@ -5,9 +5,9 @@ class Meeting extends CI_Controller {
 
     function __construct() {
         parent::__construct();
-        if ($this->session->username == "") {
-            redirect('login');
-        }
+		if (!$this->session->userdata('id')) {
+			redirect('session_expire');
+		}
         $this->load->model('menu/Meeting_mod', 'meeting');
     }
     public function index() {
@@ -40,14 +40,14 @@ class Meeting extends CI_Controller {
 
     public function add_meeting() {
 
-        $team_id     = $this->input->post('team_id');
-        $team_name     = $this->input->post('team_name');
-        $mod_id       = $this->input->post('mod_id');
-        $date_meeting  = $this->input->post('date_meeting');
-        $time          = $this->input->post('time');
-        $location      = $this->input->post('location');
-        $reasons       = $this->input->post('reasons');
-        $data =[];
+        $team_id        = $this->input->post('team_id');
+        $team_name      = $this->input->post('team_name');
+        $mod_id         = $this->input->post('mod_id');
+        $date_meeting   = $this->input->post('date_meeting');
+        $time           = $this->input->post('time');
+        $location       = $this->input->post('location');
+        $reasons        = $this->input->post('reasons');
+        $data = [];
         $data = [
             'team_id'       => $team_id,
             'mod_id'        => $mod_id,
@@ -55,12 +55,10 @@ class Meeting extends CI_Controller {
             'time'          => $time,
             'location'      => $location,
             'reasons'       => $reasons,
-            'date_added'    => date('Y-m-d H:i:s')
+            'date_added'    => date('Y-m-d H:i:s'),
+            'added_by'      => $this->session->emp_id
         ];
         $this->meeting->insert_event($data);
-
-
-        
         $action = '<b>' . $this->session->name. '</b> updated a meeting for <b>'.$team_name.'</b>';
 
         $data1 = array(
@@ -70,7 +68,6 @@ class Meeting extends CI_Controller {
         );
         $this->load->model('Logs', 'logs');
         $this->logs->addLogs($data1);
-
 
         echo json_encode(['status' => 'success']);
     }

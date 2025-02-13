@@ -26,6 +26,7 @@ class Login_mod extends CI_Model
         $this->db->select('*');
         $this->db->from('users');
         $this->db->where('emp_id', $emp_id);
+        $this->db->where('type', 'fulltime');
         $this->db->limit(1);
         $query = $this->db->get();
 

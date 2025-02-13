@@ -30,6 +30,12 @@
                     </div>
                 </div>
                 <div class="row mb-3">
+                    <label for="name" class="col-sm-3 col-form-label">Additional Position:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="additional_position" placeholder="Additional Position" value="">
+                    </div>
+                </div>
+                <div class="row mb-3">
                     <label for="module" class="col-sm-3 col-form-label">Module:</label>
                     <div class="col-sm-9">
                         <select class="form-select select2 mb-3" id="module_id"></select>
@@ -122,6 +128,12 @@
                     </div>
                 </div>
                 <div class="row mb-3">
+                    <label for="name" class="col-sm-3 col-form-label">Additional Position:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="edit_additional_position" placeholder="Additional Position" value="">
+                    </div>
+                </div>
+                <div class="row mb-3">
                     <label for="module" class="col-sm-3 col-form-label">Module:</label>
                     <div class="col-sm-9">
                         <select class="form-select select2 mb-3" id="edit_module_id"></select>
@@ -193,7 +205,7 @@
             <div class="card">
                 <div class="card-header border-1">
                     <div class="d-flex align-items-center">
-                        <h5 class="card-title mb-0 flex-grow-1">List of Workload</h5>
+                        <h5 class="card-title mb-0 flex-grow-1 fw-bold">List of Workload</h5>
                         <div class="col-md-3">
                             <div class="d-flex align-items-center flex-shrink-0 mx-2">
                                 <select class="form-select" id="team" style="width: 150px; height: auto;">
@@ -250,9 +262,11 @@
                     <div class="dropdown">
                         <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown" aria-expanded="false"> Column Visibility</button>
                         <ul class="dropdown-menu" aria-labelledby="columnDropdown" id="columnSelectorDropdown" data-simplebar style="max-height: 300px;">
-                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> Team</label></li>
-                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> Name</label></li>
-                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> Position</label></li>
+                            <!-- <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> Team</label></li> -->
+                            <!-- <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> Other Position</label></li> -->
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> Name</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> Position</label></li>
+                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> Other Position</label></li>
                             <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="3" checked> Module</label></li>
                             <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="4" checked> Sub Module</label></li>
                             <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="5" checked> Sub Menu</label></li>
@@ -265,12 +279,13 @@
                     </div>
                         <div class="mt-2 tab-pane active" id="System Analyst" role="tabpanel">
                             <div class="table-responsive">
-                            <table class="table table-striped table-hover" id="workload">
+                            <table class="table table-striped table-hover responsive" id="workload">
                                 <thead class="table-info text-center text-uppercase">
                                     <tr>
-                                        <th>Team</th>
+                                        <!-- <th>Team</th> -->
                                         <th>Name</th>
-                                        <th>Position</th>
+                                        <th>Job Position</th>
+                                        <th>Other Position</th>
                                         <th>Module</th>
                                         <th>SubModule</th>
                                         <th>SubMenu</th>
@@ -291,6 +306,7 @@
         </div>
     </div>
 </div>
+
 <script>
 
     $(document).ready(function () {
@@ -365,9 +381,10 @@
                 }
             },
             "columns": [
-                { "data": "team_name" },
+                // { "data": "team_name" },
                 { "data": "emp_id" },
                 { "data": "user_type" },
+                { "data": "add_pos" },
                 { "data": "module" },
                 { "data": "sub_mod_name" },
                 { "data": "sub_mod_menu" },
@@ -376,10 +393,10 @@
                 { "data": "status",
                     "render": function (data, type, row) {
                         return `
-                            <select class="form-control form-select form-select-sm workload-status-dropdown" data-id="${row.id}" data-emp="${row.emp_id}" style="width: 110px;">
-                                <option value="Pending" ${data === 'Pending' ? 'selected' : ''}>PENDING</option>
-                                <option value="Ongoing" ${data === 'Ongoing' ? 'selected' : ''}>ONGOING</option>
-                                <option value="Done" ${data === 'Done' ? 'selected' : ''}>DONE</option>
+                            <select class="form-control form-select form-select-sm workload-status-dropdown" data-id="${row.id}" data-emp="${row.emp_id}" style="width: 95px;">
+                                <option value="Pending" ${data === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="Ongoing" ${data === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
+                                <option value="Done" ${data === 'Done' ? 'selected' : ''}>Done</option>
                             </select>
                         `;
                     }
@@ -488,18 +505,17 @@
                 emp_name: emp_name
             },
             success: function () {
-                Toastify({
-                    text: "Workload Status updated successfully!",
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    className: "birthday-toast primary",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
+                toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.success(
+                    `Workload status was successfully updated.`,
+                );
                 $('#workload').DataTable().ajax.reload(null, false);
             },
         });
@@ -593,17 +609,13 @@
         }
     });
 
-    $('#edit_workload').on('hidden.bs.modal', function () {
-        $('#edit_id').val('');
-        $('#edit_team_id').val('').trigger('change');
-        $('#edit_name').val('').trigger('change');
-        $('#edit_position').val('');
-        $('#edit_module_id').val('').trigger('change');
-        $('#edit_sub_module').val('').trigger('change');
-        $('#edit_sub_module_menu').val('');
-        $('#edit_description').val('');
-        $('#edit_remarks').val('');
-        $('#edit_workload_status').val('').trigger('change');
+    $('#create_workload').on('hidden.bs.modal', function () {
+        $('#team_id').val('').trigger('change');
+        $('#name').val('').trigger('change');
+        $('#position, #additional_position, #sub_module_menu, #description, #remarks').val('');
+        $('#module_id').val('').trigger('change');
+        $('#sub_module').val('').trigger('change');
+        $('#workload_status').val('').trigger('change');
     });
 
     function submit_workload() {
@@ -612,6 +624,7 @@
         var emp_id          = $('#emp_id').val();
         var emp_name        = $('#name option:selected').text();
         var position        = $('#position').val();
+        var add_pos         = $('#additional_position').val();
         var module_id       = $('#module_id').val();
         var sub_module      = $('#sub_module').val();
         var sub_module_menu = $('#sub_module_menu').val();
@@ -620,20 +633,24 @@
         var status          = $('#workload_status').val();
 
         if (team_id === "" || emp_id === "" || module_id === "") {
-            Toastify({
-                text: `Please fill up the required fields`,
-                duration: 5000,
-                gravity: "top",
-                position: "left",
-                stopOnFocus: true,
-                close: true,
-                style: {
-                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                },
-            }).showToast();
-            if (status === "") {
-                $('#workload_status').addClass('is-invalid');
-            }
+            toastr.options = {
+                progressBar: true,
+                positionClass: "toast-top-left",
+                timeOut: 5000,
+                extendedTimeOut: 2000,
+                preventDuplicates: true,
+            };
+
+            toastr.info(
+                `Please fill up the required fields.`,
+            );
+            $('#workload_status').each(function () {
+                if ($(this).val() === '') {
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
             return;
         }
 
@@ -656,6 +673,7 @@
                         emp_id: emp_id,
                         emp_name: emp_name,
                         position: position,
+                        add_pos: add_pos,
                         module_id: module_id,
                         sub_module: sub_module,
                         sub_module_menu: sub_module_menu,
@@ -664,17 +682,17 @@
                         status: status
                     },
                     success: function (response) {
-                        Toastify({
-                            text: `Workload added successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Workload was successfully added.`,
+                        );
                         $('#create_workload').modal('hide');
                         var table = $('#workload').DataTable();
                         var currentPage = table.page();
@@ -729,6 +747,7 @@
                     $('#edit_sub_module_menu').val(data.sub_mod_menu);
                     $('#edit_description').val(data.desc);
                     $('#edit_remarks').val(data.remarks);
+                    $('#edit_additional_position').val(data.add_pos);
                     $('#edit_workload_status').val(data.status).trigger('change');
                     $('#edit_workload').modal('show');
                 },300);
@@ -743,6 +762,7 @@
         var emp_id          = $('#edit_emp_id').val();
         var emp_name        = $('#edit_name option:selected').text();
         var position        = $('#edit_position').val();
+        var add_pos         = $('#edit_additional_position').val();
         var module_id       = $('#edit_module_id').val();
         var sub_module      = $('#edit_sub_module').val();
         var sub_module_menu = $('#edit_sub_module_menu').val();
@@ -751,17 +771,17 @@
         var status          = $('#edit_workload_status').val();
 
         if (team_id === "" || emp_id === "" || position === "") {
-            Toastify({
-                text: `Please fill up the required fields`,
-                duration: 5000,
-                gravity: "top",
-                position: "left",
-                stopOnFocus: true,
-                close: true,
-                style: {
-                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                },
-            }).showToast();
+            toastr.options = {
+                progressBar: true,
+                positionClass: "toast-top-left",
+                timeOut: 5000,
+                extendedTimeOut: 2000,
+                preventDuplicates: true,
+            };
+
+            toastr.info(
+                `Please fill up the required fields.`,
+            );
             if (position === "") {
                 $('#edit_position').addClass('is-invalid');
             }
@@ -789,6 +809,7 @@
                         emp_id: emp_id,
                         emp_name: emp_name,
                         position: position,
+                        add_pos: add_pos,
                         module_id: module_id,
                         sub_module: sub_module,
                         sub_module_menu: sub_module_menu,
@@ -797,17 +818,17 @@
                         status: status
                     },
                     success: function (response) {
-                        Toastify({
-                            text: `Workload updated successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Workload was successfully updated.`,
+                        );
                         $('#edit_workload').modal('hide');
                         var table = $('#workload').DataTable();
                         var currentPage = table.page();
@@ -847,17 +868,17 @@
                         table.ajax.reload(function () {
                             table.page(currentPage).draw(false);
                         }, false);
-                        Toastify({
-                            text: `Workload deleted successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Workload was successfully deleted.`,
+                        );
                     },
                 });
             }

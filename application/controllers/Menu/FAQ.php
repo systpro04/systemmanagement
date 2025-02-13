@@ -5,9 +5,9 @@ class FAQ extends CI_Controller {
 
     function __construct() {
         parent::__construct();
-        if ($this->session->username == "") {
-            redirect('login');
-        }
+		if (!$this->session->userdata('id')) {
+			redirect('session_expire');
+		}
         // $this->load->model('Menu/File_mod_current', 'file_mod');
     }
     public function index() {

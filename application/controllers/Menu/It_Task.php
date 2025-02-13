@@ -5,9 +5,9 @@ class It_Task extends CI_Controller {
 
     function __construct() {
 		parent::__construct();
-        if ($this->session->username == "") {
-            redirect('login');
-        }
+		if (!$this->session->userdata('id')) {
+			redirect('session_expire');
+		}
         $this->load->model('Menu/Task_mod', 'task');
         $this->load->model('Menu/Workload', 'workload');
 	}
@@ -21,15 +21,14 @@ class It_Task extends CI_Controller {
 	}
     public function it_task_list() {
 
-        $team = $this->input->post('team');
-        $module = $this->input->post('module');
-        $start = $this->input->post('start');
-        $length = $this->input->post('length');
-        $order = $this->input->post('order');
-        $search_value = $this->input->post('search')['value'];
-        $order_column = $order[0]['column'];
-        $order_dir = $order[0]['dir'];
-
+        $team           = $this->input->post('team');
+        $module         = $this->input->post('module');
+        $start          = $this->input->post('start');
+        $length         = $this->input->post('length');
+        $order          = $this->input->post('order');
+        $search_value   = $this->input->post('search')['value'];
+        $order_column   = $order[0]['column'];
+        $order_dir      = $order[0]['dir'];
 
         $task = $this->task->gettasks($module, $team, $start, $length, $order_column, $order_dir, $search_value);
         $data = [];
@@ -39,8 +38,8 @@ class It_Task extends CI_Controller {
                 $sub_mod_name = '<span class="badge bg-info">NA</span>';
             }else{
                 $sub_mod_name = ucwords(strtolower( $row['sub_mod_name']));
-
             }
+
             $emp_data = $this->workload->get_emp($row['emp_id']);
 
             $data[] = [
@@ -77,7 +76,7 @@ class It_Task extends CI_Controller {
     }
     public function submit_task(){
         $team               = $this->input->post('team');
-        $emp_name          = $this->input->post('emp_name');
+        $emp_name           = $this->input->post('emp_name');
         $emp_id             = $this->input->post('emp_id');
         $module             = $this->input->post('module');
         $sub_module         = $this->input->post('sub_module');

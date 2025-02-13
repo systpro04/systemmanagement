@@ -5,9 +5,9 @@ class Structure extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		if ($this->session->username == "") {
-            redirect('login');
-        }
+		if (!$this->session->userdata('id')) {
+			redirect('session_expire');
+		}
 		$this->load->model('Menu/Structure_mod', 'structure');
 		$this->load->model('Menu/Workload', 'workload');
 	}
@@ -68,7 +68,7 @@ class Structure extends CI_Controller {
 		$data['programmers'] = array_map(function ($pro) {
 			$emp_data = $this->structure->get_emp($pro['emp_id']);
 			if ($emp_data) {
-				$pro['name'] 	= $emp_data['name'];
+				$pro['name'] 	=  ucwords(strtolower( $emp_data['name']));
 				$pro['photo'] 	= ltrim($emp_data['photo'], '.');
 				$pro['date_hired'] = $emp_data['date_hired'];
 			}
@@ -78,7 +78,7 @@ class Structure extends CI_Controller {
 		$data['analysts'] = array_map(function ($sa) {
 			$emp_data = $this->structure->get_emp($sa['emp_id']);
 			if ($emp_data) {
-				$sa['name'] 	= $emp_data['name'];
+				$sa['name'] 	=  ucwords(strtolower( $emp_data['name']));
 				$sa['photo'] 	= ltrim($emp_data['photo'], '.');
 				$sa['date_hired'] = $emp_data['date_hired'];
 			}
@@ -88,7 +88,7 @@ class Structure extends CI_Controller {
 		$data['others'] = array_map(function ($r) {
 			$emp_data = $this->structure->get_emp($r['emp_id']);
 			if ($emp_data) {
-				$r['name'] 		= $emp_data['name'];
+				$r['name'] 		=  ucwords(strtolower( $emp_data['name']));
 				$r['photo'] 	= ltrim($emp_data['photo'], '.');
 				$r['date_hired'] = $emp_data['date_hired'];
 			}

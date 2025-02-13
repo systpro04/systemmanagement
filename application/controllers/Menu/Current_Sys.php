@@ -5,9 +5,9 @@ class Current_Sys extends CI_Controller {
 
     function __construct() {
         parent::__construct();
-        if ($this->session->username == "") {
-            redirect('login');
-        }
+		if (!$this->session->userdata('id')) {
+			redirect('session_expire');
+		}
         $this->load->model('Menu/File_mod_current', 'file_mod');
         $this->load->model('Menu/File_mod_new', 'file_mod_new');
         $this->load->model('Menu/Deploy_mod', 'deploy');
@@ -42,7 +42,7 @@ class Current_Sys extends CI_Controller {
         foreach ($folders as $folder) {
             $entry = basename($folder);
 
-            if (in_array($entry, $custom_order)) {
+            if (in_array($entry, $custom_order)) {  
                 $file_data = $this->get_file_count($folder, $team, $module, $sub_module);
                 
                 $folder_data[] = [
@@ -145,13 +145,13 @@ class Current_Sys extends CI_Controller {
         $folder_path = '\\\\172.16.42.144\\system\\' . $folder_name;
     
         $matched_files = $this->get_matched_files($folder_path, $team, $module, $sub_module, $business_unit, $department);
-
         $data = [
             'matched_files' => $matched_files
         ];
     
         echo json_encode($data);
     }
+    
 
     public function setup_module_current()
     {
@@ -313,7 +313,8 @@ class Current_Sys extends CI_Controller {
                     'date_uploaded' => date('Y-m-d H:i:s'),
                     'typeofsystem' => 'current',
                     'business_unit' => $business_unit,
-                    'department' => $department
+                    'department' => $department,
+                    'uploaded_by' => $this->session->emp_id
                 ], $statuses);
     
                 $this->file_mod->upload_file($data);

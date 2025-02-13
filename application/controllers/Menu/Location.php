@@ -5,9 +5,9 @@ class Location extends CI_Controller {
 
     function __construct() {
         parent::__construct();
-        if ($this->session->username == "") {
-            redirect('login');
-        }
+		if (!$this->session->userdata('id')) {
+			redirect('session_expire');
+		}
         $this->load->model('Menu/Location_mod', 'location');
     }
     public function index() {
@@ -105,7 +105,6 @@ class Location extends CI_Controller {
         $order_dir = $order[0]['dir'];
         $module_id = $this->input->post('mod_id');
 
-
         $location_setup = $this->location->get_location_data($module_id, $start, $length, $order_column, $order_dir, $search_value);
         $data = [];
     
@@ -124,12 +123,11 @@ class Location extends CI_Controller {
                 ? ucwords(strtolower($row['remarks'])) 
                 : '<span class="badge bg-secondary">N/A</span>';
         
-            
             $data[] = [
                 'company'          => ucwords(strtolower( $company['company'])),
                 'business_unit'    => ucwords(strtolower( $business_unit['business_unit'])),
                 'department'       => ucwords(strtolower( $department['dept_name'])),
-                'module'           => ucwords(strtolower($row['mod_name'])),
+                'module'           => ucwords(strtolower( $row['mod_name'])),
                 'sub_module'       => $sub_mod_name,
                 'date_parallel'    => $row['date_parallel'],
                 'date_online'      => $row['date_online'],

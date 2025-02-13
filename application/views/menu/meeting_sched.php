@@ -368,18 +368,17 @@
                 clickedDate.setHours(0, 0, 0, 0);
 
                 if (clickedDate < today) {
-                    Toastify({
-                        text: `Meetings cannot be scheduled for past dates. Please choose today or a future date.`,
-                        duration: 5000,
-                        gravity: "top",
-                        position: "left",
-                        
-                        stopOnFocus: true,
-                        close: true,
-                        style: {
-                            background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                        },
-                    }).showToast();
+                    toastr.options = {
+                        progressBar: true,
+                        positionClass: "toast-top-left",
+                        timeOut: 5000,
+                        extendedTimeOut: 2000,
+                        preventDuplicates: true,
+                    };
+
+                    toastr.warning(
+                        `Meetings cannot be scheduled for past dates. Please choose today or a future date.`,
+                    );
                     return;
                 }
 
@@ -425,17 +424,17 @@
             var selected_time = new Date(date + ' ' + time);
             var currentDateTime = new Date();
             if (selected_time < currentDateTime) {
-                Toastify({
-                    text: `Please select a time | date that is not before the current time | date.`,
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
+                toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.info(
+                    `Please select a time | date that is not before the current time | date.`,
+                );
                 return;
             }
 
@@ -449,17 +448,17 @@
                 reasons:        reasons,
             };
             if(team_id == "" || mod_id == "" || date == "" || time == "" || location == "" || reasons == "") {
-                Toastify({
-                    text: `Please fill up the required fields`,
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
+                toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.info(
+                    `Please fill up the required fields`,
+                );
                 return ;
             }
             calendar.addEvent(eventData);
@@ -479,17 +478,17 @@
                         type: 'POST',
                         data: eventData,
                         success: function (response) {
-                            Toastify({
-                                text: `Meeting schedule added successfully.`,
-                                duration: 5000,
-                                gravity: "top",
-                                position: "left",
-                                stopOnFocus: true,
-                                close: true,
-                                style: {
-                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                                },
-                            }).showToast();
+                            toastr.options = {
+                                progressBar: true,
+                                positionClass: "toast-top-left",
+                                timeOut: 5000,
+                                extendedTimeOut: 2000,
+                                preventDuplicates: true,
+                            };
+
+                            toastr.success(
+                                `Meeting schedule was successfully added.`,
+                            );
                             calendar.addEvent(eventData);
                             calendar.refetchEvents();
                             $('#meeting_modal').modal('hide');
@@ -521,17 +520,18 @@
                         type: 'POST',
                         data: deleteData,
                         success: function (response) {
-                            Toastify({
-                                text: `Meeting schedule deleted successfully.`,
-                                duration: 5000,
-                                gravity: "top",
-                                position: "left",
-                                stopOnFocus: true,
-                                close: true,
-                                style: {
-                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                                },
-                            }).showToast();
+                            toastr.options = {
+                                progressBar: true,
+                                positionClass: "toast-top-left",
+                                timeOut: 5000,
+                                extendedTimeOut: 2000,
+                                preventDuplicates: true,
+                            };
+
+                            toastr.success(
+                                `Meeting schedule was successfully deleted.`,
+                            );
+
                             calendar.addEvent(deleteData);
                             calendar.refetchEvents();
                             loadUpcomingEvents();
@@ -556,20 +556,21 @@
             var selected_time = new Date(date + ' ' + time);
             var currentDateTime = new Date();
             if (selected_time < currentDateTime) {
-                Toastify({
-                    text: `Please select a time that is not before the current time.`,
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
+
+                toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.info(
+                    `Please select a time that is not before the current time.`,
+                );
+
                 return;
             }
-
 
             var updateData = {
                 id:             id,
@@ -598,17 +599,17 @@
                         type: 'POST',
                         data: updateData,
                         success: function (response) {
-                            Toastify({
-                                text: `Meeting schedule updated successfully.`,
-                                duration: 5000,
-                                gravity: "top",
-                                position: "left",
-                                stopOnFocus: true,
-                                close: true,
-                                style: {
-                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                                },
-                            }).showToast();
+                            toastr.options = {
+                                progressBar: true,
+                                positionClass: "toast-top-left",
+                                timeOut: 5000,
+                                extendedTimeOut: 2000,
+                                preventDuplicates: true,
+                            };
+
+                            toastr.success(
+                                `Meeting schedule was successfully updated.`,
+                            );
                             calendar.addEvent(updateData);
                             calendar.refetchEvents();
                             $('#edit_meeting_modal').modal('hide');
@@ -618,6 +619,12 @@
                 }
             });
         });
+    });
+
+    $('#meeting_modal').on('hidden.bs.modal', function () {
+        $('#team').val("").trigger('change');
+        $('#module').val("").trigger('change');
+        $('#meeting_date, #time, #location, #reasons').val("");
     });
 
     function editEvent(button) {
@@ -634,10 +641,7 @@
                 var eventList = $('#upcoming-event-list');
                 eventList.empty();
                 if (events.length === 0) {
-                    eventList.append(`
-                        <li class="list-group-item ps-0 text-center text-muted">
-                            No Upcoming Meetings Available
-                        </li>
+                    eventList.append(`<li class="list-group-item text-primary text-center"><iconify-icon icon="fluent:box-multiple-search-24-filled" width="50" height="50"></iconify-icon><h6 class="mt-1">No meeting scheduled... </h6></li>
                     `);
                 } else {
                     events.forEach(function (event) {

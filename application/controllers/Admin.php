@@ -5,9 +5,9 @@ class Admin extends CI_Controller {
     function __construct()
     {
         parent::__construct();
-        if ($this->session->username == "") {
-            redirect('login');
-        }
+		if (!$this->session->userdata('id')) {
+			redirect('session_expire');
+		}
         $this->load->model('Admin_mod', 'admin');
         $this->load->model('Menu/Workload', 'workload');
     }
@@ -540,7 +540,7 @@ class Admin extends CI_Controller {
         echo '<div class="d-flex align-items-center float-end mb-3">
                 <div class="flex-shrink-0">
                     <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-primary waves-effect waves-light add-btn" data-bs-toggle="modal"
+                        <button class="btn btn-primary btn-sm waves-effect waves-light add-btn" data-bs-toggle="modal"
                             data-bs-target="#add_submodule" onclick="add_submodule_content('.$mod_id.')"><i class="ri-add-line align-bottom me-1"></i> Add Sub
                             Module </button>
                     </div>
@@ -558,7 +558,7 @@ class Admin extends CI_Controller {
             ?>
                 <script>
                 $(document).ready(function(){
-                    $('#submodule_list').DataTable({
+                    var table = $('#submodule_list').DataTable({
                         "processing": true,
                         "serverSide": true,
                         'lengthMenu': [[8, 25, 50, 100, 10000], [8, 25, 50, 100, "Max"]],
@@ -567,7 +567,7 @@ class Admin extends CI_Controller {
                             "url": "<?= base_url('submodule_list') ?>",
                             "dataType": "json",
                             "type": "POST",
-                            "data": {
+                            "data": { 
                                 "mod_id": <?= $mod_id ?>
                             }
                         },
@@ -577,60 +577,6 @@ class Admin extends CI_Controller {
                         ],
                         "columnDefs": [
                             { "className": "text-center", "targets": ['_all'] }
-                        ],
-                        "dom": 
-                            "<'row mb-1'<'col-md-12 text-start'B>>" +
-                            "<'row mb-1'<'col-md-6'l><'col-md-6 text-end'f>>" +
-                            "<'row'<'col-md-12'tr>>" +
-                            "<'row mt-1'<'col-md-6'i><'col-md-6 text-end'p>>",
-                        "buttons": [
-                            {
-                                "extend": 'pdfHtml5',
-                                "title": 'SUB MODULE LIST - PDF Export',
-                                "text": 'Generate Report',
-                                "exportOptions": {
-                                    "columns": ':visible:not(:last-child)'
-                                },
-                                "customize": function (doc) {
-                                    doc.defaultStyle.fontSize = 8;
-                                    doc.styles.title.fontSize = 12;
-                                    doc.styles.tableHeader.fontSize = 10;
-                                    doc.styles.tableHeader.fillColor = '#005eff';
-                                    doc.styles.tableHeader.color = '#ffffff';
-                                    var tableBody = doc.content[1].table.body;
-                                    var visibleColumns = tableBody[0].length;
-
-                                    doc.content[1].table.widths = Array(visibleColumns).fill('*');
-                                    doc.content[1].alignment = 'center';
-                            
-                                    doc.content[1].table.body.forEach(function (row) {
-                                        row.forEach(function (cell) {
-                                            cell.border = [0.5, 0.5, 0.5, 0.5];
-                                        });
-                                    });
-                                    doc.content[1].layout = {
-                                        hLineWidth: function (i, node) {
-                                            return 0.5;
-                                        },
-                                        vLineWidth: function (i, node) {
-                                            return 0.5;
-                                        },
-                                        hLineColor: function (i, node) {
-                                            return '#000000';
-                                        },
-                                        vLineColor: function (i, node) {
-                                            return '#000000';
-                                        },
-                                        paddingLeft: function (i, node) {
-                                            return 5;
-                                        },
-                                        paddingRight: function (i, node) {
-                                            return 5;
-                                        }
-                                    };
-                                }
-                            },
-                            'colvis'
                         ],
                     });
                 });
@@ -856,7 +802,7 @@ class Admin extends CI_Controller {
                         <div class="hstack gap-1 d-flex justify-content-center">' .
                         ($status === 'Pending' ? 
                             '<button type="button" class="btn btn-soft-primary btn-label waves-effect waves-light btn-sm" onclick="approved(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
-                            '<iconify-icon icon="ri:thumb-up-fill" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Update</button>'
+                            '<iconify-icon icon="ri:thumb-up-fill" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Approve</button>'
                             : 
                             '<button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="backtopending(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
                             '<iconify-icon icon="tabler:refresh-alert" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Recall</button>') .
@@ -953,7 +899,7 @@ class Admin extends CI_Controller {
                         <div class="hstack gap-1 d-flex justify-content-center">' .
                         ($status === 'Pending' ? 
                             '<button type="button" class="btn btn-soft-primary btn-label waves-effect waves-light btn-sm" onclick="approved(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
-                            '<iconify-icon icon="ri:thumb-up-fill" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Update</button>'
+                            '<iconify-icon icon="ri:thumb-up-fill" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Approve</button>'
                             : 
                             '<button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="backtopending(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
                             '<iconify-icon icon="tabler:refresh-alert" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Recall</button>') .

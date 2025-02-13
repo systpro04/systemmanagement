@@ -25,6 +25,7 @@ class Structure_mod extends CI_Model
         ]);
         $this->db2->where_in('e.sub_section_code', ['', '01', '02']);
         $this->db2->where_in('e.position', $positions);
+        $this->db2->where_in('e.current_status', 'active');
         $this->db2->where_not_in('e.emp_id', [
             '04316-2017', '05137-2022', '25077-2013', 
             '28541-2013', '00207-2023', '00203-2023', 
@@ -75,11 +76,12 @@ class Structure_mod extends CI_Model
         // If emp_id is provided, filter by that specific ID
         if ($emp_id) {
             $this->db2->where('e.emp_id', $emp_id);
+            // $this->db2->where('e.current_status', 'active');
+
         }
         
         // Always order by date_hired
         $this->db2->order_by('ad.date_hired', 'ASC');
-        
         $query = $this->db2->get();
         return $emp_id ? $query->row_array() : $query->result_array();  // return row or multiple rows based on emp_id
     }

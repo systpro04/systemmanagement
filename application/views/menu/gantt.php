@@ -51,7 +51,7 @@
                     <label class="col-sm-3 col-form-label">Date Request:</label>
                     <div class="col-sm-9">
                         <div class="input-group">
-                            <input type="date" id="date_request" class="form-control" readonly="" placeholder="Select Date Request" data-provider="flatpickr" data-altFormat="F j, Y" />
+                            <input type="date" id="date_request" class="form-control" readonly="" placeholder="Select Date Request" data-provider="flatpickr" />
                             <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
                         </div>
                     </div>
@@ -60,7 +60,7 @@
                     <label class="col-sm-3 col-form-label">Date Parallel:</label>
                     <div class="col-sm-9">
                         <div class="input-group">
-                            <input type="date" id="date_parallel" class="form-control" readonly="" placeholder="Select Date Parallel" data-provider="flatpickr" data-altFormat="F j, Y" />
+                            <input type="date" id="date_parallel" class="form-control" readonly="" placeholder="Select Date Parallel" data-provider="flatpickr" />
                             <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
                         </div>
                     </div>
@@ -69,7 +69,7 @@
                     <label class="col-sm-3 col-form-label">Date Implementation:</label>
                     <div class="col-sm-9">
                         <div class="input-group">
-                            <input type="date" id="date_implementation" class="form-control" readonly="" placeholder="Select Date Implementation" data-provider="flatpickr" data-altFormat="F j, Y" />
+                            <input type="date" id="date_implementation" class="form-control" readonly="" placeholder="Select Date Implementation" data-provider="flatpickr" />
                             <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
                         </div>
                     </div>
@@ -78,7 +78,7 @@
                     <label class="col-sm-3 col-form-label">Date Start | Coding:</label>
                     <div class="col-sm-9">
                         <div class="input-group">
-                            <input type="date" id="date_start" class="form-control" readonly="" placeholder="Select Date Start" data-provider="flatpickr" data-altFormat="F j, Y" />
+                            <input type="date" id="date_start" class="form-control" readonly="" placeholder="Select Date Start" data-provider="flatpickr" />
                             <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                     <label class="col-sm-3 col-form-label">Date End | Coding:</label>
                     <div class="col-sm-9">
                         <div class="input-group">
-                            <input type="date" id="date_end" class="form-control" readonly="" placeholder="Select Date End" data-provider="flatpickr" data-altFormat="F j, Y" />
+                            <input type="date" id="date_end" class="form-control" readonly="" placeholder="Select Date End" data-provider="flatpickr" />
                             <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
                         </div>
                     </div>
@@ -226,7 +226,7 @@
             <div class="card">
                 <div class="card-header border-1">
                     <div class="d-flex align-items-center justify-content-between">
-                        <h5 class="card-title mb-0 flex-grow-1 fw-bold">LIST OF SCHEDULED</h5>
+                        <h5 class="card-title mb-0 flex-grow-1 fw-bold">List of Scheduled</h5>
                         <div class="col-md-3">
                             <div class="d-flex align-items-center flex-shrink-0">
                                 <select class="form-select" id="team_filter" style="width: 150px; height: auto;">
@@ -271,7 +271,7 @@
                     <div class="tab-content">
                         <div class="mt-2 tab-pane active" id="System Analyst" role="tabpanel">
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover" id="gantt_list">
+                                <table class="table table-striped table-hover dt-responsive compact" id="gantt_list" width="100%">
                                     <thead class="table-info text-center text-uppercase">
                                         <tr>
                                             <th>Team</th>
@@ -498,18 +498,12 @@
         }
     });
 
-    $('#edit_system_gantt').on('hidden.bs.modal', function () {
-        $('#edit_emp_id').val('');
-        $('#edit_team').val('').trigger('change');
-        $('#edit_incharge').val('').trigger('change');
-        $('#edit_module').val('').trigger('change');
-        $('#edit_sub_module').val('').trigger('change');
-        $('#edit_description').val('');
-        $('#edit_date_request').val('');
-        $('#edit_date_parallel').val('');
-        $('#edit_date_implementation').val('');
-        $('#edit_date_start').val('');
-        $('#edit_date_end').val('');
+    $('#add_system_gantt').on('hidden.bs.modal', function () {
+        $('#team').val("").trigger('change');
+        $('#incharge').val("").trigger('change');
+        $('#module').val("").trigger('change');
+        $('#sub_module').val("").trigger('change');
+        $('#description, #date_request, #date_parallel, #date_implementation, #date_start, #date_end').val("");
     });
     function submit_gantt() {
         var team = $('#team').val();
@@ -538,24 +532,16 @@
                     background: "linear-gradient(to right, #ff5f6d, #ffc371)",
                 },
             }).showToast();
-            if (description === "") {
-                $('#description').addClass('is-invalid');
+            if (description == '' || date_request == '' || date_implementation == '' || date_start == '' || date_end == '') {
+                $('#description, #date_request, #date_implementation, #date_start, #date_end').each(function () {
+                    if ($(this).val() === '') {
+                        $(this).addClass('is-invalid');
+                    } else {
+                        $(this).removeClass('is-invalid');
+                    }
+                });
             }
-            if (date_request === "") {
-                $('#date_request').addClass('is-invalid');
-            }
-            if (date_parallel === "") {
-                $('#date_parallel').addClass('is-invalid');
-            }
-            if (date_implementation === "") {
-                $('#date_implementation').addClass('is-invalid');
-            }
-            if (date_start === "") {
-                $('#date_start').addClass('is-invalid');
-            }
-            if (date_end === "") {
-                $('#date_end').addClass('is-invalid');
-            }
+
             return;
         }
         Swal.fire({

@@ -352,18 +352,18 @@
                         mod_id: mod_id
                     },
                     success: function () {
-                        Toastify({
-                            text: type + ' file approved successfully',
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `${type} file was successfully approved`,
+                        );
+
                         var table = $('#typeofsystem_table').DataTable();
                         var currentPage = table.page();
                         updateNotificationCount();
@@ -398,18 +398,17 @@
                         mod_id: mod_id
                     },
                     success: function () {
-                        Toastify({
-                            text: type + ' file recall to pending',
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `${type} file was recalled to pending`,
+                        );
 
                         var table = $('#typeofsystem_table').DataTable();
                         var currentPage = table.page();

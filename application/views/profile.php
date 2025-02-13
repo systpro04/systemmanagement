@@ -140,18 +140,18 @@ function update_password() {
             var password = $('#password').val();
 
             if (!username || !password) {
-                Toastify({
-                    text: `Please fill in the required field.`,
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    className: "birthday-toast primary",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
+                toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.info(
+                    `Please fill in the required field.`,
+                );
+                
                 return;
             }
 
@@ -164,18 +164,17 @@ function update_password() {
                     password: password
                 },
                 success: function(response) {
-                    Toastify({
-                        text: `Password updated successfully.`,
-                        duration: 5000,
-                        gravity: "top",
-                        position: "left",
-                        className: "birthday-toast primary",
-                        stopOnFocus: true,
-                        close: true,
-                        style: {
-                            background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                        },
-                    }).showToast();
+                    toastr.options = {
+                        progressBar: true,
+                        positionClass: "toast-top-left",
+                        timeOut: 5000,
+                        extendedTimeOut: 2000,
+                        preventDuplicates: true,
+                    };
+
+                    toastr.success(
+                        `Password was successfully updated.`,
+                    );
 
                     setTimeout(() => {
                         window.location.href = '<?php echo base_url(); ?>profile';

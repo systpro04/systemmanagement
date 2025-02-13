@@ -17,8 +17,8 @@
                 <h4 class="kpi-header mt-1 mb-3 fs-15"><?php echo $type; ?>'s KPI</h4>
 
                 <?php foreach ($kpis as $kpi): ?>
-                    <div class="kpi-description">
-                        <p class="fw-bold"><i class="ri-checkbox-circle-fill text-success"></i> <?php echo $kpi->title; ?></p>
+                    <div class="kpi-description ">
+                        <p class="fw-bold "><i class="ri-checkbox-circle-fill text-success"></i> <?php echo $kpi->title; ?></p>
                         <p><?php echo $kpi->description; ?></p>
                     </div>
                 <?php endforeach; ?>

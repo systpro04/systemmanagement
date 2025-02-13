@@ -4,7 +4,7 @@
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header bg-info-subtle">
-                <h5 class="modal-title" id="varyingcontentModalLabel">SETUP USER</h5>
+                <h5 class="modal-title" id="varyingcontentModalLabel">SETUP USER : <soan id="emp_name"></soan></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -26,7 +26,7 @@
                 </div>
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="parttimeCheckbox" value="Parttime">
-                    <label class="form-check-label fw-6" for="parttimeCheckbox">Check if part time in this team</label>
+                    <label class="form-check-label fw-6" for="parttimeCheckbox"> Check ( <iconify-icon icon="line-md:check-all" class="align-bottom fs-22"></iconify-icon> ) if part time in this team</label>
                 </div>
             </div>
             <div class="modal-footer">
@@ -42,7 +42,7 @@
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header bg-info-subtle">
-                <h5 class="modal-title" id="varyingcontentModalLabel">SETUP USER</h5>
+                <h5 class="modal-title" id="varyingcontentModalLabel">UPDATE USER <soan id="edit_emp_name"></soan></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -350,6 +350,29 @@
         var team_id = $('#team_id').val();
         var position = $('#type').val();
         var isParttimeChecked = $('#parttimeCheckbox').is(':checked') ? $('#parttimeCheckbox').val() : null;
+
+        if(team_id == '' || position == ''){
+            toastr.options = {
+                progressBar: true,
+                positionClass: "toast-top-left",
+                timeOut: 5000,
+                extendedTimeOut: 2000,
+                preventDuplicates: true,
+            };
+
+            toastr.info(
+                `Please fill up the required fields`,
+            );
+
+            $('#emp_id, #type').each(function () {
+                if ($(this).val() === '') {
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+            return false;
+        }
         Swal.fire({
             title: 'Add User',
             text: 'Are you sure you want to add this user?',
@@ -371,18 +394,17 @@
                         is_parttime: isParttimeChecked
                     },
                     success: function (data) {
-                        Toastify({
-                            text: `User added successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `User was successfully added`,
+                        );
                         $('#addUser').modal('hide');
                         var table = $('#user_list').DataTable();
                         var currentPage = table.page();
@@ -404,6 +426,7 @@
                 let data = JSON.parse(response);
                 $('#edit_team_id').val(data.team_id).trigger('change');
                 $('#edit_id').val(data.id);
+                $('#edit_emp_name').val(data.name);
                 $('#edit_type').val(data.position).trigger('change');
                 $('#edit_parttime').val(data.type).trigger('change');
             }
@@ -435,18 +458,17 @@
                         type: type
                     },
                     success: function (data) {
-                        Toastify({
-                            text: `User updated successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `User was successfully updated`,
+                        );
                         var table = $('#user_list').DataTable();
                         var currentPage = table.page();
 
@@ -476,18 +498,17 @@
                     type: 'POST',
                     data: { id: id },
                     success: function (data) {
-                        Toastify({
-                            text: `Password reset successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Password was successfully reset`,
+                        );
                         var table = $('#user_list').DataTable();
                         var currentPage = table.page();
 

@@ -53,7 +53,7 @@
     <script src="<?php echo base_url(); ?>assets/js/filepond-plugin-file-validate-size.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/filepond-plugin-image-exif-orientation.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/filepond-plugin-file-encode.min.js"></script>
-    <!-- <script src="<?php echo base_url(); ?>assets/libs/apexcharts/apexcharts.min.js"></script> -->
+
 
     <script>
         Array.from(document.querySelectorAll("form .auth-pass-inputgroup")).forEach(
@@ -116,18 +116,17 @@
 
 <script type="text/javascript">
     function swal_message1(msg_type, msg) {
-        Toastify({
-            text: msg,
-            duration: 5000,
-            gravity: "top",
-            position: "center",
-            className: "birthday-toast primary",
-            stopOnFocus: true,
-            close: true,
-            style: {
-                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-            },
-        }).showToast();
+        toastr.options = {
+            progressBar: true,
+            positionClass: "toast-top-center",
+            timeOut: 5000,
+            extendedTimeOut: 2000,
+            preventDuplicates: true,
+        };
+
+        toastr.success(
+            `${msg}`,
+        );
     }
 
     <?php
@@ -226,6 +225,95 @@
     updateNotificationCount();
 
 </script>
+
+<script>
+    $(document).ready(function () {
+
+    function updateMarquee(todayBirthdays) {
+        const marqueeContainer = $('#birthday-marquee');
+
+        if (todayBirthdays.length > 0) {
+            const marqueeContent = `<iconify-icon icon="noto:confetti-ball"></iconify-icon> Happy Birthday to ${todayBirthdays.join('   and   ')} <iconify-icon icon="emojione-v1:birthday-cake"></iconify-icon>`;
+            marqueeContainer.html(`
+                <marquee behavior="scroll" direction="left" scrollamount="10">
+                    ${marqueeContent}
+                </marquee>
+            `);
+        }
+    }
+    fetchAndUpdateMarquee();
+    function fetchAndUpdateMarquee() {
+    $.ajax({
+        url: "<?php echo base_url('get_birthdays'); ?>",
+        type: "GET",
+        data: {
+            month: new Date().getMonth() + 1,
+            year: new Date().getFullYear(),
+        },
+        dataType: "json",
+        success: function (response) {
+            if (response.status === 'success' && response.data.length > 0) {
+                const today = new Date();
+                const todayBirthdays = response.data
+                    .filter(birthday => {
+                        const birthDate = new Date(birthday.birthdate);
+                        return (
+                            birthDate.getDate() === today.getDate() &&
+                            birthDate.getMonth() === today.getMonth()
+                        );
+                    })
+                    .map(person => {
+                        // Capitalize the first letter of each name and last name
+                        const fullName = `${person.firstname} ${person.lastname}`;
+                        return capitalizeName(fullName);
+                    });
+                updateMarquee(todayBirthdays);
+            }
+        },
+    });
+}
+
+
+function capitalizeName(name) {
+    return name.split(' ').map(word => {
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }).join(' ');
+}
+
+
+});
+
+</script>
+<style>
+    .header-marquee {
+    /* background-color: #f7f7f7; */
+    /* color: #333 !important; */
+    color: #f7f7f7 !important;
+    /* font-weight: bold; */
+    color: black;
+    width: 800px;
+
+
+
+}
+
+marquee {
+    display: block;
+    font-size: 30px;
+    font-family: 'BirthdayFont', the-richland; 
+
+}
+@font-face {
+    font-family: 'BirthdayFont';
+    src: url('<?php echo base_url("assets/fonts/chicken.otf"); ?>') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+
+
+</style>
  </body>
 
  </html>

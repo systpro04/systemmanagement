@@ -5,9 +5,9 @@ class New_Sys extends CI_Controller {
 
     function __construct() {
         parent::__construct();
-        if ($this->session->username == "") {
-            redirect('login');
-        }
+		if (!$this->session->userdata('id')) {
+			redirect('session_expire');
+		}
         $this->load->model('Menu/File_mod_new', 'file_mod');
         $this->load->model('Admin_mod', 'admin');
         $this->load->model('Menu/Deploy_mod', 'deploy');
@@ -390,7 +390,8 @@ class New_Sys extends CI_Controller {
                     'date_uploaded' => date('Y-m-d H:i:s'),
                     'typeofsystem'  => 'new',
                     'business_unit' => $business_unit,
-                    'department'    => $department
+                    'department'    => $department,
+                    'uploaded_by' => $this->session->emp_id
                 ], $statuses);
     
                 $this->file_mod->upload_file($data);
@@ -436,7 +437,7 @@ class New_Sys extends CI_Controller {
             'teams' => $teams,
             'modules' => $modules,
             'sub_modules' => $sub_modules,
-            'bu' => $bu,
+            'bu' => $bu, 
         ]);
     }
 
@@ -523,8 +524,4 @@ class New_Sys extends CI_Controller {
         header('Content-Type: ' . $content_type);
         readfile($folder_path);
     }
-    
-
-
-
 }

@@ -529,6 +529,11 @@
         }
     });
 
+    $('#create_location').on('hidden.bs.modal', function () {
+        $('#company, #business_unit, #department, #module, #sub_module').val("").trigger('change');
+        $('#date_parallel, #date_online').val("");
+        $('#remarks').val("");
+    });
     function submit_location() {
         
         var company         = $('#company').val();
@@ -543,21 +548,26 @@
         var remarks         = $('#remarks').val();
 
         if (company === "" || business_unit === "" || department === "" || module === "" || date_parallel === "" || date_online === "" || remarks === "") {
-            Toastify({
-                text: `Please fill up the required fields.`,
-                duration: 5000,
-                gravity: "top",
-                position: "left",
+            toastr.options = {
+                progressBar: true,
+                positionClass: "toast-top-left",
+                timeOut: 5000,
+                extendedTimeOut: 2000,
+                preventDuplicates: true,
+            };
+
+            toastr.info(
+                `Please fill up the required fields`,
+            );
+            
+            $('#company, #business_unit, #department, #module, #sub_module, #date_parallel, #date_online, #remarks').each(function () {
+                if ($(this).val() === '') {
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
                 
-                stopOnFocus: true,
-                close: true,
-                style: {
-                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                },
-            }).showToast();
-            if (desc === "" || concern === "" || remarks === "" || status === "") {
-                $('#company, #business_unit, #department, #module, #sub_module, #date_parallel, #date_online, #remarks').addClass('is-invalid');
-            }
             return;
         }
 
@@ -588,18 +598,17 @@
                         remarks: remarks
                     },
                     success: function (response) {
-                        Toastify({
-                            text: `Location setup added successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Location setup was successfully added`,
+                        );
                         $('#create_location').modal('hide');
                         module_list_implemented_modal(module)
                         var table = $('#location_setup').DataTable();
@@ -678,18 +687,17 @@
                         remarks: remarks
                     },
                     success: function (response) {
-                        Toastify({
-                            text: `Location setup updated successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Location setup was successfully updated`,
+                        );
                         $('#edit_location').modal('hide');
                         module_list_implemented_modal(module)
                         var table = $('#location_setup').DataTable();
@@ -720,18 +728,17 @@
                     type: 'POST',
                     data: { id: id },
                     success: function (response) {
-                        Toastify({
-                            text: `Location setup deleted successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Location setup was successfully deleted`,
+                        );
                         var table = $('#location_setup').DataTable();
                         var currentPage = table.page();
 

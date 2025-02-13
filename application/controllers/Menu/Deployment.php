@@ -7,9 +7,9 @@ class Deployment extends CI_Controller
     function __construct()
     {
         parent::__construct();
-        if ($this->session->username == "") {
-            redirect('login');
-        }
+		if (!$this->session->userdata('id')) {
+			redirect('session_expire');
+		}
         $this->load->model('Menu/Deploy_mod', 'deploy');
         $this->load->model('Menu/file_mod_new', 'file_mod_new');
         $this->load->model('Menu/file_mod_current', 'file_mod_current');

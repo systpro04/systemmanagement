@@ -5,9 +5,9 @@ class Gantt extends CI_Controller {
 
     function __construct() {
         parent::__construct();
-        if ($this->session->username == "") {
-            redirect('login');
-        }
+		if (!$this->session->userdata('id')) {
+			redirect('session_expire');
+		}
         $this->load->model('Menu/Gantt_mod', 'gantt');
     }
     public function index() {
@@ -47,9 +47,6 @@ class Gantt extends CI_Controller {
             } else {
                 $date_implem = '<span class="badge bg-secondary">N/A</span>';
             }
-            
-
-
             
             if($row['date_parallel'] != null) {
                 $date_parallel = date('F d, Y', strtotime($row['date_parallel']));   

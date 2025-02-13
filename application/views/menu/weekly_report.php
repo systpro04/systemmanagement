@@ -178,7 +178,7 @@
                     <div class="d-flex align-items-center justify-content-between flex-wrap">
                         <div class="d-flex align-items-center flex-grow-1 gap-2">
                             <div class="input-group">
-                                <input type="date" id="date_range" class="form-control" readonly=""  placeholder="Date Range" data-provider="flatpickr" data-date-format="M d, Y" data-range-date="true" />
+                                <input type="date" id="date_range_filter" class="form-control" readonly=""  placeholder="Date Range" data-provider="flatpickr" data-date-format="M d, Y" data-range-date="true" />
                                 <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
                             </div>
                             <select class="form-select" id="team_filter" style="width: 150px;">
@@ -262,7 +262,7 @@
                 d.team          = $('#team_filter').val();
                 d.module        = $('#module_filter').val();
                 d.sub_module    = $('#sub_module_filter').val();
-                d.date_range    = $('#date_range').val();
+                d.date_range    = $('#date_range_filter').val();
             },
         },
         "columns": [
@@ -275,10 +275,10 @@
             { "data": "weekly_status",
                 "render": function (data, type, row) {
                     return `
-                        <select class="form-control form-select form-select-sm weekly-status-dropdown" data-id="${row.id}" data-emp="${row.emp_name}" style="width: 110px;">
-                            <option value="Pending" ${data === 'Pending' ? 'selected' : ''}>PENDING</option>
-                            <option value="Ongoing" ${data === 'Ongoing' ? 'selected' : ''}>ONGOING</option>
-                            <option value="Done" ${data === 'Done' ? 'selected' : ''}>DONE</option>
+                        <select class="form-control form-select form-select-sm weekly-status-dropdown" data-id="${row.id}" data-emp="${row.emp_name}" style="width: 95px;">
+                            <option value="Pending" ${data === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Ongoing" ${data === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
+                            <option value="Done" ${data === 'Done' ? 'selected' : ''}>Done</option>
                         </select>
                     `;
                 }
@@ -378,18 +378,17 @@
                 emp_name: emp_name
             },
             success: function () {
-                Toastify({
-                    text: "Weekly Report Status updated successfully!",
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    className: "birthday-toast primary",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
+                toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.success(
+                    `Weekly Report status was successfully updated`,
+                );
                 $('#weekly_report').DataTable().ajax.reload(null, false);
 
             },
@@ -398,7 +397,7 @@
 
 
 
-    $('#team_filter, #module_filter, #sub_module_filter, #date_range').change(function () {
+    $('#team_filter, #module_filter, #sub_module_filter, #date_range_filter').change(function () {
         table.ajax.reload();
     });
     
@@ -475,7 +474,7 @@
         $('#emp_id').val('');
         $('#name').val('').trigger('change');
         $('#task_workload').val('');
-        $('#weekly_status').val('');
+        $('#weekly_status').val('').trigger('change');
         $('#remarks').val('');
     });
 
@@ -491,21 +490,26 @@
         var remarks         = $('#remarks').val();
 
         if (team === "" || module === "" || date_range === "" || weekly_status === "" || remarks === "") {
-            Toastify({
-                text: `Please fill up the required fields.`,
-                duration: 5000,
-                gravity: "top",
-                position: "left",
-                className: "birthday-toast primary",
-                stopOnFocus: true,
-                close: true,
-                style: {
-                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                },
-            }).showToast();
-            if (team === "" || module === "" || date_range === "" || weekly_status === "" || remarks === "") {
-                $('#team, #module, #sub_module, #date_range, #name, #weekly_status, #remarks').addClass('is-invalid');
-            }
+            toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.info(
+                    `Please fill up the required fields`,
+                );
+
+            $('#team, #module, #sub_module, #date_range, #name, #weekly_status, #remarks').each(function () {
+                if ($(this).val() === '') {
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
             return;
         }
 
@@ -535,18 +539,17 @@
                         remarks: remarks
                     },
                     success: function (response) {
-                        Toastify({
-                            text: `Weekly Report added successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Weekly Report was successfully added`,
+                        );
                         $('#create_weekly_report').modal('hide');
                         var table = $('#weekly_report').DataTable();
                         var currentPage = table.page();
@@ -627,18 +630,17 @@
                         remarks: remarks
                     },
                     success: function (response) {
-                        Toastify({
-                            text: `Weekly Report updated successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Weekly Report was successfully updated`,
+                        );
                         $('#edit_weekly_report').modal('hide');
                         var table = $('#weekly_report').DataTable();
                         var currentPage = table.page();
@@ -668,18 +670,17 @@
                     type: 'POST',
                     data: { id: id },
                     success: function (response) {
-                        Toastify({
-                            text: `Weekly Report deleted successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Weekly Report status was successfully deleted`,
+                        );
                         var table = $('#weekly_report').DataTable();
                         var currentPage = table.page();
 

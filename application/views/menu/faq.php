@@ -1,12 +1,12 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-12">
-            <div class="card rounded-0 bg-success-subtle mx-n4 mt-n4 border-top">
+        <div class="col-md-12">
+            <div class="card rounded-0 bg-success-subtle border-top">
                 <div class="px-4">
                     <div class="row">
                         <div class="col-xxl-5 align-self-center">
                             <div class="py-4">
-                                <h4 class="display-5 coming-soon-text">Frequently asked questions </h4>
+                                <h4 class="display-6 coming-soon-text">Frequently asked questions </h4>
                                 <p class="text-primary fs-15 mt-3">If you cannot find an answer to your question in our FAQ, you can always contact us or email us. We will answer you promptly!</p>
                             </div>
                         </div>

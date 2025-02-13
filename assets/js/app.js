@@ -1545,16 +1545,34 @@
 		document.addEventListener("fullscreenchange", N),
 		document.addEventListener("webkitfullscreenchange", N),
 		document.addEventListener("mozfullscreenchange", N),
-		(B = document.getElementsByTagName("HTML")[0]),
-		(z = document.querySelectorAll(".light-dark-mode")) &&
-			z.length &&
-			z[0].addEventListener("click", function (e) {
-				B.hasAttribute("data-bs-theme") &&
-				"dark" == B.getAttribute("data-bs-theme")
-					? C("data-bs-theme", "light", "layout-mode-light", B)
-					: C("data-bs-theme", "dark", "layout-mode-dark", B),
-					window.dispatchEvent(x);
-			}),
+		B = document.getElementsByTagName("HTML")[0];
+		z = document.querySelectorAll(".light-dark-mode");
+
+		if (z && z.length) {
+			function setTheme(mode) {
+				if (mode === "dark") {
+					B.setAttribute("data-bs-theme", "dark");
+					localStorage.setItem("theme", "dark");
+				} else {
+					B.setAttribute("data-bs-theme", "light");
+					localStorage.setItem("theme", "light");
+				}
+			}
+			let savedTheme = localStorage.getItem("theme");
+			if (savedTheme) {
+				setTheme(savedTheme);
+			}
+			z[0].addEventListener("click", function () {
+				if (B.getAttribute("data-bs-theme") === "dark") {
+					setTheme("light");
+				} else {
+					setTheme("dark");
+				}
+				window.dispatchEvent(x);
+			});
+		}
+
+			
 		G(),
 		D(),
 		r(),

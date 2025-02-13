@@ -1,7 +1,7 @@
 <div class="row project-wrapper">
-    <div class="col-xxl-8">
+    <div class="col-xxl-12">
         <div class="row">
-            <div class="col-xl-4">
+            <div class="col-xl-3">
                 <div class="card card-animate">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
@@ -11,9 +11,9 @@
                                 </span>
                             </div>
                             <div class="flex-grow-1 overflow-hidden ms-3">
-                                <p class="text-uppercase fw-bold text-muted text-truncate mb-3">SYSTEM PROGRAMMERS </p>
+                                <p class="fw-bold text-muted text-truncate mb-3">System Programmers </p>
                                 <div class="d-flex align-items-center mb-3">
-                                    <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value"
+                                    <h4 class="fs-4 flex-grow-1 mb-0 text-end"><span class="counter-value"
                                             data-target="<?php echo $programmers_count; ?>"></span></h4>
                                 </div>
                                 <p class="text-muted text-truncate mb-0 fs-6">Active Programmers </p>
@@ -23,7 +23,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-4">
+            <div class="col-xl-3">
                 <div class="card card-animate">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
@@ -33,7 +33,7 @@
                                 </span>
                             </div>
                             <div class="flex-grow-1 overflow-hidden ms-3">
-                                <p class="text-uppercase fw-bold text-muted text-truncate mb-3">SYSTEM ANALYSTS </p>
+                                <p class="fw-bold text-muted text-truncate mb-3">System Analysts </p>
                                 <div class="d-flex align-items-center mb-3">
                                     <h4 class="fs-4 flex-grow-1 mb-0 text-end"><span class="counter-value"
                                             data-target="<?php echo $analysts_count; ?>"></span></h4>
@@ -45,7 +45,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-4">
+            <div class="col-xl-3">
                 <div class="card card-animate">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
@@ -55,8 +55,8 @@
                                 </span>
                             </div>
                             <div class="flex-grow-1 overflow-hidden ms-3">
-                                <p class="text-uppercase fw-bold text-muted text-truncate mb-3">
-                                    RMS TEAM </p>
+                                <p class="fw-bold text-muted text-truncate mb-3">
+                                    RMS Team </p>
                                 <div class="d-flex align-items-center mb-3">
                                     <h4 class="fs-4 flex-grow-1 mb-0 text-end"><span class="counter-value"
                                             data-target="<?php echo $others_count; ?>"></span> </h4>
@@ -67,11 +67,36 @@
                     </div>
                 </div>
             </div>
-        </div>
 
+            <div class="col-xl-3">
+                <div class="card card-animate">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm flex-shrink-0">
+                                <span class="avatar-title bg-light rounded-2 fs-2">
+                                    <iconify-icon icon="emojione:file-folder" class="fs-35"></iconify-icon>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden ms-3">
+                                <p class="fw-bold text-muted text-truncate mb-3">
+                                    My Workloads </p>
+                                <div class="d-flex align-items-center mb-3">
+                                    <h4 class="fs-4 flex-grow-1 mb-0 text-end"><span class="counter-value"
+                                            data-target="<?php echo $my_workloads; ?>"></span> </h4>
+                                </div>
+                                <p class="text-muted text-truncate mb-0 fs-6">Number of Workloads </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xxl-8">
         <div class="row">
             <div class="col-xl-6">
-                <div class="card">
+                <div class="card card-animate">
                     <div class="card-header align-items-center d-flex">
                         <h6 class="card-title mb-0 flex-grow-1 fw-bold text-uppercase">Upcoming Meeting Schedules </h6>
                     </div>
@@ -81,16 +106,19 @@
                 </div>
             </div>
             <div class="col-xl-6">
-                <div class="card">
+                <div class="card card-animate">
                     <div class="card-header align-items-center d-flex">
-                        <h6 class="card-title mb-0 flex-grow-1 fw-bold text-uppercase"> ALL FILES MONITORING | DIRECTORY</h6>
+                        <h6 class="card-title mb-0 flex-grow-1 fw-bold text-uppercase"> ALL FILES MONITORING | DIRECTORY
+                        </h6>
                     </div>
                     <div class="card-body">
-                        <div class="nav nav-pills nav-justified mb-1">
-                            <a href="javascript:void(0);" class="nav-link active waves-effect waves-light" id="newTab" data-type="new">New System | Directory</a>
-                            <a href="javascript:void(0);" class="nav-link waves-effect waves-light" id="currentTab" data-type="current">Current System | Directory</a>
+                        <div class="nav nav-tabs nav-justified mb-1">
+                            <a href="javascript:void(0);" class="nav-link active" id="newTab" data-type="new">New System
+                                | Directory</a>
+                            <a href="javascript:void(0);" class="nav-link" id="currentTab" data-type="current">Current
+                                System | Directory</a>
                         </div>
-                        <div id="basic_polar_area" class="tab-pane show apex-charts" dir="ltr"></div>
+                        <div id="system_monitoring" class="tab-pane show apex-charts" dir="ltr"></div>
                     </div>
                 </div>
             </div>
@@ -98,24 +126,25 @@
     </div>
 
     <div class="col-xxl-4">
-        <div class="card">
+        <div class="card card-animate" data-simplebar style="max-height: 450px;">
             <div class="card-header border-0">
-                <h6 class="card-title mb-0 fw-bold">Upcoming Birthdays</h6>
+                <h6 class="card-title mb-0 fw-bold fs-26" style="font-family: 'BirthdayFont';"><iconify-icon icon="noto:confetti-ball"></iconify-icon> Birthdays <iconify-icon icon="noto:confetti-ball"></iconify-icon></h6>
             </div>
             <div class="card-body pt-0">
                 <div class="upcoming-scheduled">
-                    <input type="date" id="birthday-calendar" class="form-control" data-provider="flatpickr" data-time-inline="true" />
+                    <input type="date" id="birthday-calendar" class="form-control" data-provider="flatpickr"
+                        data-time-inline="true" />
                 </div>
                 <hr>
-                <div class="card mt-3">
-                    <div class="card-header">
-                        <h6 class="card-title mb-0 text-uppercase text-muted fw-bold"><iconify-icon
-                                icon="twemoji:birthday-cake"></iconify-icon>&nbsp;&nbsp; This Month`s Birthday List : </h6>
-                    </div>
-                    <div class="card-body" data-simplebar style="max-height: 350px;">
-                        <div id="birthday-list"></div>
-                    </div>
-                </div>
+                <!-- <div class="card mt-3"> -->
+                <!-- <div class="card-header"> -->
+                <h3 class="card-title capitalized fw-bold fs-22" style="font-family: 'BirthdayFont';"><iconify-icon
+                        icon="twemoji:birthday-cake"></iconify-icon> This Month`s Birthday List <iconify-icon icon="noto:confetti-ball"></iconify-icon>: </h3>
+                <!-- </div> -->
+                <!-- <div class="card-body" data-simplebar style="max-height: 350px;"> -->
+                <div id="birthday-list"></div>
+                <!-- </div> -->
+                <!-- </div> -->
             </div>
         </div>
     </div>
@@ -130,6 +159,7 @@
         const currentDate = new Date();
 
         function update_birthdays(month, year) {
+            $('#birthday-list').html('<div class="text-center text-primary "><iconify-icon icon="svg-spinners:bars-rotate-fade" width="30" height="30"></iconify-icon></div>');
             $.ajax({
                 url: "<?php echo base_url('get_birthdays'); ?>",
                 type: "GET",
@@ -151,6 +181,7 @@
                                 month: 'long',
                                 day: 'numeric',
                             });
+
                             let age = year - birthDate.getFullYear();
                             const isBeforeBirthday =
                                 currentDate.getMonth() + 1 < month ||
@@ -160,14 +191,20 @@
                                 age--;
                             }
 
-                            if (
-                                birthDate.getDate() === currentDate.getDate() &&
-                                birthDate.getMonth() === currentDate.getMonth()
-                            ) {
-                                todayBirthdays.push(`${birthday.firstname} ${birthday.lastname}`);
+                            // Capitalize the first and last name before displaying
+                            const fullName = `${birthday.firstname} ${birthday.lastname}`;
+                            const formattedName = capitalizeName(fullName);
+
+                            // Check if today is the person's birthday
+                            const isTodayBirthday = birthDate.getDate() === currentDate.getDate() &&
+                                birthDate.getMonth() === currentDate.getMonth();
+
+                            if (isTodayBirthday) {
+                                todayBirthdays.push(formattedName);
                             }
+
                             const bday_photo = birthday.photo.replace(/(\.\.\/)+/g, '');
-                            const birthdayHTML = `
+                            let birthdayHTML = `
                             <div class="mini-stats-wid d-flex align-items-center mt-2">
                                 <div class="flex-shrink-0 avatar-sm">
                                     <span class="mini-stat-icon avatar-title rounded-circle text-danger bg-danger-subtle fs-4">
@@ -175,60 +212,90 @@
                                     </span>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-1 fw-bold">${birthday.firstname} ${birthday.lastname}</h6>
+                                    <h6 class="mb-1 fw-bold">${formattedName}`;
+
+                                if (isTodayBirthday) {
+                                    birthdayHTML += ' <iconify-icon icon="vaadin:check-circle" style="color: green; font-weight: bold"></iconify-icon>';
+                                }
+
+                                birthdayHTML += `</h6>
                                     <p class="text-muted mb-0 fs-11">${formattedDate}</p>
                                 </div>
                                 <div class="flex-shrink-0">
-                                    <p class="text-muted mb-0">Age: <span class="text-uppercase fw-bold">${age}</span></p>
+                                    <p class="text-muted mb-0 fs-15"><span class="badge bg-success fw-bold">${age} year's old</span></p>
                                 </div>
                             </div>`;
                             birthdayList.append(birthdayHTML);
                         });
-                        if (todayBirthdays.length > 0) {
-                            const toastMessage = `🎉 Happy Birthday to ${todayBirthdays.join(', ')}! 🎂`;
-                            Toastify({
-                                text: toastMessage,
-                                duration: 5000,
-                                gravity: "top",
-                                position: "left",
-                                stopOnFocus: true,
-                                close: true,
-                                style: {
-                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                                },
-                            }).showToast();
-                        }
-
                         updateCalendar(birthdayDates, month, year, response.data);
                     }
                 },
             });
         }
 
+
+        // Helper function to capitalize the first letter of each word
+        function capitalizeName(name) {
+            return name.split(' ').map(word => {
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            }).join(' ');
+        }
+
+
         function updateCalendar(birthdayDates, month, year, birthdayData) {
             const calendarInstance = calendarElement._flatpickr;
+            const today = new Date();
+            let todayBirthdays = []; // To store names of people with birthdays today
+
             if (calendarInstance) {
                 calendarInstance.set('disable', [
                     function (date) {
                         return !(date.getMonth() === month - 1 && birthdayDates.includes(date.getDate()));
                     },
                 ]);
+
                 calendarInstance.set('onDayCreate', function (dObj, dStr, fp, dayElem) {
                     const day = parseInt(dayElem.innerText);
+
                     if (dayElem.classList.contains('prevMonthDay') || dayElem.classList.contains('nextMonthDay')) {
                         return;
                     }
+
+                    // If it's a birthday date, highlight it
                     if (birthdayDates.includes(day)) {
                         dayElem.classList.add('highlighted-day');
+
                         const birthdaysOnDay = birthdayData.filter(b => {
                             const birthDate = new Date(b.birthdate);
                             return birthDate.getDate() === day && birthDate.getMonth() + 1 === month;
                         });
-                        const tooltipContent = birthdaysOnDay.map(person => `${person.lastname}, ${person.firstname}`).join('<br>');
+
+                        // Extract names for today's birthdays
+                        if (
+                            today.getDate() === day &&
+                            today.getMonth() + 1 === month &&
+                            today.getFullYear() === year
+                        ) {
+                            todayBirthdays = birthdaysOnDay.map(person => `${person.firstname} ${person.lastname}`);
+                        }
+
+                        const tooltipContent = birthdaysOnDay
+                            .map(person => `${person.lastname}, ${person.firstname}`)
+                            .join('<br>');
                         dayElem.setAttribute('data-bs-toggle', 'tooltip');
                         dayElem.setAttribute('data-bs-placement', 'top');
                         dayElem.setAttribute('data-bs-html', 'true');
                         dayElem.setAttribute('title', tooltipContent);
+
+                        // Replace today's date with a cake icon if it's someone's birthday
+                        if (
+                            today.getDate() === day &&
+                            today.getMonth() + 1 === month &&
+                            today.getFullYear() === year
+                        ) {
+                            dayElem.innerHTML = '<iconify-icon icon="emojione-v1:birthday-cake" style="font-size: 35px;"></iconify-icon>';
+                        }
+
                         dayElem.addEventListener('click', (event) => {
                             event.preventDefault();
                             event.stopPropagation();
@@ -236,6 +303,7 @@
                         });
                     }
                 });
+
                 const tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
                 tooltipElements.forEach(dayElem => {
                     new bootstrap.Tooltip(dayElem);
@@ -263,6 +331,7 @@
         });
 
         function loadUpcomingEvents() {
+            $('#upcoming-event-list').html('<div class="text-center text-primary "><iconify-icon icon="svg-spinners:bars-rotate-fade" width="30" height="30"></iconify-icon></div>');
             $.ajax({
                 url: '<?= base_url("get_upcoming_meetings") ?>',
                 type: 'GET',
@@ -272,10 +341,7 @@
                     eventList.empty();
 
                     if (events.length === 0) {
-                        eventList.append(`
-                        <li class="list-group-item ps-0 text-center text-muted">
-                            No Upcoming Meetings Available
-                        </li>
+                        eventList.append(`<li class="list-group-item text-primary text-center"><iconify-icon icon="fluent:box-multiple-search-24-filled" width="50" height="50"></iconify-icon><h6 class="mt-1">No meeting scheduled... </h6></li>
                     `);
                     } else {
                         events.forEach(function (event) {
@@ -283,7 +349,7 @@
                             <li class="list-group-item ps-0">
                                 <a href="<?php echo base_url('meeting_schedule'); ?>" class="d-block text-decoration-none">
                                     <div class="row align-items-center g-3">
-                                        <div class="col-auto">
+                                        <div class="col-auto blockquote">
                                             <div class="avatar-sm p-1 py-2 h-auto bg-light rounded-3 shadow">
                                                 <div class="text-center">
                                                     <h5 class="mb-0 fw-bold text-info">${new Date(event.date_meeting).getDate()}</h5>
@@ -292,8 +358,8 @@
                                             </div>
                                         </div>
                                         <div class="col">
-                                            <h5 class="text-muted mt-0 mb-1 fs-12">${event.time}</h5>
-                                            <p class="fs-14 mb-0">${event.reasons}</p>
+                                            <h5 class="text-muted mt-0 mb-1 fs-14 fw-bold">${event.time} - <b>${event.team_name}</b></h5>
+                                            <p class="fs-13 mb-0">${event.reasons}</p>
                                         </div>
                                     </div>
                                 </a>
@@ -308,35 +374,28 @@
 
         loadUpcomingEvents();
     });
+
 </script>
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="<?php echo base_url(); ?>assets/js/apexcharts.js"></script>
+
 <script>
     let chart;
     function renderChart(chartData, labels, colors) {
         const options = {
-            chart: {
-                type: 'polarArea'
-            },
+            chart: { type: 'polarArea' },
             series: chartData,
             labels: labels,
             colors: colors,
-            stroke: {
-                colors: ['#fff']
-            },
-            fill: {
-                opacity: 0.8
-            },
-            legend: {
-                position: 'bottom'
-            }
+            stroke: { colors: ['#fff'] },
+            fill: { opacity: 1 },
+            legend: { position: 'bottom' }
         };
-
         if (chart) {
-            chart.updateOptions(options);
-        } else {
-            chart = new ApexCharts(document.querySelector("#basic_polar_area"), options);
-            chart.render();
+            chart.destroy();
         }
+        chart = new ApexCharts(document.querySelector("#system_monitoring"), options);
+        chart.render();
+
     }
     function fetchChartData(type, typeofsystem) {
         $.ajax({
@@ -362,9 +421,16 @@
 
 <style>
     .highlighted-day {
-        background-color: #ff0000;
-        color: #ffffff;
+        background-color: rgb(244, 244, 244);
+        color: rgb(255, 0, 0);
         border-radius: 50%;
         font-weight: bold;
+        font-style: italic;
+        font-size: 1rem;
+    }
+
+    .upcoming-scheduled .flatpickr-calendar .flatpickr-day.selected {
+        background-color: transparent !important;
+        border-color: transparent !important;
     }
 </style>

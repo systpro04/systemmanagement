@@ -15,13 +15,17 @@ class Login_ctrl extends CI_Controller {
             redirect('dashboard');
         }
         $this->load->view('auth/login');
-
+    }
+    public function session_expire(){
+        $this->session->sess_destroy();
+        $this->load->view('auth/session_expired');
     }
 
     public function login_data() {
 
         $username = $this->security->xss_clean($this->input->post('username'));
         $password = $this->security->xss_clean($this->input->post('password'));
+
         $hashed_password = md5($password);
         $user = $this->login->login_data_result($username, $hashed_password );
         if ($user) {
@@ -54,6 +58,7 @@ class Login_ctrl extends CI_Controller {
                         'company'        => $employee['company'],
                         'business'       => $employee['business_unit'],
                         'photo'          => ltrim($employee['photo'], '.'),
+                        'is_admin'       => $user_details['is_admin'],
                     ]);
 
                     $this->session->set_flashdata('SUCCESSMSG', 'Login successful');
@@ -66,6 +71,7 @@ class Login_ctrl extends CI_Controller {
                     );
                     $this->load->model('Logs', 'logs');
                     $this->logs->addLogs($data1);
+
                     redirect('dashboard');
                 }
             }
@@ -77,17 +83,13 @@ class Login_ctrl extends CI_Controller {
         redirect('login');
     }
     
-
     public function logout_data()
     {
         if ($this->session->id == "") {
             redirect('login');
         } else {
-            $this->session->set_flashdata('message', 'You have successfully logged out');
-            $this->session->set_flashdata('message_type', 'success');
-
-            $action = '<b>' . $this->session->name. ' | '.$this->session->hrms_position.'</b> has a logged OUT</b>';
-
+            $action = '<b>' . $this->session->name . ' | ' . $this->session->hrms_position . '</b> has logged OUT</b>';
+            
             $data1 = array(
                 'emp_id' => $this->session->emp_id,
                 'action' => $action,
@@ -95,11 +97,12 @@ class Login_ctrl extends CI_Controller {
             );
             $this->load->model('Logs', 'logs');
             $this->logs->addLogs($data1);
-
-
+    
+            $this->session->set_flashdata('message', 'You have successfully logged out');
+            $this->session->set_flashdata('message_type', 'success');
+    
             $this->session->sess_destroy();
-
-            redirect('login');
+            $this->load->view('auth/login');
         }
     }
     

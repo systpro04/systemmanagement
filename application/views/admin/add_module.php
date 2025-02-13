@@ -417,24 +417,26 @@
 
 
         if (mod_name === "" || mod_abbr === "" || typeofsystem === "") {
-            Toastify({
-                text: `Please fill in required fields.`,
-                duration: 5000,
-                gravity: "top",
-                position: "left",
-                className: "birthday-toast primary",
-                stopOnFocus: true,
-                close: true,
-                style: {
-                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                },
-            }).showToast();
-            if (mod_name === "") {
-                $('#mod_name').addClass('is-invalid');
-            }
-            if (mod_abbr === "") {
-                $('#mod_abbr').addClass('is-invalid');
-            }
+            toastr.options = {
+                progressBar: true,
+                positionClass: "toast-top-left",
+                timeOut: 5000,
+                extendedTimeOut: 2000,
+                preventDuplicates: true,
+            };
+
+            toastr.info(
+                `Please fill up the required fields`,
+            );
+            $('#mod_name, #mod_abbr').each(function () {
+                if ($(this).val() === '') {
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+
             return;
         }
 
@@ -460,18 +462,17 @@
                 table.ajax.reload(function () {
                     table.page(currentPage).draw(false);
                 }, false);
-                Toastify({
-                    text: `Module added successfully.`,
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    className: "birthday-toast primary",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
+                toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.success(
+                    `Module was successfully added`,
+                );
             },
         });
     }
@@ -481,18 +482,17 @@
             type: 'POST',
             data: { mod_id: mod_id },
             error: function () {
-                Toastify({
-                    text: `Oops!!! Something went wrong.`,
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    className: "birthday-toast primary",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
+                toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.error(
+                    `Oops! Something went wrong.`,
+                );
             },
             success: function (data) {
                 $("#submodule_content").html(data);
@@ -506,18 +506,17 @@
             type: 'POST',
             data: { mod_id: mod_id },
             error: function () {
-                Toastify({
-                    text: `Oops!!! Something went wrong`,
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    className: "birthday-toast primary",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
+                toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.error(
+                    `Oops! Something went wrong.`,
+                );
             },
             success: function (data) {
                 $("#add_submodule_content").html(data);
@@ -530,18 +529,17 @@
         var sub_mod_name = $('#sub_mod_name').val();
 
         if (sub_mod_name === "") {
-            Toastify({
-                text: `Sub module name is required.`,
-                duration: 5000,
-                gravity: "top",
-                position: "left",
-                className: "birthday-toast primary",
-                stopOnFocus: true,
-                close: true,
-                style: {
-                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                },
-            }).showToast();
+            toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.info(
+                    `Sub module name is required.`,
+                );
             return;
         }
         Swal.fire({
@@ -567,18 +565,17 @@
                         });
                     },
                     success: function (data) {
-                        Toastify({
-                            text: `Sub module added successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Sub module was successfully added.`,
+                        );
                         var table = $('#submodule_list').DataTable();
                         var currentPage = table.page();
 
@@ -607,18 +604,17 @@
                 team: belong_team
              },
             error: function () {
-                Toastify({
-                    text: `Oops!!! something went wrong.`,
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    className: "birthday-toast primary",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
+                toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.error(
+                    `Oops! Something went wrong.`,
+                );
             },
             success: function (data) {
                 $("#edit_module_content").html(data);
@@ -672,18 +668,17 @@
                         });
                     },
                     success: function (data) {
-                        Toastify({
-                            text: `Module updated successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Module was successfully updated`,
+                        );
                         $('#edit_module').modal('hide');
 
                         var table = $('#module_list').DataTable();
@@ -705,18 +700,17 @@
             data: { sub_mod_id: sub_mod_id },
             cache: false, 
             error: function () {
-                Toastify({
-                    text: `Opps!!! something went wrong`,
-                    duration: 5000,
-                    gravity: "top",
-                    position: "left",
-                    className: "birthday-toast primary",
-                    stopOnFocus: true,
-                    close: true,
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    },
-                }).showToast();
+                toastr.options = {
+                    progressBar: true,
+                    positionClass: "toast-top-left",
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    preventDuplicates: true,
+                };
+
+                toastr.error(
+                    `Oops! Something went wrong.`,
+                );
             },
             success: function (data) {
                 $("#edit_submodule_content").html(data);
@@ -743,32 +737,30 @@
                         type: 'POST',
                         data: { sub_mod_id: sub_mod_id, sub_mod_name: sub_mod_name },
                         error: function () {
-                            Toastify({
-                            text: `Opps!!! something went wrong`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                            toastr.options = {
+                                progressBar: true,
+                                positionClass: "toast-top-left",
+                                timeOut: 5000,
+                                extendedTimeOut: 2000,
+                                preventDuplicates: true,
+                            };
+
+                            toastr.error(
+                                `Oops! Something went wrong.`,
+                            );
                         },
                         success: function (data) {
-                            Toastify({
-                                text: `Sub module updated successfully.`,
-                                duration: 5000,
-                                gravity: "top",
-                                position: "left",
-                                className: "birthday-toast primary",
-                                stopOnFocus: true,
-                                close: true,
-                                style: {
-                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                                },
-                            }).showToast();
+                            toastr.options = {
+                                progressBar: true,
+                                positionClass: "toast-top-left",
+                                timeOut: 5000,
+                                extendedTimeOut: 2000,
+                                preventDuplicates: true,
+                            };
+
+                            toastr.success(
+                                `Sub Module was successfully updated`,
+                            );
                             $('#edit_submodule').modal('hide');
                             $('#submodule').modal('show');
                             $('#submodule_list').DataTable().ajax.reload();
@@ -798,18 +790,17 @@
                         id: id,
                     },
                     success: function () {
-                        Toastify({
-                            text: `New system approved successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `New system | module successfully approve`,
+                        );
                         var table = $('#module_list').DataTable();
                         var currentPage = table.page();
 
@@ -840,18 +831,17 @@
                         id: id,
                     },
                     success: function () {
-                        Toastify({
-                            text: `New system recalled successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `New system | module was successfully recalled`,
+                        );
                         var table = $('#module_list').DataTable();
                         var currentPage = table.page();
 
@@ -883,18 +873,17 @@
                         mod_id: mod_id,
                     },
                     success: function () {
-                        Toastify({
-                            text: `Module deleted successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            className: "birthday-toast primary",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            preventDuplicates: true,
+                        };
+
+                        toastr.success(
+                            `Module was successfully deleted`,
+                        );
                         var table = $('#module_list').DataTable();
                         var currentPage = table.page();
 

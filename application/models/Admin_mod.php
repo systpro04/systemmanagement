@@ -282,7 +282,7 @@ class Admin_mod extends CI_Model
 
     public function getModule($team,$typeofsystem, $start, $length, $order_column, $order_dir, $search_value)
     {
-        $this->db->select('m.*, t.*, m.belong_team');
+        $this->db->select('m.*, t.*, m.belong_team, m.status');
         $this->db->from('module m');
         $this->db->join('team t', 't.team_id = m.belong_team', 'left');
         $this->db->where('m.active !=', 'Inactive');
