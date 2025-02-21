@@ -54,19 +54,32 @@ class Deployment extends CI_Controller
             </div>';
             }
 
+            if($row['date_request'] == ''){
+                $date_request = '<span class="badge bg-info">NA</span>';
+            }else{
+                $date_request = $row['date_request'];
+            }
+
             if($row['bu_name'] == ''){
                 $bu_name = '<span class="badge bg-info">NA</span>';
             }else{
                 $bu_name = ucwords(strtolower($row['bu_name']));
             }
 
+            if($row['date_implem'] == ''){
+                $date_ = '<span class="badge bg-info">NA</span>';
+            }else{
+                $date_ = $row['date_implem'];
+            }
+
+
             $data[] = [
                 'team_name'     => ucwords(strtolower($row['team_name'])),
                 'module'        => ucwords(strtolower($row['mod_name'])),
-                'date_request'  => $row['date_request'],
+                'date_request'  => $date_request,
                 'bu_name'       => $bu_name,
                 'implem_type'   => $date_implem,
-                'date_implem'   => $row['date_implem'],
+                'date_implem'   => $date_,
                 'typeofsystem'  => $typeofsystems,
                 'uploaded_to'   => $uploaded_to,
                 'action'        => $action
@@ -105,8 +118,8 @@ class Deployment extends CI_Controller
     {
         $mod_id = $this->input->post('mod_id');
         $mod_name = $this->input->post('mod_name');
-        $start = $this->input->post('start');
-        $length = $this->input->post('length');
+        $start = intval($this->input->post('start')); // Ensure numeric values
+        $length = intval($this->input->post('length'));
         $order = $this->input->post('order');
         $search_value = $this->input->post('search')['value'];
         $order_column = $order[0]['column'];
@@ -137,7 +150,6 @@ class Deployment extends CI_Controller
                 ];
             }
         }
-
         $total_records = count($data);
         $output = [
             "draw" => intval($this->input->post('draw')),

@@ -11,6 +11,9 @@ class Admin_mod extends CI_Model
     {
         $this->db2->select('emp_id, name');
         $this->db2->where('current_status', 'Active');
+        $this->db2->where('company_code', '01');
+        $this->db2->where('bunit_code', '01');
+        $this->db2->where('dept_code', '13');
         $this->db2->group_start();
         $this->db2->like('emp_id', $search);
         $this->db2->or_like('name', $search);
@@ -280,7 +283,7 @@ class Admin_mod extends CI_Model
     }
 
 
-    public function getModule($team,$typeofsystem, $start, $length, $order_column, $order_dir, $search_value)
+    public function getModule($team,$company, $business_unit, $department, $typeofsystem, $start, $length, $order_column, $order_dir, $search_value)
     {
         $this->db->select('m.*, t.*, m.belong_team, m.status');
         $this->db->from('module m');
@@ -301,10 +304,22 @@ class Admin_mod extends CI_Model
             $this->db->where('m.belong_team', $team);
         }
 
+        if (!empty($company)) {
+            $this->db->where('m.requested_to_co', $company);
+        }
+
+        if (!empty($business_unit)) {
+            $this->db->where('m.requested_to_bu', $business_unit);
+        }
+
+        if (!empty($department)) {
+            $this->db->where('m.requested_to_dep', $department);
+        }
+
         return $this->db->get()->result_array();
     }
 
-    public function getTotalModule($team,$typeofsystem, $search_value)
+    public function getTotalModule($team,$company, $business_unit, $department, $typeofsystem, $search_value)
     {
         $this->db->select('m.*, t.*, m.belong_team');
         $this->db->from('module m');
@@ -321,6 +336,20 @@ class Admin_mod extends CI_Model
         if (!empty($team)) {
             $this->db->where('m.belong_team', $team);
         }
+
+        if (!empty($company)) {
+            $this->db->where('m.requested_to_co', $company);
+        }
+
+        if (!empty($business_unit)) {
+            $this->db->where('m.requested_to_bu', $business_unit);
+        }
+
+        if (!empty($department)) {
+            $this->db->where('m.requested_to_dep', $department);
+        }
+
+        
         return $this->db->count_all_results();
     }
 
@@ -613,6 +642,33 @@ class Admin_mod extends CI_Model
         $this->db->or_where('guide_status', 'pending');
         $this->db->or_where('memo_status', 'pending');
         $this->db->or_where('acceptance_status', 'pending');
+        return $this->db->count_all_results();
+    }
+
+
+
+    public function get_messages()
+    {
+        $this->db->select('*');
+        $this->db->from('messages');
+        $this->db->where('receiver_id', $this->session->userdata('emp_id'));
+    
+        $this->db->where('date_send >=', date('Y-m-d H:i:s', strtotime('-1 hours')));
+    
+        $this->db->order_by('date_send', 'DESC');
+    
+        return $this->db->get()->result_array();
+    }
+    
+
+    public function get_messages_count()
+    {
+        $this->db->select('*');
+        $this->db->from('messages');
+        $this->db->where('receiver_id', $this->session->userdata('emp_id'));
+        $this->db->where('date_send >=', date('Y-m-d H:i:s', strtotime('-1 hours')));
+    
+        $this->db->order_by('date_send', 'DESC');
         return $this->db->count_all_results();
     }
 

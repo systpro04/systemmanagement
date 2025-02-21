@@ -24,6 +24,13 @@
                         <option value="RMS">RMS</option>
                     </select>
                 </div>
+
+                <div class="mb-3">
+                    <label for="type" class="col-form-label">Contact Number | Fb Account <span class="text-danger">( If available )</span> :</label>
+                    <input type="text" class="form-control" id="contact_no">
+                </div>
+
+
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="parttimeCheckbox" value="Parttime">
                     <label class="form-check-label fw-6" for="parttimeCheckbox"> Check ( <iconify-icon icon="line-md:check-all" class="align-bottom fs-22"></iconify-icon> ) if part time in this team</label>
@@ -70,6 +77,10 @@
                         <option value="Fulltime">Full Time</option>
                     </select>
                 </div>
+                <div class="mb-3">
+                    <label for="type" class="col-form-label">Contact Number | Fb Account <span class="text-danger">( If available )</span> :</label>
+                    <input type="text" class="form-control" id="edit_contact_no">
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="updateUser()">Submit</button>
@@ -96,53 +107,53 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
-        <div class="col-xl-12">
-            <div class="card">
-                <div class="card-header border-1">
-                    <div class="d-flex align-items-center">
-                        <h5 class="card-title mb-0 flex-grow-1">Module Setup</h5>
-                        <div class="flex-shrink-0">
-                            <div class="d-flex gap-3 align-items-start flex-grow-1">
-                                <select class="form-select" id="filter_team" style="width: auto; height: auto;">
-                                    <option value=""></option>
-                                </select>
-                                <input type="search" class="form-control" id="search" name="search"
-                                    style="width: 500px;" placeholder="Search Employee to add...">
-                            </div>
+
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header border-1">
+                <div class="d-flex align-items-center">
+                    <h5 class="card-title mb-0 flex-grow-1">Module Setup</h5>
+                    <div class="flex-shrink-0">
+                        <div class="d-flex gap-3 align-items-start flex-grow-1">
+                            <select class="form-select" id="filter_team" style="width: auto; height: auto;">
+                                <option value=""></option>
+                            </select>
+                            <input type="search" class="form-control" id="search" name="search"
+                                style="width: 500px;" placeholder="Search Employee to add...">
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="card-body">
-                    <div class="dropdown">
-                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown" aria-expanded="false"> Column Visibility</button>
-                        <ul class="dropdown-menu" aria-labelledby="columnDropdown" id="columnSelectorDropdown" data-simplebar style="max-height: 300px;">
-                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> Team</label></li>
-                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> Emp ID</label></li>
-                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> Employee Name</label></li>
-                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="3" checked> Position</label></li>
-                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="4" checked> Type</label></li>
-                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="5" checked> Action</label></li>
-                        </ul>
-                        <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-striped dt-responsive nowrap table-hover" id="user_list">
-                            <thead class="table-info text-center text-uppercase">
-                                <tr>
-                                    <th>Team</th>
-                                    <th>Emp ID</th>
-                                    <th>Employee Name</th>
-                                    <th>Position</th>
-                                    <th>Type</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="card-body">
+                <div class="dropdown">
+                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown" aria-expanded="false"> Column Visibility</button>
+                    <ul class="dropdown-menu" aria-labelledby="columnDropdown" id="columnSelectorDropdown" data-simplebar style="max-height: 300px;">
+                        <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> Team</label></li>
+                        <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> Emp ID</label></li>
+                        <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> Employee Name</label></li>
+                        <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="3" checked> Position</label></li>
+                        <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="4" checked> Type</label></li>
+                        <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="5" checked> Action</label></li>
+                    </ul>
+                    <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped dt-responsive nowrap table-hover compact" id="user_list">
+                        <thead class="table-info text-center text-uppercase">
+                            <tr>
+                                <th>Team</th>
+                                <th>Emp ID</th>
+                                <th>Employee Name</th>
+                                <th>Contact No</th>
+                                <th>Position</th>
+                                <th>Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -191,9 +202,9 @@
             "serverSide": true,
             "stateSave": true,
             "destroy": true,
-            "scrollY": "400px",
-            "scrollX": true,
-            "scrollCollapse": true,
+            // "scrollY": "400px",
+            // "scrollX": true,
+            // "scrollCollapse": true,
             "lengthmenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
             "pageLength": 10,
             // "stateSave": true,
@@ -208,6 +219,7 @@
                 { "data": 'team_name' },
                 { "data": 'emp_id' },
                 { "data": 'name' },
+                { "data": 'contact_no' },
                 { "data": 'position' },
                 { "data": 'type' },
                 { "data": 'action' }
@@ -349,6 +361,7 @@
         var emp_id = $('#emp_id').val();
         var team_id = $('#team_id').val();
         var position = $('#type').val();
+        var contact_no = $('#contact_no').val();
         var isParttimeChecked = $('#parttimeCheckbox').is(':checked') ? $('#parttimeCheckbox').val() : null;
 
         if(team_id == '' || position == ''){
@@ -391,7 +404,8 @@
                         emp_id: emp_id,
                         team_id: team_id,
                         position: position,
-                        is_parttime: isParttimeChecked
+                        is_parttime: isParttimeChecked,
+                        contact_no: contact_no
                     },
                     success: function (data) {
                         toastr.options = {
@@ -427,6 +441,7 @@
                 $('#edit_team_id').val(data.team_id).trigger('change');
                 $('#edit_id').val(data.id);
                 $('#edit_emp_name').val(data.name);
+                $('#edit_contact_no').val(data.contact_no);
                 $('#edit_type').val(data.position).trigger('change');
                 $('#edit_parttime').val(data.type).trigger('change');
             }
@@ -437,6 +452,7 @@
         var team_id     = $('#edit_team_id').val();
         var position    = $('#edit_type').val();
         var type        = $('#edit_parttime').val();
+        var contact_no  = $('#edit_contact_no').val();
         Swal.fire({
             title: 'Are you sure?',
             text: 'You want to update this user data?',
@@ -455,7 +471,8 @@
                         id: id,
                         team_id: team_id,
                         position: position,
-                        type: type
+                        type: type,
+                        contact_no: contact_no
                     },
                     success: function (data) {
                         toastr.options = {

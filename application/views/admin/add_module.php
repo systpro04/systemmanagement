@@ -1,53 +1,93 @@
 <!-- Create Module -->
 <div class="modal fade" id="create_module" tabindex="-1" aria-labelledby="create_module" aria-hidden="true"
     data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header bg-info-subtle">
                 <h5 class="modal-title" id="varyingcontentModalLabel">CREATE MODULE</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div>
-                    <label for="team_name" class="col-sm-3 col-form-label">Team:</label>
-                    <select class="form-select mb-3" id="team">
-                        <option></option>
-                    </select>
-                </div>
-
-                <div class="mb-2">
-                    <label for="title" class="col-form-label">Module | System Name:</label>
-                    <input type="text" class="form-control" id="mod_name">
-                </div>
-
-                <div class="mb-2">
-                    <label for="title" class="col-form-label">Module Abbreviation:</label>
-                    <input type="text" class="form-control" id="mod_abbr">
-                </div>
-
-                <div class="mb-2">
-                    <label class="col-form-label">Date Request:</label>
-                        <div class="input-group">
-                            <input type="date" id="date_request" class="form-control" readonly="" placeholder="Select Date Request" data-provider="flatpickr" />
-                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                <div class="container">
+                    <div class="row mb-2">
+                        <label for="team" class="col-sm-3 col-form-label">Team:</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" id="team">
+                                <option></option>
+                            </select>
                         </div>
-                </div>
+                    </div>
 
-                <div class="mb-2">
-                    <label for="title" class="col-form-label">Requested To</label>
-                    <select id="business_unit" class="form-select" aria-label="Team">
-                        <option value=""></option>
-                    </select>
-                </div>
-                <div class="mb-2">
-                    <label for="title" class="col-form-label">Type of System</label>
-                   <select name="type" class="form-select " id="typeofsystem">
-                    <option value=""></option>
-                    <option value="current">Current System</option>
-                    <option value="new">New System</option>
-                   </select>
-                </div>
+                    <div class="row mb-2">
+                        <label for="mod_name" class="col-sm-3 col-form-label">Module | System Name:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="mod_name">
+                        </div>
+                    </div>
 
+                    <div class="row mb-2">
+                        <label for="mod_abbr" class="col-sm-3 col-form-label">Module Abbreviation:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="mod_abbr">
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="date_request" class="col-sm-3 col-form-label">Date Request:</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <input type="date" id="date_request" class="form-control" readonly placeholder="Select Date Request" data-provider="flatpickr" />
+                                <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="company" class="col-sm-3 col-form-label">Company:</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" id="company">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="business_unit" class="col-sm-3 col-form-label">Business Unit:</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" id="business_unit">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="department" class="col-sm-3 col-form-label">Department:</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" id="department">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="typeofsystem" class="col-sm-3 col-form-label">Type of System:</label>
+                        <div class="col-sm-9">
+                            <select name="type" class="form-select" id="typeofsystem">
+                                <option value=""></option>
+                                <option value="current">Current System</option>
+                                <option value="new">New System</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="other_details" class="col-sm-3 col-form-label">Other Details</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="other_details">
+                        </div>
+                    </div>
+
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="add_module()">Submit</button>
@@ -149,23 +189,26 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-header border-1">
-                    <div class="d-flex align-items-center">
-                        <h5 class="card-title mb-0 flex-grow-1">Module Setup</h5>
-                        <div class="col-md-3">
-                            <div class="d-flex align-items-center mx-2">
-                                <select class="form-select" id="team_filter" style="width: 150px; height: auto;">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="col-md-12">
+                            <div class="d-flex align-items-center mx-2 gap-2">
+                                <select class="form-select" id="coFilter" name="coFilter">
+                                    <option value=""></option>
+                                </select>
+                                <select class="form-select" id="buFilter" name="buFilter">
+                                    <option value=""></option>
+                                </select>
+                                <select class="form-select" id="departmentFilter" name="departmentFilter">
+                                    <option value=""></option>
+                                </select>
+                                <select class="form-select" id="team_filter">
                                     <option value="">Select Team</option>
                                 </select>
-                            </div>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="d-flex flex-wrap gap-2">
-                                <button class="btn btn-primary waves-effect waves-light add-btn" data-bs-toggle="modal" data-bs-target="#create_module"><i class="ri-add-line align-bottom me-1"></i> Add Module </button>
-                                <button class="btn btn-danger waves-effect waves-light generate" target="_blank"><iconify-icon icon="fluent:document-pdf-32-filled" class="align-bottom mb-1 fs-15"></iconify-icon> Generate Module | Submodule </button>
+                                <button class="btn btn-primary waves-effect waves-light add-btn" data-bs-toggle="modal" data-bs-target="#create_module"><i class="ri-add-line align-bottom me-5"></i> </button>
+                                <button class="btn btn-danger waves-effect waves-light generate" target="_blank"><iconify-icon icon="fluent:document-pdf-32-filled" class="align-bottom mb-1 fs-15 me-5"></iconify-icon></button>
                             </div>
                         </div>
                     </div>
@@ -208,14 +251,15 @@
                         <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-striped dt-responsive nowrap table-hover" id="module_list">
+                        <table class="table table-striped dt-responsive nowrap table-hover compact" id="module_list">
                             <thead class="table-info text-center text-uppercase">
                                 <tr>
                                     <th>Module Name</th>
                                     <th>Status</th>
-                                    <th>Business Unit</th>
+                                    <th>REQUESTED TO</th>
                                     <th>Date Requested</th>
                                     <th>Date Implem</th>
+                                    <th>Other Details</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -226,14 +270,68 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
 <script>
     $(document).ready(function () {
+        $('#coFilter, #company').select2({ placeholder: 'Select Company', allowClear: true, minimumResultsForSearch: Infinity});
+        $('#buFilter, #business_unit').select2({ placeholder: 'Select Business Unit', allowClear: true, minimumResultsForSearch: Infinity});
+        $('#departmentFilter, #department').select2({ placeholder: 'Select Department', allowClear: true, minimumResultsForSearch: Infinity});
+
         $('#typeofsystem').select2({ placeholder: 'Select Type of System', allowClear: true, minimumResultsForSearch: Infinity });
-        $('#business_unit').select2({ placeholder: "Select Business Unit", allowClear: true, minimumResultsForSearch: Infinity});
         $('#team, #team_filter').select2({ placeholder: 'Select Team', allowClear: true, minimumResultsForSearch: Infinity });
     });
+
+    $.ajax({
+        url: '<?php echo base_url('setup_location') ?>',
+        type: 'POST',
+        success: function (response) {
+            companyData = JSON.parse(response);
+            $('#coFilter, #company').empty().append('<option value="">Select Company</option>');
+            $('#buFilter, #business_unit').empty().append('<option value="">Select Business Unit</option>');
+            $('#departmentFilter, #department').empty().append('<option value="">Select Department</option>');
+            $('#buFilter, #business_unit, #departmentFilter, #department').prop('disabled', true);
+
+            companyData.forEach(function (company) {
+                $('#coFilter, #company').append('<option value="' + company.company_code + '">' + company.company + '</option>');
+            });
+        }
+    });
+
+    $('#coFilter, #company').change(function () {
+        var companyCode = $(this).val();
+        $('#buFilter, #business_unit').empty().append('<option value="">Select Business Unit</option>');
+        $('#departmentFilter, #department').empty().append('<option value="">Select Department</option>');
+        $('#buFilter, #business_unit').prop('disabled', true);
+        $('#departmentFilter, #department').prop('disabled', true);
+
+
+        var selectedCompany = companyData.find(company => company.company_code == companyCode);
+
+        if (selectedCompany) {
+            selectedCompany.business_unit.forEach(function (bu) {
+                $('#buFilter, #business_unit').append('<option value="' + bu.bunit_code + '">' + bu.business_unit + '</option>');
+            });
+            $('#buFilter, #business_unit').prop('disabled', false);
+        }
+    });
+
+    $('#buFilter, #business_unit').change(function () {
+        var companyCode = $('#coFilter').val() || $('#company').val(); 
+        var businessUnitCode = $(this).val();
+        $('#departmentFilter, #department').empty().append('<option value="">Select Department</option>');
+        $('#departmentFilter, #department').prop('disabled', true);
+
+        var selectedCompany = companyData.find(company => company.company_code == companyCode);
+        if (selectedCompany) {
+            selectedCompany.department.forEach(function (dept) {
+                if (dept.bunit_code == businessUnitCode) {
+                    $('#departmentFilter, #department').append('<option value="' + dept.dcode + '">' + dept.dept_name + '</option>');
+                }
+            });
+            $('#departmentFilter, #department').prop('disabled', false);
+        }
+    });
+
 
     $.ajax({
         url: '<?php echo base_url('get_team') ?>',
@@ -248,13 +346,16 @@
     });
 
 
-    $('#team_filter').change(function () {
-        $('#module_list').DataTable().ajax.reload();
-    });
 
     var typeofsystem = "all";
     var table = null;
     var printWindow = null; 
+
+    $('#team_filter, #coFilter, #buFilter, #departmentFilter').change(function () {
+        $('#module_list').DataTable().ajax.reload();
+    });
+
+    
     loadsystem(typeofsystem);
 
     $("a.typeofsystem").click(function () {
@@ -265,16 +366,13 @@
     });
 
     function loadsystem(typeofsystem){
-        if (table) {
-            table.destroy();
-        }
         table = $('#module_list').DataTable({
             "processing": true,
             "serverSide": true,
             "destroy": true,
-            'scrollCollapse': true,
-            "scrollY": "400px",
-            "scrollX": true,
+            // 'scrollCollapse': true,
+            // "scrollY": "400px",
+            // "scrollX": true,
             'lengthMenu': [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
             'pageLength': 10,
             // 'stateSave': true,
@@ -285,6 +383,9 @@
                 "data": function (d) {
                     d.typeofsystem = typeofsystem !== "all" ? typeofsystem : null;
                     d.team = $('#team_filter').val();
+                    d.requested_to_co = $('#coFilter').val();
+                    d.requested_to_bu = $('#buFilter').val();
+                    d.requested_to_dep = $('#departmentFilter').val();
                 }
             },
             "columns": [
@@ -293,6 +394,7 @@
                 { "data": 'bu_name' },
                 { "data": 'date_request'},
                 { "data": 'date_implem'},
+                { "data": 'others'},
                 { "data": 'action'}
             ],
             "paging": true,
@@ -386,29 +488,22 @@
         $('#mod_abbr').val('');
         $('#typeofsystem').val('').trigger('change');
     });
-    load_business_unit();
-    function load_business_unit() {
-        $.ajax({
-            url: '<?php echo base_url('business_unit') ?>',
-            type: 'POST',
-            success: function (response) {
-                buData = JSON.parse(response);
-                $('#business_unit').empty().append('<option value="">Select Business Unit</option>');
-                buData.forEach(function (bu) {
-                    $('#business_unit').append('<option value="' + bu.bcode + '">' + bu.business_unit + '</option>');
-                });
-            }
-        });
-    }
 
     function add_module() {
         var mod_name        = $('#mod_name').val();
         var mod_abbr        = $('#mod_abbr').val();
         var typeofsystem    = $('#typeofsystem').val();
+        var co              = $('#company').val() || '';
         var bcode           = $('#business_unit').val() || '';
+        var dep             = $('#department').val() || '';
+
+        var company         = $('#company option:selected').text().trim();
         var business_unit   = $('#business_unit option:selected').text().trim();
+        var department      = $('#department option:selected').text().trim();
+
         var date_request    = $('#date_request').val();
         var team            = $('#team').val();
+        var other_details   = $('#other_details').val();
 
 
         if (bcode === "") {
@@ -445,9 +540,18 @@
             mod_abbr: mod_abbr,
             typeofsystem: typeofsystem,
             bcode: bcode,
+            co: co,
+            bcode: bcode,
+            dep: dep,
+
+            company: company,
             business_unit: business_unit,
+            department: department,
+
+            department: department,
             date_request: date_request,
-            team: team
+            team: team,
+            other_details: other_details
         };
 
         $.ajax({
@@ -591,17 +695,19 @@
             }
         });
     }
-    function edit_module(mod_id, requested_to, bu_name, date_request, belong_team) {
+    function edit_module(mod_id, requested_to_co, requested_to_bu, requested_to_dep, bu_name, date_request, belong_team) {
 
         $.ajax({
             url: '<?= base_url('edit_module') ?>',
             type: 'POST',
             data: { 
                 mod_id: mod_id,
-                bcode: requested_to,
                 business_unit: bu_name,
                 date_request: date_request,
-                team: belong_team
+                team: belong_team,
+                co: requested_to_co,
+                bcode: requested_to_bu,
+                dep: requested_to_dep
              },
             error: function () {
                 toastr.options = {
@@ -626,10 +732,18 @@
         var mod_name        = $('#edit_mod_name').val();
         var mod_abbr        = $('#edit_mod_abbr').val();
         var bcode           = $('#edit_business_unit').val() || '';
-        var business_unit   = $('#edit_business_unit option:selected').text();
+
+        var co              = $('#edit_co').val() || '';
+        var bcode           = $('#edit_bu').val() || '';
+        var dep             = $('#edit_dept').val() || '';
+
+        var company         = $('#edit_co option:selected').text().trim();
+        var business_unit   = $('#edit_bu option:selected').text().trim();
+        var department      = $('#edit_dept option:selected').text().trim();
         var date_request    = $('#edit_date_request').val();
         var date_implem     = $('#edit_date_implem').val();
         var team            = $('#edit_team_').val();
+        var other_details   = $('#edit_other_details').val();
 
 
         if (bcode === "") {
@@ -654,11 +768,18 @@
                         mod_id: mod_id, 
                         mod_name: mod_name, 
                         mod_abbr: mod_abbr,
+                        co: co,
                         bcode: bcode,
+                        dep: dep,
+
+                        company: company,
                         business_unit: business_unit,
+                        department: department,
+
                         date_request: date_request,
                         date_implem: date_implem,
-                        team: team
+                        team: team,
+                        other_details: other_details
                     },
                     error: function () {
                         Swal.fire({

@@ -116,19 +116,26 @@
 </div>
 
 <div class="container-fluid">
-    <div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
-        <div class="file-manager-content w-100 p-3 py-0">
-            <div class="mx-n3 pt-4 px-4 file-manager-content-scroll" data-simplebar="">
-                <div>
-                    <div class="row justify-content-between">
-                        <div class="col">
-                            <div class="d-flex align-items-center"> 
-                                <div class="flex-grow-1">
-                                    <h5 class="fs-16 fw-bold">CURRENT SYSTEM | MODULE </h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mt-1">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0">CURRENT | SYSTEM</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Current System </a></li>
+                        <li class="breadcrumb-item active">Index<i class="mdi mdi-alpha-x-circle:"></i></li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-header border-1">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="col-md-12 mt-1">
                             <div class="d-flex gap-2 mb-2">
                                 <select class="form-select" id="team" name="team">
                                     <option value=""></option>
@@ -139,23 +146,18 @@
                                 <select class="form-select" id="sub_module" name="sub_module">
                                     <option value="">Sub Module</option>
                                 </select>
-                            </div>
-                        </div>
-                        <div class="col-auto mt-1">
-                            <div class="d-flex gap-2">
                                 <button class="btn btn-primary w-sm create-folder-modal flex-shrink-0" data-bs-toggle="modal" data-bs-target="#file_upload">
                                     <i class="ri-add-line align-bottom me-1"></i> Upload Document
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <hr>
-                    <div class="row" id="folderlist-data">
-                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="folderlist-data"></div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div>  
 </div>
 
 <script>
@@ -308,7 +310,6 @@
             positionClass: "toast-top-left",
             timeOut: 5000,
             extendedTimeOut: 2000,
-            preventDuplicates: true,
         };
 
         toastr.success(
@@ -349,22 +350,21 @@
                         <div class="card bg-light ribbon-box border" id="folder-` + index + `" onclick="openFolderModal('` + folder.name + `')" style="cursor: pointer">
                             <div class="card-body">
                                 <div class="d-flex mb-1">
-                                    <div class="form-check form-check-danger mb-3 fs-15 flex-grow-1">
+                                    <div class="form-check form-check-danger mb-3 fs-14 flex-grow-1">
                                         <input type="hidden" id="foldername" value="` + folder.name + `">
                                     </div>
                                 </div>
                                 <div class="text-center">
                                     <div class="mb-2">
-                                        <iconify-icon icon="material-symbols:folder-open"
-                                            class="align-bottom text-warning fs-60"></iconify-icon>
+                                        <iconify-icon icon="fluent:folder-list-16-filled" class="align-bottom text-warning fs-48"></iconify-icon>
                                     </div>
-                                    <h6 class="fs-11 folder-name fw-bold">` + folder.name + `</h6>
+                                    <h6 class="fs-10 folder-name fw-bold">` + folder.name + `</h6>
                                 </div>
                                 <div class="hstack mt-3 text-muted">
                                     <span class="me-auto fs-6 ribbon-three ribbon-three-primary">
                                         <span><b>` + (folder.matched_files ? folder.matched_files.length : 0) + ` Files</b></span>
                                     </span>
-                                    <span style="font-size: 11px">
+                                    <span style="font-size: 10px">
                                         <b>` + (folder.size < 1024 * 1024 * 1024 ?
                                                 (folder.size / (1024 * 1024)).toFixed(2) + ' MB' :
                                                 (folder.size / (1024 * 1024 * 1024)).toFixed(2) + ' GB') + `</b>
@@ -464,13 +464,17 @@
                     $('#subModuleFilter').html(subModuleOptions).val('');
                 });
 
-                updateFolderModalContent(folderName, team, module, sub_module, business_unit, department);
+                updateFolderModalContent(folderName, team, module, sub_module, business_unit, department, 1);
                 filter();
             }
         });
     }
-    function updateFolderModalContent(folderName, team, module, sub_module, business_unit, department) {
-        $('#folderModalBody').html('<div class="text-center text-primary "><iconify-icon icon="svg-spinners:bars-rotate-fade" width="40" height="40"></iconify-icon></div>');
+
+
+    function updateFolderModalContent(folderName, team, module, sub_module, business_unit, department, page = 1) {
+        const itemsPerPage = 12; 
+        $('#folderModalBody').html('<div class="text-center text-primary"><iconify-icon icon="svg-spinners:bars-rotate-fade" width="40" height="40"></iconify-icon></div>');
+        
         $.ajax({
             url: '<?php echo base_url('view_folder_modal'); ?>',
             type: 'GET',
@@ -484,136 +488,162 @@
             },
             dataType: 'json',
             success: function (response) {
-                var modalContent = '';
-                if (response.matched_files && response.matched_files.length > 0) {
-                    response.matched_files.forEach(function (file) {
-                        var fileExtension = file.name.split('.').pop().toLowerCase();
-                        var fileSize = formatFileSize(file.size);
-                        var base_url = "<?= base_url() ?>";
+                let modalContent = '<div class="row">';
+                let matchedFiles = response.matched_files || [];
+                let totalPages = Math.ceil(matchedFiles.length / itemsPerPage);
+                let paginatedFiles = matchedFiles.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+                
+                if (paginatedFiles.length > 0) {
+                    paginatedFiles.forEach(function (file) {
+                        let fileExtension = file.name.split('.').pop().toLowerCase();
+                        let base_url = "<?= base_url() ?>";
                         modalContent += `
-                    <div class="element-item col-xxl-2 col-xl-2 col-sm-6">
-                        <div class="gallery-box card">
-                            <div class="form-check form-check-danger flex-grow-1 mb-1">
-                                <a class="form-check-input fs-15 text-danger" value=""><iconify-icon icon="tabler:xbox-x-filled" onclick="deleteFile('${folderName}', '${file.name}', '${module}')"></iconify-icon></a>
-                            </div>
-                            <div class="gallery-container">
-                                ${['jpg', 'jpeg', 'png', 'gif', 'jfif'].includes(fileExtension) ? `
-                                    <a class="image-popup" href="${base_url}open_image/${folderName}/${file.name}" target="_blank" title="${file.name}">
-                                        <img src="${base_url}open_image/${folderName}/${file.name}" style="width: 100%; height: 150px; background-size: cover; background-repeat: no-repeat !important;" alt="${file.name}" />
-                                        <div class="gallery-overlay">
-                                            <h5 class="overlay-caption fs-12">${file.name}</h5>
-                                        </div>
-                                        <span class=" text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${file.name}</span>
-                                    </a>
-                                ` : ''}
+                        <div class="element-item col-xxl-2 col-xl-2 col-sm-6">
+                            <div class="gallery-box card">
+                                <div class="form-check form-check-danger flex-grow-1 mb-1">
+                                    <a class="form-check-input fs-15 text-danger" value=""><iconify-icon icon="tabler:xbox-x-filled" onclick="deleteFile('${folderName}', '${file.name}', '${module}')"></iconify-icon></a>
+                                </div>
+                                <div class="gallery-container">
+                                    ${['jpg', 'jpeg', 'png', 'gif', 'jfif'].includes(fileExtension) ? `
+                                        <a class="image-popup" href="${base_url}open_image/${folderName}/${file.name}" target="_blank" title="${file.name}">
+                                            <img src="${base_url}open_image/${folderName}/${file.name}" style="width: 100%; height: 150px; background-size: cover; background-repeat: no-repeat !important;" alt="${file.name}" />
+                                            <div class="gallery-overlay">
+                                                <h5 class="overlay-caption fs-12">${file.name}</h5>
+                                            </div>
+                                            <span class=" text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${file.name}</span>
+                                        </a>
+                                    ` : ''}
 
-                                ${fileExtension === 'pdf' ? `
-                                    <a class="image-popup" href="${base_url}open_pdf/${folderName}/${file.name}" target="_blank" title="${file.name}">
-                                        <embed src="${base_url}open_pdf/${folderName}/${file.name}" type="application/pdf" style="width: 100%; height: 145px;" />
-                                        <div class="gallery-overlay">
-                                            <h5 class="overlay-caption fs-12">${file.name}</h5>
-                                        </div>
-                                <span class=" text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${file.name}</span>
-                                    </a>
-                                ` : ''}
-
-                                ${fileExtension === 'txt' ? `
-                                    <a href="${base_url}open_txt/${folderName}/${file.name}" target="_blank" title="${file.name}">
-                                        <iframe src="${base_url}open_txt/${folderName}/${file.name}" style="width: 100%; height: 145px;"></iframe>
-                                        <div class="gallery-overlay">
-                                            <h5 class="overlay-caption fs-12">${file.name}</h5>
-                                        </div>
-                                        <span class=" text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${file.name}</span>
-                                    </a>
-                                ` : ''}
-
-                                ${fileExtension === 'docx' ? `
-                                    <a href="${base_url}open_docx/${folderName}/${file.name}" target="_blank" title="${file.name}">
-                                        <iconify-icon icon="tabler:file-type-docx" class="align-bottom text-info" style="font-size: 150px;"></iconify-icon>
-                                        <div class="gallery-overlay">
-                                            <h5 class="overlay-caption fs-12">${file.name}</h5>
-                                        </div>
-                                        <span class="text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                            ${file.name}
-                                        </span>
-                                    </a>
-                                ` : ''}
-
-                                ${fileExtension === 'xlsx' ? `
-                                    <a href="${base_url}open_xlsx/${folderName}/${file.name}" target="_blank" title="${file.name}">
-                                        <iconify-icon icon="ri:file-excel-2-line" class="align-bottom text-success" style="font-size: 150px;"></iconify-icon>
-                                        <div class="gallery-overlay">
-                                            <h5 class="overlay-caption fs-12">${file.name}</h5>
-                                        </div>
-                                        <span class="text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                            ${file.name}
-                                        </span>
-                                    </a>
-                                ` : ''}
-
-                                ${fileExtension === 'csv' ? `
-                                    <a href="${base_url}open_csv/${folderName}/${file.name}" target="_blank" title="${file.name}">
-                                        <iconify-icon icon="ri:file-excel-2-line" class="align-bottom text-success" style="font-size: 150px;"></iconify-icon>
-                                        <div class="gallery-overlay">
-                                            <h5 class="overlay-caption fs-12">${file.name}</h5>
-                                        </div>
+                                    ${fileExtension === 'pdf' ? `
+                                        <a class="image-popup" href="${base_url}open_pdf/${folderName}/${file.name}" target="_blank" title="${file.name}">
+                                            <embed src="${base_url}open_pdf/${folderName}/${file.name}" type="application/pdf" style="width: 100%; height: 145px;" />
+                                            <div class="gallery-overlay">
+                                                <h5 class="overlay-caption fs-12">${file.name}</h5>
+                                            </div>
                                     <span class=" text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${file.name}</span>
-                                    </a>
-                                ` : ''}
+                                        </a>
+                                    ` : ''}
 
-                                ${['mp3', 'wav', 'ogg'].includes(fileExtension) ? `
-                                    <a href="${base_url}open_audio/${folderName}/${file.name}" target="_blank" title="${file.name}" >
-                                    <iconify-icon icon="ri:folder-music-fill" class="align-bottom text-center text-success" style="font-size: 130px;"></iconify-icon>
-                                    <audio controls style="width: 100%; height: 10px;">
-                                        <source src="${base_url}open_audio/${folderName}/${file.name}" type="audio/${fileExtension}">
-                                        Your browser does not support the audio element.
-                                    </audio>
+                                    ${fileExtension === 'txt' ? `
+                                        <a href="${base_url}open_txt/${folderName}/${file.name}" target="_blank" title="${file.name}">
+                                            <iframe src="${base_url}open_txt/${folderName}/${file.name}" style="width: 100%; height: 145px;"></iframe>
+                                            <div class="gallery-overlay">
+                                                <h5 class="overlay-caption fs-12">${file.name}</h5>
+                                            </div>
+                                            <span class=" text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${file.name}</span>
+                                        </a>
+                                    ` : ''}
+
+                                    ${fileExtension === 'docx' ? `
+                                        <a href="${base_url}open_docx/${folderName}/${file.name}" target="_blank" title="${file.name}">
+                                            <iconify-icon icon="tabler:file-type-docx" class="align-bottom text-info" style="font-size: 150px;"></iconify-icon>
+                                            <div class="gallery-overlay">
+                                                <h5 class="overlay-caption fs-12">${file.name}</h5>
+                                            </div>
+                                            <span class="text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                ${file.name}
+                                            </span>
+                                        </a>
+                                    ` : ''}
+
+                                    ${fileExtension === 'xlsx' ? `
+                                        <a href="${base_url}open_xlsx/${folderName}/${file.name}" target="_blank" title="${file.name}">
+                                            <iconify-icon icon="ri:file-excel-2-line" class="align-bottom text-success" style="font-size: 150px;"></iconify-icon>
+                                            <div class="gallery-overlay">
+                                                <h5 class="overlay-caption fs-12">${file.name}</h5>
+                                            </div>
+                                            <span class="text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                ${file.name}
+                                            </span>
+                                        </a>
+                                    ` : ''}
+
+                                    ${fileExtension === 'csv' ? `
+                                        <a href="${base_url}open_csv/${folderName}/${file.name}" target="_blank" title="${file.name}">
+                                            <iconify-icon icon="ri:file-excel-2-line" class="align-bottom text-success" style="font-size: 150px;"></iconify-icon>
+                                            <div class="gallery-overlay">
+                                                <h5 class="overlay-caption fs-12">${file.name}</h5>
+                                            </div>
                                         <span class=" text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${file.name}</span>
-                                    </a>
-                                ` : ''}
-                            </div>
-                                <div class="box-content">
-                                    <div class="d-flex align-items-center mt-1 justify-content-center">
-                                        <div class="flex-shrink-0">
-                                            <div class="d-flex gap-3">
-                                                <button type="button" class="btn btn-sm fs-10 btn-link text-body text-decoration-none px-0 shadow-none">
-                                                    <iconify-icon icon="ri:numbers-fill"
-                                                        class="text-muted align-bottom me-1 fs-12"></iconify-icon>
-                                                    ${formatFileSize(file.size)}
-                                                </button>
-                                                <button type="button" class="btn btn-sm fs-10 btn-link text-body text-decoration-none px-0 shadow-none">
-                                                    <iconify-icon icon="ri:time-fill"
-                                                        class="text-muted align-bottom me-1 fs-12"></iconify-icon>
-                                                    ${file.modified}
-                                                </button>
+                                        </a>
+                                    ` : ''}
+
+                                    ${['mp3', 'wav', 'ogg'].includes(fileExtension) ? `
+                                        <a href="${base_url}open_audio/${folderName}/${file.name}" target="_blank" title="${file.name}" >
+                                        <iconify-icon icon="ri:folder-music-fill" class="align-bottom text-center text-success" style="font-size: 130px;"></iconify-icon>
+                                        <audio controls style="width: 100%; height: 10px;">
+                                            <source src="${base_url}open_audio/${folderName}/${file.name}" type="audio/${fileExtension}">
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                            <span class=" text-muted" style="font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${file.name}</span>
+                                        </a>
+                                    ` : ''}
+                                </div>
+                                    <div class="box-content">
+                                        <div class="d-flex align-items-center mt-1 justify-content-center">
+                                            <div class="flex-shrink-0">
+                                                <div class="d-flex gap-3">
+                                                    <button type="button" class="btn btn-sm fs-10 btn-link text-body text-decoration-none px-0 shadow-none">
+                                                        <iconify-icon icon="ri:numbers-fill"
+                                                            class="text-muted align-bottom me-1 fs-12"></iconify-icon>
+                                                        ${formatFileSize(file.size)}
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm fs-10 btn-link text-body text-decoration-none px-0 shadow-none">
+                                                        <iconify-icon icon="ri:time-fill"
+                                                            class="text-muted align-bottom me-1 fs-12"></iconify-icon>
+                                                        ${file.modified}
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                        </div>
-                    </div>`;
+                            </div>
+                        </div>`;
                     });
                 } else {
-                    modalContent = '<li class="list-group-item text-primary text-center"><iconify-icon icon="fluent:box-multiple-search-24-filled" width="80" height="80"></iconify-icon><h5 class="mt-2">No file available | Not yet uploaded</h5></li>';
+                    modalContent += '<li class="list-group-item text-primary text-center"><iconify-icon icon="fluent:box-multiple-search-24-filled" width="80" height="80"></iconify-icon><h5 class="mt-2">No file available | Not yet uploaded</h5></li>';
                 }
+                modalContent += '</div>';
+
+                if (totalPages > 1) {
+                    modalContent += '<div class="pagination-container text-center mt-3">';
+                    
+                    if (page > 1) {
+                        modalContent += `<button class="btn btn-sm btn-outline-primary" onclick="updateFolderModalContent('${folderName}', '${team}', '${module}', '${sub_module}', '${business_unit}', '${department}', ${page - 1})">Prev</button> `;
+                    }
+
+                    modalContent += `<span class="mx-2">Page ${page} of ${totalPages}</span>`;
+
+                    if (page < totalPages) {
+                        modalContent += `<button class="btn btn-sm btn-outline-primary" onclick="updateFolderModalContent('${folderName}', '${team}', '${module}', '${sub_module}', '${business_unit}', '${department}', ${page + 1})">Next</button> `;
+                    }
+
+                    modalContent += '</div>';
+                }
+
                 $('#folderModalBody').html(modalContent);
                 $('#folder_name').text(folderName + ' ' + 'FOLDER FILES');
                 $('#folderModal').modal('show');
-                
             },
         });
     }
 
+    
+
+    let debounceTimer;
     $('#teamFilter, #moduleFilter, #subModuleFilter, #buFilter, #deptFilter').on('change', function () {
-        var folderName = $('#folder_name').text().split(' ')[0];
-        var team = $('#teamFilter').val();
-        var module = $('#moduleFilter').val();
-        var sub_module = $('#subModuleFilter').val();
-        var business_unit = $('#buFilter').val();
-        var department = $('#deptFilter').val();
-        updateFolderModalContent(folderName, team, module, sub_module, business_unit, department);
-        filter(); 
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function () {
+            var folderName = $('#folder_name').text().split(' ')[0];
+            var team = $('#teamFilter').val();
+            var module = $('#moduleFilter').val();
+            var sub_module = $('#subModuleFilter').val();
+            var business_unit = $('#buFilter').val();
+            var department = $('#deptFilter').val();
+            updateFolderModalContent(folderName, team, module, sub_module, business_unit, department, 1);
+        }, 500);
     });
+
 
     function formatFileSize(bytes) {
         if (bytes < 1024) return bytes + ' B';
@@ -687,7 +717,7 @@
                             positionClass: "toast-top-left",
                             timeOut: 5000,
                             extendedTimeOut: 2000,
-                            preventDuplicates: true,
+            
                         };
 
                         toastr.error(
@@ -726,7 +756,7 @@
                                     positionClass: "toast-top-left",
                                     timeOut: 5000,
                                     extendedTimeOut: 2000,
-                                    preventDuplicates: true,
+                    
                                 };
 
                                 toastr.success(
@@ -748,7 +778,7 @@
                                     positionClass: "toast-top-left",
                                     timeOut: 5000,
                                     extendedTimeOut: 2000,
-                                    preventDuplicates: true,
+                    
                                 };
 
                                 toastr.error(
@@ -797,7 +827,7 @@
                                 positionClass: "toast-top-left",
                                 timeOut: 5000,
                                 extendedTimeOut: 2000,
-                                preventDuplicates: true,
+                
                             };
 
                             toastr.success(
@@ -811,11 +841,11 @@
                                 positionClass: "toast-top-left",
                                 timeOut: 5000,
                                 extendedTimeOut: 2000,
-                                preventDuplicates: true,
+                
                             };
 
                             toastr.error(
-                                `${response.message}`,
+                                `${response.error}`,
                             );
                         }
                     }
@@ -887,7 +917,7 @@
                                 positionClass: "toast-top-left",
                                 timeOut: 5000,
                                 extendedTimeOut: 2000,
-                                preventDuplicates: true,
+                
                             };
 
                             toastr.success(
@@ -903,7 +933,7 @@
                                 positionClass: "toast-top-left",
                                 timeOut: 5000,
                                 extendedTimeOut: 2000,
-                                preventDuplicates: true,
+                
                             };
 
                             toastr.error(

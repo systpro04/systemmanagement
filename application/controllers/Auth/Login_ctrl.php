@@ -59,6 +59,7 @@ class Login_ctrl extends CI_Controller {
                         'business'       => $employee['business_unit'],
                         'photo'          => ltrim($employee['photo'], '.'),
                         'is_admin'       => $user_details['is_admin'],
+                        'team_name'      => $user_details['team_name']
                     ]);
 
                     $this->session->set_flashdata('SUCCESSMSG', 'Login successful');

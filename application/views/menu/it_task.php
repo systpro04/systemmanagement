@@ -165,7 +165,6 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-header border-1">
@@ -207,7 +206,7 @@
                         <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover no-wrap" id="it_task_list">
+                        <table class="table table-striped table-hover no-wrap compact" id="it_task_list">
                             <thead class="table-info text-center text-uppercase">
                                 <tr>
                                     <th>Name</th>
@@ -227,7 +226,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
 <script>
     $(document).ready(function () {
@@ -243,9 +241,9 @@
         "serverSide": true,
         "destroy": true,
         "stateSave": true,
-        "scrollY": "400px",
-        "scrollX": true,
-        "scrollCollapse": true,
+        // "scrollY": "400px",
+        // "scrollX": true,
+        // "scrollCollapse": true,
         "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
         "pageLength": 10,
         "ajax": {
@@ -369,7 +367,7 @@
                     positionClass: "toast-top-left",
                     timeOut: 5000,
                     extendedTimeOut: 2000,
-                    preventDuplicates: true,
+                    
                 };
 
                 toastr.success(
@@ -495,7 +493,7 @@
                 positionClass: "toast-top-left",
                 timeOut: 5000,
                 extendedTimeOut: 2000,
-                preventDuplicates: true,
+                
             };
 
             toastr.info(
@@ -544,7 +542,7 @@
                             positionClass: "toast-top-left",
                             timeOut: 5000,
                             extendedTimeOut: 2000,
-                            preventDuplicates: true,
+                            
                         };
 
                         toastr.success(
@@ -631,7 +629,7 @@
                             positionClass: "toast-top-left",
                             timeOut: 5000,
                             extendedTimeOut: 2000,
-                            preventDuplicates: true,
+                            
                         };
 
                         toastr.success(
@@ -671,7 +669,7 @@
                             positionClass: "toast-top-left",
                             timeOut: 5000,
                             extendedTimeOut: 2000,
-                            preventDuplicates: true,
+                            
                         };
 
                         toastr.success(

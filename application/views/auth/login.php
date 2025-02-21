@@ -219,7 +219,7 @@
         <script src="<?php echo base_url(); ?>assets/js/password-addon.init.js"></script>
         <script src="<?php echo base_url(); ?>assets/libs/sweetalert2/sweetalert2.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/js/toastr.js"></script>
-        <script>
+        <script type="text/javascript">
             <?php if ($this->session->flashdata('message')): ?>
 
                     $(document).ready(function() {

@@ -103,7 +103,9 @@ $route['typeofsystem_data']                 = 'Admin/typeofsystem_data';
 $route['approved']                          = 'Admin/approved';
 $route['backtopending']                     = 'Admin/backtopending';
 $route['fetch_notifications']               = 'Admin/fetch_notifications';
+$route['fetch_messages']                    = 'Admin/fetch_messages';
 $route['get_notification_count']            = 'Admin/get_notification_count';
+$route['get_messages_count']                 = 'Admin/get_messages_count';
 
 
 // Menu
@@ -241,11 +243,18 @@ $route['get_images_directory']                  = 'TeamEvents/get_images_directo
 
 $route['my_workloads']                      = 'MyWorkloads/index';
 $route['fetch_workloads']                   = 'MyWorkloads/fetch_workloads';
+$route['fetch_tasks']                       = 'MyWorkloads/fetch_tasks';
 
 
 
 $route['chat']                              = 'Chat/index';
 $route['get_users']                         = 'Chat/get_users';
+$route['aboutus']                           = 'About/index';
+
+$route['get_messages']                      = 'Chat/get_messages';
+$route['send_message']                      = 'Chat/send_message';
+$route['get_new_messages']                  = 'Chat/get_new_messages';
+
 
 
 

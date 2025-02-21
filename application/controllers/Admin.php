@@ -38,9 +38,9 @@ class Admin extends CI_Controller {
             $emp_data = $this->workload->get_emp($value['emp_id']);  
             
             $button = '<button href="#" class="btn btn-sm btn-soft-info waves-effect waves-light" onclick="update_user_content(\'' . $value['id'] . '\')" data-bs-toggle="modal" data-bs-target="#updateUser">
-                        <iconify-icon icon="solar:pen-new-round-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Update</button>
+                        <iconify-icon icon="solar:pen-new-round-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon></button>
                         <button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onclick="reset_password('.$value['id'].')">
-                        <iconify-icon icon="tabler:refresh-alert" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Reset Password
+                        <iconify-icon icon="tabler:refresh-alert" class="label-icon align-bottom fs-16 me-2"></iconify-icon>
                     </button>';
             $type = '';
             if($value['type'] == 'Parttime') {
@@ -48,10 +48,17 @@ class Admin extends CI_Controller {
             } else {
                 $type = '<span class="badge rounded-pill bg-success-subtle text-success">Fulltime</span>';
             }
+
+            if($value['contact_no'] == null || $value['contact_no'] == '') {
+                $contact_no = '<span class="badge rounded-pill bg-danger-subtle text-danger">No Contact Number</span>';
+            } else {
+                $contact_no = $value['contact_no'];
+            }
             $result['data'][] = [
                 'team_name'     => ucwords(strtolower($value['team_name'])), 
                 'emp_id'        => $value['emp_id'], 
                 'name'          => ucwords(strtolower($emp_data['name'])),
+                'contact_no'    => $contact_no,
                 'position'      => $emp_data['position'],
                 'type'          => $type,
                 'action'        => $button
@@ -91,6 +98,7 @@ class Admin extends CI_Controller {
         $emp_id         = $this->input->post('emp_id');
         $position       = $this->input->post('position');
         $is_parttime    = $this->input->post('is_parttime');
+        $contact_no     = $this->input->post('contact_no');
         $type = '';
         if($is_parttime == 'Parttime') {
             $type = 'Parttime';
@@ -105,7 +113,8 @@ class Admin extends CI_Controller {
             'position'      => $position,
             'date_added'    => date('Y-m-d H:i:s'),
             'password'      => md5($emp_id),
-            'type'          => $type
+            'type'          => $type,
+            'contact_no'    => $contact_no
         ];
         $this->admin->add_user($data);
     }
@@ -119,11 +128,14 @@ class Admin extends CI_Controller {
         $team           = $this->input->post('team_id');
         $position       = $this->input->post('position');
         $is_parttime    = $this->input->post('type');
+        $contact_no     = $this->input->post('contact_no');
         $data = [];
         $data = [    
             'team_id'       => $team,
             'position'      => $position,
-            'type'          => $is_parttime
+            'type'          => $is_parttime,
+            'contact_no'    => $contact_no
+
         ];
         $this->admin->update_user($data, $id);
     }
@@ -261,6 +273,9 @@ class Admin extends CI_Controller {
     {
         $typeofsystem = $this->input->post('typeofsystem');
         $team = $this->input->post('team');
+        $company = $this->input->post('requested_to_co');
+        $business_unit = $this->input->post('requested_to_bu');
+        $department = $this->input->post('requested_to_dep');
         $start = $this->input->post('start');
         $length = $this->input->post('length');
         $order = $this->input->post('order');
@@ -268,7 +283,7 @@ class Admin extends CI_Controller {
         $order_column = $order[0]['column'];
         $order_dir = $order[0]['dir'];
         
-        $module = $this->admin->getModule($team, $typeofsystem, $start, $length, $order_column, $order_dir, $search_value);
+        $module = $this->admin->getModule($team,$company, $business_unit, $department, $typeofsystem, $start, $length, $order_column, $order_dir, $search_value);
         $data = [];
         
         foreach ($module as $row) {
@@ -277,7 +292,7 @@ class Admin extends CI_Controller {
                     <button type="button" class="btn btn-soft-primary waves-effect waves-light btn-sm" onclick="view_submodule('.$row['mod_id'].')" data-bs-toggle="modal" data-bs-target="#submodule">
                         <iconify-icon icon="solar:checklist-minimalistic-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon>
                     </button>
-                    <button type="button" class="btn btn-soft-info waves-effect waves-light btn-sm" onclick="edit_module('.$row['mod_id'].',\''.$row['requested_to'].'\',\''.$row['bu_name'].'\',\''.$row['date_request'].'\',\''.$row['belong_team'].'\')" data-bs-toggle="modal" data-bs-target="#edit_module">
+                    <button type="button" class="btn btn-soft-info waves-effect waves-light btn-sm" onclick="edit_module('.$row['mod_id'].',\''.$row['requested_to_co'].'\',\''.$row['requested_to_bu'].'\',\''.$row['requested_to_dep'].'\',\''.$row['bu_name'].'\',\''.$row['date_request'].'\',\''.$row['belong_team'].'\')" data-bs-toggle="modal" data-bs-target="#edit_module">
                         <iconify-icon icon="solar:pen-bold-duotone" class="label-icon align-bottom fs-16 me-2"></iconify-icon>
                     </button>
                     <button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onclick="delete_module('.$row['mod_id'].')">
@@ -329,6 +344,11 @@ class Admin extends CI_Controller {
                 $date_request = date('F d, Y', strtotime($row['date_request']));
             }
 
+            if($row['others'] == null || $row['others'] == '') {
+                $others = '<span class="badge bg-info">N/A</span>';      
+            }else{
+                $others = $row['others'];
+            }
 
 
             $data[] = [
@@ -337,11 +357,12 @@ class Admin extends CI_Controller {
                 'bu_name'       => $bu_name,
                 'date_request'  => $date_request,
                 'date_implem'   => $date_implem,
+                'others'        => $others,
                 'action'        => $action
             ];
         }
         
-        $total_records = $this->admin->getTotalModule($team,$typeofsystem, $search_value);
+        $total_records = $this->admin->getTotalModule($team,$company, $business_unit, $department, $typeofsystem, $search_value);
 
         $output = [
             "draw" => intval($this->input->post('draw')),
@@ -357,23 +378,33 @@ class Admin extends CI_Controller {
         $mod_abbr       = $this->input->post('mod_abbr');
         $typeofsystem   = $this->input->post('typeofsystem');
         $date_request   = $this->input->post('date_request');
+        $co             = $this->input->post('co');
         $bcode          = $this->input->post('bcode');
+        $dep            = $this->input->post('dep');
+
+        $company        = $this->input->post('company');
         $business_unit  = $this->input->post('business_unit');
+        $department     = $this->input->post('department');
+
         $team           = $this->input->post('team');
-    
+        $other_details  = $this->input->post('other_details');
         if($date_request === "") {
             $date_request = null;
         }
+
         $data = [
-            'mod_name'      => $mod_name,
-            'mod_abbr'      => $mod_abbr,
-            'typeofsystem'  => $typeofsystem,
-            'requested_to'  => $bcode,
-            'bu_name'       => $business_unit,
-            'date_request'  => $date_request,
-            'belong_team'   => $team,
-            'status'        => 'Approve',
-            'date_added'    => date('Y-m-d H:i:s'),
+            'mod_name'          => $mod_name,
+            'mod_abbr'          => $mod_abbr,
+            'typeofsystem'      => $typeofsystem,
+            'requested_to_co'   => $co,
+            'requested_to_bu'   => $bcode,
+            'requested_to_dep'  => $dep,
+            'bu_name'           => $company . ' | ' . $business_unit . ' | ' . $department,
+            'date_request'      => $date_request,
+            'belong_team'       => $team,
+            'status'            => 'Approve',
+            'date_added'        => date('Y-m-d H:i:s'),
+            'others'            => $other_details
         ];
     
         $this->admin->insertModule($data);
@@ -407,9 +438,23 @@ class Admin extends CI_Controller {
             </div>
 
             <div class="mb-2">
-                <label for="title" class="col-form-label">Requested To</label>
-                <select id="edit_business_unit" class="form-select" aria-label="Team">
-                    <option value="'.htmlspecialchars($row['requested_to']) . '">' . $row['bu_name'] . '"></option>
+                <label for="title" class="col-form-label">Company</label>
+                <select id="edit_co" class="form-select">
+                    <option value="'.htmlspecialchars($row['requested_to_co']) . '"></option>
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label for="title" class="col-form-label">Business Unit</label>
+                <select id="edit_bu" class="form-select">
+                    <option value="'.htmlspecialchars($row['requested_to_bu']) . '"></option>
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label for="title" class="col-form-label">Department</label>
+                <select id="edit_dept" class="form-select">
+                    <option value="'.htmlspecialchars($row['requested_to_dep']) . '"></option>
                 </select>
             </div>
 
@@ -420,7 +465,9 @@ class Admin extends CI_Controller {
                         <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
                     </div>
             </div>
-
+            <label for="title" class="col-form-label">Other Details:</label>
+                <input type="text" class="form-control" id="edit_other_details" name="edit_other_details" value="' . htmlspecialchars($row['others']) . '"/>
+            </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="submiteditedmodule(' . $mod_id . ')">Submit</button>
@@ -428,14 +475,11 @@ class Admin extends CI_Controller {
             </div>';
             ?>
             <script>
-                flatpickr("#edit_date_request, #edit_date_implem", {
-                    dateFormat: "F j, Y"
-                });
-                $('#edit_business_unit').select2({
-                    placeholder: "Select Business Unit",
-                    allowClear: true,
-                    minimumResultsForSearch: Infinity
-                });
+                flatpickr("#edit_date_request, #edit_date_implem");
+                $('#edit_co').select2({ placeholder: 'Select Company', allowClear: true, minimumResultsForSearch: Infinity});
+                $('#edit_bu').select2({ placeholder: 'Select Business Unit', allowClear: true, minimumResultsForSearch: Infinity});
+                $('#edit_dept').select2({ placeholder: 'Select Department', allowClear: true, minimumResultsForSearch: Infinity});
+
                 $('#edit_team_').select2({ placeholder: 'Select Team', allowClear: true, minimumResultsForSearch: Infinity });
 
                 $.ajax({
@@ -451,23 +495,86 @@ class Admin extends CI_Controller {
                         });
                     }
                 });
-                load_business_unit();
-                function load_business_unit() {
-                    $.ajax({
-                        url: '<?= base_url('business_unit') ?>',
-                        type: 'POST',
-                        success: function(response) {
-                            const buData = JSON.parse(response);
-                            const currentValue = $('#edit_business_unit').val();
-                            $('#edit_business_unit').empty().append('<option value=""></option>');
+                $.ajax({
+                    url: '<?php echo base_url('setup_location'); ?>',
+                    type: 'POST',
+                    success: function (response) {
+                        companyData = JSON.parse(response);
 
-                            buData.forEach(function(bu) {
-                                const selected = (bu.bcode === currentValue) ? 'selected' : '';
-                                $('#edit_business_unit').append('<option value="' + bu.bcode + '" ' + selected + '>' + bu.business_unit + '</option>');
-                            });
-                        },
-                    });
+                        const selectedCompany = $('#edit_co').val();
+                        const selectedBusinessUnit = $('#edit_bu').val();
+                        const selectedDepartment = $('#edit_dept').val();
+
+                        $('#edit_co').empty().append('<option value="">Select Company</option>');
+                        $('#edit_bu').empty().append('<option value="">Select Business Unit</option>').prop('disabled', true);
+                        $('#edit_dept').empty().append('<option value="">Select Department</option>').prop('disabled', true);
+
+                        companyData.forEach(function (company) {
+                            const selected = (company.company_code === selectedCompany) ? 'selected' : '';
+                            $('#edit_co').append('<option value="' + company.company_code + '" ' + selected + '>' + company.company + '</option>');
+                        });
+
+                        if (selectedCompany) {
+                            loadBusinessUnits(selectedCompany, selectedBusinessUnit);
+                        }
+                        if (selectedBusinessUnit) {
+                            loadDepartments(selectedCompany, selectedBusinessUnit, selectedDepartment);
+                        }
+                    },
+                });
+
+                $('#edit_co').change(function () {
+                    var companyCode = $(this).val();
+                    $('#edit_bu').empty().append('<option value="">Select Business Unit</option>').prop('disabled', true);
+                    $('#edit_dept').empty().append('<option value="">Select Department</option>').prop('disabled', true);
+                    if (companyCode) {
+                        loadBusinessUnits(companyCode, '');
+                    }
+                });
+
+                function loadBusinessUnits(companyCode, selectedBusinessUnit) {
+                    var selectedCompany = companyData.find(company => company.company_code == companyCode);
+                    if (selectedCompany && selectedCompany.business_unit) {
+                        $('#edit_bu').empty().append('<option value="">Select Business Unit</option>');
+
+                        selectedCompany.business_unit.forEach(function (bu) {
+                            const selected = (bu.bunit_code === selectedBusinessUnit) ? 'selected' : '';
+                            $('#edit_bu').append('<option value="' + bu.bunit_code + '" ' + selected + '>' + bu.business_unit + '</option>');
+                        });
+
+                        $('#edit_bu').prop('disabled', false);
+                        if (selectedBusinessUnit) {
+                            loadDepartments(companyCode, selectedBusinessUnit, '');
+                        }
+                    }
                 }
+
+                $('#edit_bu').change(function () {
+                    var companyCode = $('#edit_co').val();
+                    var businessUnitCode = $(this).val();
+                    $('#edit_dept').empty().append('<option value="">Select Department</option>').prop('disabled', true);
+                    if (businessUnitCode) {
+                        loadDepartments(companyCode, businessUnitCode, '');
+                    }
+                });
+
+                function loadDepartments(companyCode, businessUnitCode, selectedDepartment) {
+                    var selectedCompany = companyData.find(company => company.company_code == companyCode);
+                    if (selectedCompany && selectedCompany.department) {
+                        $('#edit_dept').empty().append('<option value="">Select Department</option>');
+
+                        selectedCompany.department
+                            .filter(dept => dept.bunit_code == businessUnitCode)
+                            .forEach(function (dept) {
+                                const selected = (dept.dcode === selectedDepartment) ? 'selected' : '';
+                                $('#edit_dept').append('<option value="' + dept.dcode + '" ' + selected + '>' + dept.dept_name + '</option>');
+                            });
+
+                        $('#edit_dept').prop('disabled', false);
+                    }
+                }
+
+
             </script>
             <?php
     }
@@ -476,11 +583,18 @@ class Admin extends CI_Controller {
         $mod_id         = $this->input->post('mod_id');
         $mod_name       = $this->input->post('mod_name');
         $mod_abbr       = $this->input->post('mod_abbr');
+        $co             = $this->input->post('co');
         $bcode          = $this->input->post('bcode');
+        $dep            = $this->input->post('dep');
+
+        $company        = $this->input->post('company');
         $business_unit  = $this->input->post('business_unit');
+        $department     = $this->input->post('department');
+
         $date_request   = $this->input->post('date_request');
         $date_implem    = $this->input->post('date_implem');
         $team           = $this->input->post('team');
+        $other_details  = $this->input->post('other_details');
     
         if($date_request === "") {
             $date_request = null;
@@ -492,22 +606,29 @@ class Admin extends CI_Controller {
         }else{
             $date_implem = date('Y-m-d', strtotime($date_implem));
         }
+        if($co === "") {
+            $co = null;
+        }
+
         if($bcode === "") {
             $bcode = null;
         }
-        if($business_unit === "") {
-            $business_unit = null;
+        if($dep === "") {
+            $dep = null;
         }
 
         $data = [
             'mod_name'          => $mod_name,
             'mod_abbr'          => $mod_abbr,
-            'requested_to'      => $bcode,
-            'bu_name'           => $business_unit,
+            'bu_name'           => $company . ' | ' . $business_unit . ' | ' . $department,
             'date_request'      => $date_request,
             'date_implem'       => $date_implem,
             'date_updated'      => date('Y-m-d H:i:s'),
-            'belong_team'      => $team
+            'belong_team'       => $team,
+            'requested_to_co'   => $co,
+            'requested_to_bu'   => $bcode,
+            'requested_to_dep'  => $dep,
+            'other'             => $other_details
         ];
     
         $this->admin->updateModule($data, $mod_id);
@@ -801,11 +922,11 @@ class Admin extends CI_Controller {
                     'action' => '
                         <div class="hstack gap-1 d-flex justify-content-center">' .
                         ($status === 'Pending' ? 
-                            '<button type="button" class="btn btn-soft-primary btn-label waves-effect waves-light btn-sm" onclick="approved(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
-                            '<iconify-icon icon="ri:thumb-up-fill" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Approve</button>'
+                            '<button type="button" class="btn btn-soft-primary waves-effect waves-light btn-sm" onclick="approved(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
+                            '<iconify-icon icon="ri:thumb-up-fill" class="align-bottom fs-16"></iconify-icon></button>'
                             : 
-                            '<button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="backtopending(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
-                            '<iconify-icon icon="tabler:refresh-alert" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Recall</button>') .
+                            '<button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onclick="backtopending(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
+                            '<iconify-icon icon="tabler:refresh-alert" class="align-bottom fs-16"></iconify-icon></button>') .
                         '</div>'
                 ];
             }
@@ -898,11 +1019,11 @@ class Admin extends CI_Controller {
                     'action' => '
                         <div class="hstack gap-1 d-flex justify-content-center">' .
                         ($status === 'Pending' ? 
-                            '<button type="button" class="btn btn-soft-primary btn-label waves-effect waves-light btn-sm" onclick="approved(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
-                            '<iconify-icon icon="ri:thumb-up-fill" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Approve</button>'
+                            '<button type="button" class="btn btn-soft-primary waves-effect waves-light btn-sm" onclick="approved(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
+                            '<iconify-icon icon="ri:thumb-up-fill" class=" align-bottom fs-16"></iconify-icon></button>'
                             : 
-                            '<button type="button" class="btn btn-soft-danger btn-label waves-effect waves-light btn-sm" onclick="backtopending(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
-                            '<iconify-icon icon="tabler:refresh-alert" class="label-icon align-bottom fs-16 me-2"></iconify-icon> Recall</button>') .
+                            '<button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onclick="backtopending(' . $row['file_id'] . ', \'' . $type . '\', \'' . $typeofsystem . '\', \''.$row['mod_id']. '\')">' .
+                            '<iconify-icon icon="tabler:refresh-alert" class=" align-bottom fs-16"></iconify-icon></button>') .
                         '</div>'
                 ];
             }
@@ -1176,6 +1297,29 @@ class Admin extends CI_Controller {
         $count = $this->admin->get_pending_notification_count();
         echo json_encode(['count' => $count]);
     }
+
+
+    public function fetch_messages()
+    {
+        $messages = $this->admin->get_messages();
+    
+        foreach ($messages as &$msg) {
+            $emp = $this->workload->get_emp($msg['sender_id']);
+            
+            $msg['name'] = $emp['name'];
+        }
+    
+        echo json_encode($messages);
+    }
+    
+    
+    public function get_messages_count()
+    {
+        $count = $this->admin->get_messages_count();
+        echo json_encode(['count' => $count]);
+    }
+
+
     
     
     

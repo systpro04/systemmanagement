@@ -18463,12 +18463,12 @@ span.flatpickr-weekday {
             box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
         }
     }
-    
-    .nav-link.active iconify-icon {
-        animation: pulse 1s infinite ease-in-out;
+
+    .nav-link.active iconify-icon, button.bell iconify-icon{
+        animation: pulse 0.8s infinite ease-in-out;
         
     }
-        
+    
     
 /*# sourceMappingURL=app.min.css.map */
 

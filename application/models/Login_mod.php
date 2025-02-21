@@ -23,14 +23,15 @@ class Login_mod extends CI_Model
 
     // Get user details
     public function get_db_user($emp_id) {
-        $this->db->select('*');
+        $this->db->select('users.*, team.*');
         $this->db->from('users');
+        $this->db->join('team', 'users.team_id = team.team_id');
         $this->db->where('emp_id', $emp_id);
         $this->db->where('type', 'fulltime');
         $this->db->limit(1);
         $query = $this->db->get();
 
-        return $query->row_array(); // Fetch a single user
+        return $query->row_array();
     }
 
     // Validate login credentials

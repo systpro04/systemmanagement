@@ -171,7 +171,6 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-header border-1">
@@ -214,7 +213,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover dt-responsive" id="weekly_report">
+                        <table class="table table-striped table-hover dt-responsive compact" id="weekly_report">
                             <thead class="table-info text-center text-uppercase">
                                 <tr>
                                     <th>Date Range</th>
@@ -234,7 +233,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
 
 <script>
@@ -250,9 +248,9 @@
         "serverSide": true,
         "destroy": true,
         "stateSave": true,
-        "scrollY": "400px",
-        "scrollX": true,
-        "scrollCollapse": true,
+        // "scrollY": "400px",
+        // "scrollX": true,
+        // "scrollCollapse": true,
         "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
         "pageLength": 10,
         "ajax": {
@@ -383,7 +381,7 @@
                     positionClass: "toast-top-left",
                     timeOut: 5000,
                     extendedTimeOut: 2000,
-                    preventDuplicates: true,
+                    
                 };
 
                 toastr.success(
@@ -495,7 +493,7 @@
                     positionClass: "toast-top-left",
                     timeOut: 5000,
                     extendedTimeOut: 2000,
-                    preventDuplicates: true,
+                    
                 };
 
                 toastr.info(
@@ -544,7 +542,7 @@
                             positionClass: "toast-top-left",
                             timeOut: 5000,
                             extendedTimeOut: 2000,
-                            preventDuplicates: true,
+                            
                         };
 
                         toastr.success(
@@ -635,7 +633,7 @@
                             positionClass: "toast-top-left",
                             timeOut: 5000,
                             extendedTimeOut: 2000,
-                            preventDuplicates: true,
+                            
                         };
 
                         toastr.success(
@@ -675,7 +673,7 @@
                             positionClass: "toast-top-left",
                             timeOut: 5000,
                             extendedTimeOut: 2000,
-                            preventDuplicates: true,
+                            
                         };
 
                         toastr.success(

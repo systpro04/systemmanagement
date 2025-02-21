@@ -88,7 +88,6 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-header border-1">
@@ -128,7 +127,7 @@
                         <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover no-wrap" id="for_implementation">
+                        <table class="table table-striped table-hover no-wrap compact" id="for_implementation">
                             <thead class="table-info text-center text-uppercase">
                                 <tr>
                                     <th>Team</th>
@@ -149,7 +148,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
 <script>
 
@@ -175,9 +173,9 @@
             "serverSide": true,
             "destroy": true,
             // "stateSave": true,
-            "scrollY": "400px",
-            "scrollX": true,
-            "scrollCollapse": true,
+            // "scrollY": "400px",
+            // "scrollX": true,
+            // "scrollCollapse": true,
             "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
             "pageLength": 10,
             "ajax": {
@@ -190,30 +188,10 @@
             "columns": [
                 { "data": "team_name" },
                 { "data": "module" },
-                { "data": 'date_request',
-                    "render": function(data, type, row) {
-                        if (data) {
-                            var date = new Date(data);
-                            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
-                            });
-                        }else {
-                            return '<span class="badge bg-info"> N/A </span>';
-                        }
-                    }
-                },
+                { "data": 'date_request'},
                 { "data": "bu_name" },
                 { "data": "implem_type" },
-                { "data": 'date_implem',
-                    "render": function(data, type, row) {
-                        if (data) {
-                            var date = new Date(data);
-                            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'
-                            });
-                        }else {
-                            return '<span class="badge bg-info"> N/A </span>';
-                        }
-                    }
-                },
+                { "data": 'date_implem'},
                 { "data": "typeofsystem" },
                 { "data": "uploaded_to" },
                 { "data": "action" }
@@ -305,6 +283,8 @@
             "serverSide": true,
             "destroy": true,
             "stateSave": true,
+            "lengthMenu": [[15, 50, 100, 10000], [15, 50, 100, "Max"]],
+            "pageLength": 15,
             "ajax": {
                 "url": "<?php echo base_url('remaining_files_list'); ?>",
                 "type": "POST",
@@ -451,17 +431,17 @@
                     const files = pond.getFiles();
 
                     if (files.length === 0) {
-                        Toastify({
-                            text: `No files selected.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            
+                        };
+
+                        toastr.error(
+                            `No files were selected`,
+                        );
                         return;
                     }
 
@@ -490,17 +470,17 @@
                             response = JSON.parse(response);
 
                             if (response.success) {
-                                Toastify({
-                                    text: response.message,
-                                    duration: 5000,
-                                    gravity: "top",
-                                    position: "left",
-                                    stopOnFocus: true,
-                                    close: true,
-                                    style: {
-                                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                                    },
-                                }).showToast();
+                                toastr.options = {
+                                    progressBar: true,
+                                    positionClass: "toast-top-left",
+                                    timeOut: 5000,
+                                    extendedTimeOut: 2000,
+                                    
+                                };
+
+                                toastr.success(
+                                    `${response.message}`,
+                                );
                                 $('#upload_to_directory').modal('hide');
                                 $('#remaining_files_table').DataTable().ajax.reload();
                                 $('#for_implementation').DataTable().ajax.reload();
@@ -555,17 +535,17 @@
                                                     success: function (overrideResponse) {
                                                         overrideResponse = JSON.parse(overrideResponse);
                                                         if (overrideResponse.success) {
-                                                            Toastify({
-                                                                text: overrideResponse.message,
-                                                                duration: 5000,
-                                                                gravity: "top",
-                                                                position: "left",
-                                                                stopOnFocus: true,
-                                                                close: true,
-                                                                style: {
-                                                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                                                                },
-                                                            }).showToast();
+                                                            toastr.options = {
+                                                                progressBar: true,
+                                                                positionClass: "toast-top-left",
+                                                                timeOut: 5000,
+                                                                extendedTimeOut: 2000,
+                                                                
+                                                            };
+
+                                                            toastr.success(
+                                                                `${overrideResponse.message}`,
+                                                            );
                                                             $('#upload_to_directory').modal('hide');
                                                             $('#remaining_files_table').DataTable().ajax.reload();
                                                             $('#for_implementation').DataTable().ajax.reload();
@@ -577,17 +557,17 @@
                                                             $('#business_unitFilter').val('').trigger('change');
                                                             $('#departmentFilter').val('').trigger('change');
                                                         } else {
-                                                            Toastify({
-                                                                text: overrideResponse.message,
-                                                                duration: 5000,
-                                                                gravity: "top",
-                                                                position: "left",
-                                                                stopOnFocus: true,
-                                                                close: true,
-                                                                style: {
-                                                                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                                                                },
-                                                            }).showToast();
+                                                            toastr.options = {
+                                                                progressBar: true,
+                                                                positionClass: "toast-top-left",
+                                                                timeOut: 5000,
+                                                                extendedTimeOut: 2000,
+                                                                
+                                                            };
+
+                                                            toastr.error(
+                                                                `${overrideResponse.message}`,
+                                                            );
                                                         }
                                                     }
                                                 });

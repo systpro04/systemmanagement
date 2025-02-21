@@ -14,37 +14,37 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
-        <div class="col-xl-12">
-            <div class="card">
-                <div class="card-header border-1">
-                    <div class="d-flex align-items-center">
-                        <h5 class="card-title mb-0 flex-grow-1 fw-bold">Activity Logs</h5>
-                    </div>
+
+    <div class="col-xxl-12">
+        <div class="card">
+            <div class="card-header border-1">
+                <div class="d-flex align-items-center">
+                    <h5 class="card-title mb-0 flex-grow-1 fw-bold">Activity Logs</h5>
                 </div>
-                <div class="card-body">
-                    <div class="tab-content">
-                        <div class="mt-2 tab-pane active" role="tabpanel">
-                            <div class="table-responsive">
-                            <table class="table table-striped table-hover table-bordered" id="logs">
-                                <thead class="table-info text-center text-uppercase">
-                                    <tr>
-                                        <!-- <th>Emp ID</th> -->
-                                        <th>Activity Logs</th>
-                                        <th width="20%">Date Added</th>
-                                        <th width="20%">Date Updated</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                            </div>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="mt-2 tab-pane active" role="tabpanel">
+                        <div class="table-responsive">
+                        <table class="table table-striped table-hover table-bordered compact" id="logs">
+                            <thead class="table-info text-center text-uppercase">
+                                <tr>
+                                    <!-- <th>Emp ID</th> -->
+                                    <th>Activity Logs</th>
+                                    <th width="20%">Date Added</th>
+                                    <th width="20%">Date Updated</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 <script>
     $('#logs').DataTable({

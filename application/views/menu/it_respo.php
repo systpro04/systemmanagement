@@ -200,7 +200,6 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-header border-1">
@@ -279,7 +278,7 @@
                     </div>
                         <div class="mt-2 tab-pane active" id="System Analyst" role="tabpanel">
                             <div class="table-responsive">
-                            <table class="table table-striped table-hover responsive" id="workload">
+                            <table class="table table-striped table-hover responsive compact" id="workload">
                                 <thead class="table-info text-center text-uppercase">
                                     <tr>
                                         <!-- <th>Team</th> -->
@@ -304,7 +303,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
 
 <script>
@@ -366,9 +364,9 @@
             "serverSide": true,
             "destroy": true,
             // "stateSave": true,
-            "scrollY": "400px",
-            "scrollX": true,
-            "scrollCollapse": true,
+            // "scrollY": "400px",
+            // "scrollX": true,
+            // "scrollCollapse": true,
             "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
             "pageLength": 10,
             "ajax": {
@@ -510,7 +508,7 @@
                     positionClass: "toast-top-left",
                     timeOut: 5000,
                     extendedTimeOut: 2000,
-                    preventDuplicates: true,
+                    
                 };
 
                 toastr.success(
@@ -638,7 +636,7 @@
                 positionClass: "toast-top-left",
                 timeOut: 5000,
                 extendedTimeOut: 2000,
-                preventDuplicates: true,
+                
             };
 
             toastr.info(
@@ -687,7 +685,7 @@
                             positionClass: "toast-top-left",
                             timeOut: 5000,
                             extendedTimeOut: 2000,
-                            preventDuplicates: true,
+                            
                         };
 
                         toastr.success(
@@ -776,7 +774,7 @@
                 positionClass: "toast-top-left",
                 timeOut: 5000,
                 extendedTimeOut: 2000,
-                preventDuplicates: true,
+                
             };
 
             toastr.info(
@@ -823,7 +821,7 @@
                             positionClass: "toast-top-left",
                             timeOut: 5000,
                             extendedTimeOut: 2000,
-                            preventDuplicates: true,
+                            
                         };
 
                         toastr.success(
@@ -873,7 +871,7 @@
                             positionClass: "toast-top-left",
                             timeOut: 5000,
                             extendedTimeOut: 2000,
-                            preventDuplicates: true,
+                            
                         };
 
                         toastr.success(

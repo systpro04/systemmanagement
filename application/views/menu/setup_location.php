@@ -224,7 +224,6 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-header border-1">
@@ -249,7 +248,7 @@
                     </ul>
                     <hr>
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover no-wrap " id="module_list_implemented">
+                        <table class="table table-striped table-hover no-wrap compact" id="module_list_implemented">
                             <thead class="table-info text-center text-uppercase">
                                 <tr>
                                     <th>Module List</th>
@@ -264,7 +263,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
 <script>
     $(document).ready(function () {
@@ -553,7 +551,7 @@
                 positionClass: "toast-top-left",
                 timeOut: 5000,
                 extendedTimeOut: 2000,
-                preventDuplicates: true,
+                
             };
 
             toastr.info(
@@ -603,7 +601,7 @@
                             positionClass: "toast-top-left",
                             timeOut: 5000,
                             extendedTimeOut: 2000,
-                            preventDuplicates: true,
+                            
                         };
 
                         toastr.success(
@@ -692,7 +690,7 @@
                             positionClass: "toast-top-left",
                             timeOut: 5000,
                             extendedTimeOut: 2000,
-                            preventDuplicates: true,
+                            
                         };
 
                         toastr.success(
@@ -733,7 +731,7 @@
                             positionClass: "toast-top-left",
                             timeOut: 5000,
                             extendedTimeOut: 2000,
-                            preventDuplicates: true,
+                            
                         };
 
                         toastr.success(

@@ -215,7 +215,7 @@
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="fs-15 fw-bold">Upcoming Meetings | Schedules </h6>
-                                    <p class="text-muted mb-0">Please be notified for any scheduled events.</p>
+                                    <p class="text-muted mb-0">Please be notified for any scheduled meetings.</p>
                                 </div>
                             </div>
                         </div>
@@ -312,7 +312,6 @@
                             });
                             successCallback(data);
                         } else {
-                            console.error("Unexpected data format:", data);
                             failureCallback();
                         }
                     },
@@ -373,7 +372,7 @@
                         positionClass: "toast-top-left",
                         timeOut: 5000,
                         extendedTimeOut: 2000,
-                        preventDuplicates: true,
+                        
                     };
 
                     toastr.warning(
@@ -429,7 +428,7 @@
                     positionClass: "toast-top-left",
                     timeOut: 5000,
                     extendedTimeOut: 2000,
-                    preventDuplicates: true,
+                    
                 };
 
                 toastr.info(
@@ -453,7 +452,7 @@
                     positionClass: "toast-top-left",
                     timeOut: 5000,
                     extendedTimeOut: 2000,
-                    preventDuplicates: true,
+                    
                 };
 
                 toastr.info(
@@ -483,7 +482,7 @@
                                 positionClass: "toast-top-left",
                                 timeOut: 5000,
                                 extendedTimeOut: 2000,
-                                preventDuplicates: true,
+                                
                             };
 
                             toastr.success(
@@ -525,7 +524,7 @@
                                 positionClass: "toast-top-left",
                                 timeOut: 5000,
                                 extendedTimeOut: 2000,
-                                preventDuplicates: true,
+                                
                             };
 
                             toastr.success(
@@ -562,7 +561,7 @@
                     positionClass: "toast-top-left",
                     timeOut: 5000,
                     extendedTimeOut: 2000,
-                    preventDuplicates: true,
+                    
                 };
 
                 toastr.info(
@@ -604,7 +603,7 @@
                                 positionClass: "toast-top-left",
                                 timeOut: 5000,
                                 extendedTimeOut: 2000,
-                                preventDuplicates: true,
+                                
                             };
 
                             toastr.success(

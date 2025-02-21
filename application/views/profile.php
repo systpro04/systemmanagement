@@ -145,14 +145,14 @@ function update_password() {
                     positionClass: "toast-top-left",
                     timeOut: 5000,
                     extendedTimeOut: 2000,
-                    preventDuplicates: true,
+                    
                 };
 
                 toastr.info(
                     `Please fill in the required field.`,
                 );
                 
-                return;
+                return false;
             }
 
             $.ajax({
@@ -169,7 +169,7 @@ function update_password() {
                         positionClass: "toast-top-left",
                         timeOut: 5000,
                         extendedTimeOut: 2000,
-                        preventDuplicates: true,
+                        
                     };
 
                     toastr.success(

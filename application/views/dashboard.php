@@ -1,154 +1,170 @@
-<div class="row project-wrapper">
-    <div class="col-xxl-12">
-        <div class="row">
-            <div class="col-xl-3">
-                <div class="card card-animate">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="avatar-sm flex-shrink-0">
-                                <span class="avatar-title bg-primary rounded-2 fs-2">
-                                    <iconify-icon icon="logos:codersrank-icon" class="fs-25"></iconify-icon>
-                                </span>
-                            </div>
-                            <div class="flex-grow-1 overflow-hidden ms-3">
-                                <p class="fw-bold text-muted text-truncate mb-3">System Programmers </p>
-                                <div class="d-flex align-items-center mb-3">
-                                    <h4 class="fs-4 flex-grow-1 mb-0 text-end"><span class="counter-value"
-                                            data-target="<?php echo $programmers_count; ?>"></span></h4>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0">Dashboard </h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard </a></li>
+                        <li class="breadcrumb-item active">Index<i class="mdi mdi-alpha-x-circle:"></i></li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row project-wrapper">
+        <div class="col-xxl-12">
+            <div class="row">
+                <div class="col-xl-3">
+                    <div class="card card-animate">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm flex-shrink-0">
+                                    <span class="avatar-title bg-primary rounded-2 fs-2">
+                                        <iconify-icon icon="logos:codersrank-icon" class="fs-25"></iconify-icon>
+                                    </span>
                                 </div>
-                                <p class="text-muted text-truncate mb-0 fs-6">Active Programmers </p>
+                                <div class="flex-grow-1 overflow-hidden ms-3">
+                                    <p class="fw-bold text-muted text-truncate mb-3">System Programmers </p>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <h4 class="fs-4 flex-grow-1 mb-0 text-end"><span class="counter-value"
+                                                data-target="<?php echo $programmers_count; ?>"></span></h4>
+                                    </div>
+                                    <p class="text-muted text-truncate mb-0 fs-6">Active Programmers </p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-xl-3">
-                <div class="card card-animate">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="avatar-sm flex-shrink-0">
-                                <span class="avatar-title bg-warning rounded-2 fs-2">
-                                    <iconify-icon icon="ix:analyze" class="fs-35"></iconify-icon>
-                                </span>
-                            </div>
-                            <div class="flex-grow-1 overflow-hidden ms-3">
-                                <p class="fw-bold text-muted text-truncate mb-3">System Analysts </p>
-                                <div class="d-flex align-items-center mb-3">
-                                    <h4 class="fs-4 flex-grow-1 mb-0 text-end"><span class="counter-value"
-                                            data-target="<?php echo $analysts_count; ?>"></span></h4>
+                <div class="col-xl-3">
+                    <div class="card card-animate">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm flex-shrink-0">
+                                    <span class="avatar-title bg-warning rounded-2 fs-2">
+                                        <iconify-icon icon="ix:analyze" class="fs-35"></iconify-icon>
+                                    </span>
                                 </div>
-                                <p class="text-muted text-truncate mb-0 fs-6">Active Analysts </p>
+                                <div class="flex-grow-1 overflow-hidden ms-3">
+                                    <p class="fw-bold text-muted text-truncate mb-3">System Analysts </p>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <h4 class="fs-4 flex-grow-1 mb-0 text-end"><span class="counter-value"
+                                                data-target="<?php echo $analysts_count; ?>"></span></h4>
+                                    </div>
+                                    <p class="text-muted text-truncate mb-0 fs-6">Active Analysts </p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-xl-3">
-                <div class="card card-animate">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="avatar-sm flex-shrink-0">
-                                <span class="avatar-title bg-success rounded-2 fs-2">
-                                    <iconify-icon icon="devicon:xcode" class="fs-35"></iconify-icon>
-                                </span>
-                            </div>
-                            <div class="flex-grow-1 overflow-hidden ms-3">
-                                <p class="fw-bold text-muted text-truncate mb-3">
-                                    RMS Team </p>
-                                <div class="d-flex align-items-center mb-3">
-                                    <h4 class="fs-4 flex-grow-1 mb-0 text-end"><span class="counter-value"
-                                            data-target="<?php echo $others_count; ?>"></span> </h4>
+                <div class="col-xl-3">
+                    <div class="card card-animate">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm flex-shrink-0">
+                                    <span class="avatar-title bg-success rounded-2 fs-2">
+                                        <iconify-icon icon="devicon:xcode" class="fs-35"></iconify-icon>
+                                    </span>
                                 </div>
-                                <p class="text-muted text-truncate mb-0 fs-6">Active Rms </p>
+                                <div class="flex-grow-1 overflow-hidden ms-3">
+                                    <p class="fw-bold text-muted text-truncate mb-3">
+                                        RMS Team </p>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <h4 class="fs-4 flex-grow-1 mb-0 text-end"><span class="counter-value"
+                                                data-target="<?php echo $others_count; ?>"></span> </h4>
+                                    </div>
+                                    <p class="text-muted text-truncate mb-0 fs-6">Active Rms </p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-xl-3">
-                <div class="card card-animate">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="avatar-sm flex-shrink-0">
-                                <span class="avatar-title bg-light rounded-2 fs-2">
-                                    <iconify-icon icon="emojione:file-folder" class="fs-35"></iconify-icon>
-                                </span>
-                            </div>
-                            <div class="flex-grow-1 overflow-hidden ms-3">
-                                <p class="fw-bold text-muted text-truncate mb-3">
-                                    My Workloads </p>
-                                <div class="d-flex align-items-center mb-3">
-                                    <h4 class="fs-4 flex-grow-1 mb-0 text-end"><span class="counter-value"
-                                            data-target="<?php echo $my_workloads; ?>"></span> </h4>
+                <div class="col-xl-3">
+                    <div class="card card-animate">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm flex-shrink-0">
+                                    <span class="avatar-title bg-light rounded-2 fs-2">
+                                        <iconify-icon icon="emojione:file-folder" class="fs-35"></iconify-icon>
+                                    </span>
                                 </div>
-                                <p class="text-muted text-truncate mb-0 fs-6">Number of Workloads </p>
+                                <div class="flex-grow-1 overflow-hidden ms-3">
+                                    <p class="fw-bold text-muted text-truncate mb-3">
+                                        My Workloads </p>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <h4 class="fs-4 flex-grow-1 mb-0 text-end"><span class="counter-value"
+                                                data-target="<?php echo $my_workloads; ?>"></span> </h4>
+                                    </div>
+                                    <p class="text-muted text-truncate mb-0 fs-6">Number of Workloads </p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-xxl-8">
-        <div class="row">
-            <div class="col-xl-6">
-                <div class="card card-animate">
-                    <div class="card-header align-items-center d-flex">
-                        <h6 class="card-title mb-0 flex-grow-1 fw-bold text-uppercase">Upcoming Meeting Schedules </h6>
-                    </div>
-                    <div class="card-body" data-simplebar style="max-height: 400px;">
-                        <ul id="upcoming-event-list" class="list-group list-group-flush border-dashed"></ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-6">
-                <div class="card card-animate">
-                    <div class="card-header align-items-center d-flex">
-                        <h6 class="card-title mb-0 flex-grow-1 fw-bold text-uppercase"> ALL FILES MONITORING | DIRECTORY
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="nav nav-tabs nav-justified mb-1">
-                            <a href="javascript:void(0);" class="nav-link active" id="newTab" data-type="new">New System
-                                | Directory</a>
-                            <a href="javascript:void(0);" class="nav-link" id="currentTab" data-type="current">Current
-                                System | Directory</a>
+        <div class="col-xxl-8">
+            <div class="row">
+                <div class="col-xl-6">
+                    <div class="card card-animate">
+                        <div class="card-header align-items-center d-flex">
+                            <h6 class="card-title mb-0 flex-grow-1 fw-bold text-uppercase">Upcoming Meeting Schedules </h6>
                         </div>
-                        <div id="system_monitoring" class="tab-pane show apex-charts" dir="ltr"></div>
+                        <div class="card-body" data-simplebar style="max-height: 400px;">
+                            <ul id="upcoming-event-list" class="list-group list-group-flush border-dashed"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <div class="card card-animate">
+                        <div class="card-header align-items-center d-flex">
+                            <h6 class="card-title mb-0 flex-grow-1 fw-bold text-uppercase"> ALL FILES MONITORING | DIRECTORY
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="nav nav-tabs nav-justified mb-1">
+                                <a href="javascript:void(0);" class="nav-link active" id="newTab" data-type="new">New System
+                                    | Directory</a>
+                                <a href="javascript:void(0);" class="nav-link" id="currentTab" data-type="current">Current
+                                    System | Directory</a>
+                            </div>
+                            <div id="system_monitoring" class="tab-pane show apex-charts" dir="ltr"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-xxl-4">
-        <div class="card card-animate" data-simplebar style="max-height: 450px;">
-            <div class="card-header border-0">
-                <h6 class="card-title mb-0 fw-bold fs-26" style="font-family: 'BirthdayFont';"><iconify-icon icon="noto:confetti-ball"></iconify-icon> Birthdays <iconify-icon icon="noto:confetti-ball"></iconify-icon></h6>
-            </div>
-            <div class="card-body pt-0">
-                <div class="upcoming-scheduled">
-                    <input type="date" id="birthday-calendar" class="form-control" data-provider="flatpickr"
-                        data-time-inline="true" />
+        <div class="col-xxl-4">
+            <div class="card card-animate" data-simplebar style="max-height: 450px;">
+                <div class="card-header border-0">
+                    <h6 class="card-title mb-0 fw-bold fs-26" style="font-family: 'BirthdayFont';"><iconify-icon icon="noto:confetti-ball"></iconify-icon> Birthdays <iconify-icon icon="noto:confetti-ball"></iconify-icon></h6>
                 </div>
-                <hr>
-                <!-- <div class="card mt-3"> -->
-                <!-- <div class="card-header"> -->
-                <h3 class="card-title capitalized fw-bold fs-22" style="font-family: 'BirthdayFont';"><iconify-icon
-                        icon="twemoji:birthday-cake"></iconify-icon> This Month`s Birthday List <iconify-icon icon="noto:confetti-ball"></iconify-icon>: </h3>
-                <!-- </div> -->
-                <!-- <div class="card-body" data-simplebar style="max-height: 350px;"> -->
-                <div id="birthday-list"></div>
-                <!-- </div> -->
-                <!-- </div> -->
+                <div class="card-body pt-0">
+                    <div class="upcoming-scheduled">
+                        <input type="date" id="birthday-calendar" class="form-control" data-provider="flatpickr"
+                            data-time-inline="true" />
+                    </div>
+                    <hr>
+                    <!-- <div class="card mt-3"> -->
+                    <!-- <div class="card-header"> -->
+                    <h3 class="card-title capitalized fw-bold fs-22" style="font-family: 'BirthdayFont';"><iconify-icon
+                            icon="twemoji:birthday-cake"></iconify-icon> This Month`s Birthday List <iconify-icon icon="noto:confetti-ball"></iconify-icon>: </h3>
+                    <!-- </div> -->
+                    <!-- <div class="card-body" data-simplebar style="max-height: 350px;"> -->
+                    <div id="birthday-list"></div>
+                    <!-- </div> -->
+                    <!-- </div> -->
+                </div>
             </div>
         </div>
     </div>
-
 </div>
 
 

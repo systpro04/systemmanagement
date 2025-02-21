@@ -1,11 +1,8 @@
 <div class="container-fluid">
-
-    <!-- start page title -->
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0">Request </h4>
-
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item">
@@ -18,96 +15,96 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-xxl-12">
-            <div class="card">
-                <div class="card-body">
-                    <ul class="nav nav-pills animation-nav nav-justified gap-2 mb-3" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link waves-effect waves-light typeofsystem fw-bold" data-bs-toggle="tab" id="current" role="tab">
-                                CURRENT SYSTEM | MODULE 
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link waves-effect waves-light active typeofsystem fw-bold" data-bs-toggle="tab" id="new" role="tab">
-                                NEW SYSTEM | MODULE  
-                            </a>
-                        </li>
-                    </ul>
-                    <hr>
-                    <div class="col-xxl-12">
-                        <div class="row">
-                            <div class="col-lg-2" data-simplebar style="max-height: 550px;">
-                                <div class="nav nav-pills flex-column nav-pills-tab custom-verti-nav-pills text-center" role="tablist" aria-orientation="vertical">
-                                    <a href="#!" id="ISR" class="fw-bold nav-link active type" data-bs-toggle="pill" role="tab">ISR <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_ISR"></span></a>
-                                    <a href="#!" id="ATTENDANCE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">ATTENDANCE <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_ATTENDANCE"></span></a>
-                                    <a href="#!" id="MINUTES" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">MINUTES <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_MINUTES"></span></a>
-                                    <a href="#!" id="WALKTHROUGH" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">WALKTHROUGH <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_WALKTHROUGH"></span></a>
-                                    <a href="#!" id="FLOWCHART" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">FLOWCHART <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_FLOWCHART"></span></a>
-                                    <a href="#!" id="DFD" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">DFD <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_DFD"></span></a>
-                                    <a href="#!" id="SYSTEM_PROPOSED" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">SYSTEM PROPOSED <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_SYSTEM_PROPOSED"></span></a>
-                                    <a href="#!" id="GANTT_CHART" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">GANTT CHART <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_GANTT_CHART"></span></a>
-                                    <a href="#!" id="LOCAL_TESTING" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">LOCAL TESTING <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_LOCAL_TESTING"></span></a>
-                                    <a href="#!" id="UAT" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">UAT <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_UAT"></span></a>
-                                    <a href="#!" id="LIVE_TESTING" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">LIVE TESTING <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_LIVE_TESTING"></span></a>
-                                    <a href="#!" id="USER_GUIDE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">USER GUIDE <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_USER_GUIDE"></span></a>
-                                    <a href="#!" id="MEMO" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">MEMO <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_MEMO"></span></a>
-                                    <a href="#!" id="BUSINESS_ACCEPTANCE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">BUSINESS ACCEPTANCE <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_BUSINESS_ACCEPTANCE"></span></a>
-                                </div>
+    <div class="col-xxl-12">
+        <div class="card">
+            <div class="card-body">
+                <ul class="nav nav-pills animation-nav nav-justified gap-2 mb-3" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect waves-light typeofsystem fw-bold" data-bs-toggle="tab" id="current" role="tab">
+                            CURRENT SYSTEM | MODULE 
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect waves-light active typeofsystem fw-bold" data-bs-toggle="tab" id="new" role="tab">
+                            NEW SYSTEM | MODULE  
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+                <div class="col-xxl-12">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <div class="nav nav-pills flex-column nav-pills-tab custom-verti-nav-pills text-center" role="tablist" aria-orientation="vertical">
+                                <a href="#!" id="ISR" class="fw-bold nav-link active type" data-bs-toggle="pill" role="tab">ISR <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_ISR"></span></a>
+                                <a href="#!" id="ATTENDANCE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">ATTENDANCE <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_ATTENDANCE"></span></a>
+                                <a href="#!" id="MINUTES" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">MINUTES <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_MINUTES"></span></a>
+                                <a href="#!" id="WALKTHROUGH" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">WALKTHROUGH <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_WALKTHROUGH"></span></a>
+                                <a href="#!" id="FLOWCHART" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">FLOWCHART <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_FLOWCHART"></span></a>
+                                <a href="#!" id="DFD" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">DFD <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_DFD"></span></a>
+                                <a href="#!" id="SYSTEM_PROPOSED" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">SYSTEM PROPOSED <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_SYSTEM_PROPOSED"></span></a>
+                                <a href="#!" id="GANTT_CHART" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">GANTT CHART <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_GANTT_CHART"></span></a>
+                                <a href="#!" id="LOCAL_TESTING" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">LOCAL TESTING <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_LOCAL_TESTING"></span></a>
+                                <a href="#!" id="UAT" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">UAT <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_UAT"></span></a>
+                                <a href="#!" id="LIVE_TESTING" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">LIVE TESTING <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_LIVE_TESTING"></span></a>
+                                <a href="#!" id="USER_GUIDE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">USER GUIDE <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_USER_GUIDE"></span></a>
+                                <a href="#!" id="MEMO" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">MEMO <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_MEMO"></span></a>
+                                <a href="#!" id="BUSINESS_ACCEPTANCE" class="fw-bold nav-link type" data-bs-toggle="pill" role="tab">BUSINESS ACCEPTANCE <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="count_BUSINESS_ACCEPTANCE"></span></a>
                             </div>
-                            <div class="col-lg-10">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex gap-2 mb-2">
-                                            <select class="form-select" id="team" name="team">
-                                                <option value=""></option>
-                                            </select>
-                                            <select class="form-select" id="module" name="module">
-                                                <option value="">Module</option>
-                                            </select>
-                                            <select class="form-select" id="sub_module" name="sub_module">
-                                                <option value="">Sub Module</option>
-                                            </select>
-                                        </div>
-                                        <div class="dropdown">
-                                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown" aria-expanded="false"> Column Visibility</button>
-                                            <ul class="dropdown-menu" aria-labelledby="columnDropdown" id="columnSelectorDropdown" data-simplebar style="max-height: 300px;">
-                                                <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> TEAM</label></li>
-                                                <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> FILENAME</label></li>
-                                                <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> MODULE</label></li>
-                                                <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="3" checked> UPLOADED TO</label></li>
-                                                <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="4" checked> STATUS</label></li>
-                                                <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="5" checked> ACTION</label></li>
-                                            </ul>
-                                            <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
-                                        </div>
-                                        <div class="tab-content mt-1">
-                                            <div class="tab-pane fade active show" id="current" role="tabpanel">
-                                                <div class="d-flex mb-4">
-                                                    <div class="flex-grow-1 ms-3 ratio ratio-16x9">
-                                                        <div class="table-responsive">
-                                                            <table class="table table-striped table-hover" id="typeofsystem_table" style="max-width: 100%;">
-                                                                <thead class="table-info text-center text-uppercase">
-                                                                    <tr>
-                                                                        <th width="15%">TEAM</th>
-                                                                        <th>FILENAME</th>
-                                                                        <th>MODULE</th>
-                                                                        <th>UPLOADED</th>
-                                                                        <th>STATUS</th>
-                                                                        <th>ACTION</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
+                        </div>
+                        <div class="col-xxl-10">
+                            <!-- <div class="card">
+                                <div class="card-body"> -->
+                                    <div class="d-flex gap-2 mb-2">
+                                        <select class="form-select" id="team" name="team">
+                                            <option value=""></option>
+                                        </select>
+                                        <select class="form-select" id="module" name="module">
+                                            <option value="">Module</option>
+                                        </select>
+                                        <select class="form-select" id="sub_module" name="sub_module">
+                                            <option value="">Sub Module</option>
+                                        </select>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown" aria-expanded="false"> Column Visibility</button>
+                                        <ul class="dropdown-menu" aria-labelledby="columnDropdown" id="columnSelectorDropdown" data-simplebar style="max-height: 300px;">
+                                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="0" checked> TEAM</label></li>
+                                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="1" checked> FILENAME</label></li>
+                                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="2" checked> MODULE</label></li>
+                                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="3" checked> UPLOADED TO</label></li>
+                                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="4" checked> STATUS</label></li>
+                                            <li><label class="dropdown-item"><input type="checkbox" class="column-toggle" value="5" checked> ACTION</label></li>
+                                        </ul>
+                                        <button id="generate_report" class="btn btn-danger btn-sm ms-1">Generate Report</button>
+                                    </div>
+                                    <div class="tab-content mt-1">
+                                        <div class="col-xl-12">
+                                        <div class="tab-pane fade active show" id="current" role="tabpanel">
+                                            <div class="d-flex mb-4">
+                                                <div class="flex-grow-1  ratio ratio-16x9">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-striped table-hover w-100" id="typeofsystem_table">
+                                                            <thead class="table-info text-center text-uppercase">
+                                                                <tr>
+                                                                    <th width="15%">TEAM</th>
+                                                                    <th class="w-25">FILENAME</th>
+                                                                    <th>MODULE</th>
+                                                                    <th>UPLOADED</th>
+                                                                    <th>STATUS</th>
+                                                                    <th>ACTION</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+                                <!-- </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -225,8 +222,10 @@
             processing: true,
             serverSide: true,
             // stateSave: true,
+            // scrollY: "400px",
+            // scrollX: true,
+            // scrollCollapse: true,
             destroy: true,
-            responsive: true,
             lengthMenu: [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
             pageLength: 10,
             ajax: {

@@ -92,6 +92,16 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Date Testing:</label>
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <input type="date" id="date_testing" class="form-control" readonly="" placeholder="Select Date Testing" data-provider="flatpickr" />
+                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="submit_gantt()">Submit</button>
@@ -194,6 +204,16 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Date Testing:</label>
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <input type="date" id="edit_date_testing" class="form-control" readonly="" placeholder="Select Date Testing" data-provider="flatpickr" />
+                            <span class="input-group-text"><i class="ri-calendar-event-line"></i></span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="update_gantt()">Submit</button>
@@ -221,7 +241,6 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-header border-1">
@@ -282,8 +301,9 @@
                                             <th>Date Requested</th>
                                             <th>Date Parallel</th>
                                             <th>Date Implementation</th>
-                                            <th>Date Start Coding</th>
-                                            <th>Date End Coding</th>
+                                            <th>Start Coding</th>
+                                            <th>End Coding</th>
+                                            <th>Testing Date</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -296,7 +316,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
 
 <script>
@@ -309,9 +328,9 @@
         "serverSide": true,
         "destroy": true,
         "stateSave": true,
-        "scrollY": "400px",
-        "scrollX": true,
-        "scrollCollapse": true,
+        // "scrollY": "400px",
+        // "scrollX": true,
+        // "scrollCollapse": true,
         "lengthMenu": [[10, 25, 50, 100, 10000], [10, 25, 50, 100, "Max"]],
         "pageLength": 10,
         "ajax": {
@@ -333,6 +352,7 @@
             { "data": 'date_implem'},
             { "data": 'date_start'},
             { "data": 'date_end'},
+            { "data": 'date_testing'},
             { "data": "action" }
         ],
         "columnDefs": [
@@ -520,18 +540,20 @@
         var date_start = $('#date_start').val();
         var date_end = $('#date_end').val();
 
+        var date_testing = $('#date_testing').val();
+
         if (team == '' || incharge == '' || module == '' || description == '' || date_request == '' || date_implementation == '' || date_start == '' || date_end == '') {
-            Toastify({
-                text: `Please fill up the required fields.`,
-                duration: 5000,
-                gravity: "top",
-                position: "left",
-                stopOnFocus: true,
-                close: true,
-                style: {
-                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                },
-            }).showToast();
+            toastr.options = {
+                progressBar: true,
+                positionClass: "toast-top-left",
+                timeOut: 5000,
+                extendedTimeOut: 2000,
+                
+            };
+
+            toastr.error(
+                `Please fill up the required fields`,
+            );
             if (description == '' || date_request == '' || date_implementation == '' || date_start == '' || date_end == '') {
                 $('#description, #date_request, #date_implementation, #date_start, #date_end').each(function () {
                     if ($(this).val() === '') {
@@ -571,20 +593,21 @@
                         date_parallel: date_parallel,
                         date_implementation: date_implementation,
                         date_start: date_start,
-                        date_end: date_end
+                        date_end: date_end,
+                        date_testing: date_testing
                     },
                     success: function (response) {
-                        Toastify({
-                            text: `Gantt data added successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            
+                        };
+
+                        toastr.success(
+                            `Gantt was successfully added`,
+                        );
                         $('#add_system_gantt').modal('hide');
                         var table = $('#gantt_list').DataTable();
                         var currentPage = table.page();
@@ -619,6 +642,7 @@
                     $('#edit_date_implementation').val(data.date_implem);
                     $('#edit_date_start').val(data.date_start);
                     $('#edit_date_end').val(data.date_end);
+                    $('#edit_date_testing').val(data.date_testing);
                 }, 800);
             }
         });
@@ -638,6 +662,7 @@
         var date_implem     = $('#edit_date_implementation').val();
         var date_start      = $('#edit_date_start').val();
         var date_end        = $('#edit_date_end').val();
+        var date_testing    = $('#edit_date_testing').val();
 
         Swal.fire({
             title: 'Are you sure?',
@@ -667,21 +692,22 @@
                         date_parallel: date_parallel,
                         date_implementation: date_implem,
                         date_start: date_start,
-                        date_end: date_end
+                        date_end: date_end,
+                        date_testing: date_testing
 
                     },
                     success: function (response) {
-                        Toastify({
-                            text: `Gantt data updated successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            
+                        };
+
+                        toastr.success(
+                            `Gantt was successfully updated`,
+                        );
                         $('#edit_system_gantt').modal('hide');
                         var table = $('#gantt_list').DataTable();
                         var currentPage = table.page();
@@ -711,17 +737,17 @@
                     type: 'POST',
                     data: { id: id },
                     success: function (response) {
-                        Toastify({
-                            text: `Gantt data deleted successfully.`,
-                            duration: 5000,
-                            gravity: "top",
-                            position: "left",
-                            stopOnFocus: true,
-                            close: true,
-                            style: {
-                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            },
-                        }).showToast();
+                        toastr.options = {
+                            progressBar: true,
+                            positionClass: "toast-top-left",
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            
+                        };
+
+                        toastr.success(
+                            `Gantt was successfully deleted`,
+                        );
                         var table = $('#gantt_list').DataTable();
                         var currentPage = table.page();
 
